@@ -1,0 +1,2715 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>부동산 밸런스 카드</title>
+  <style>
+    :root {
+      --bg: #f4f7f4;
+      --ink: #17202a;
+      --muted: #66737f;
+      --panel: #ffffff;
+      --line: #d9e0df;
+      --cash: #277c78;
+      --trust: #385ca8;
+      --city: #d3892f;
+      --control: #b8485f;
+      --good: #1f7a52;
+      --bad: #a43f4f;
+      --soft-cash: #dff2ef;
+      --soft-trust: #e4ebfb;
+      --soft-city: #faecd4;
+      --soft-control: #f6dfe5;
+      --shadow: 0 18px 45px rgba(26, 36, 47, 0.12);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--ink);
+      font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", Arial, sans-serif;
+      letter-spacing: 0;
+      word-break: keep-all;
+      background:
+        linear-gradient(120deg, rgba(223, 242, 239, 0.72), rgba(250, 236, 212, 0.52)),
+        radial-gradient(circle at 88% 18%, rgba(184, 72, 95, 0.12), transparent 28%),
+        linear-gradient(180deg, #fbfcfa, var(--bg));
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      font: inherit;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.56;
+    }
+
+    .app {
+      width: min(1420px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 18px 0 26px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(270px, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .mark {
+      width: 48px;
+      height: 48px;
+      flex: 0 0 auto;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      color: #163f3d;
+      border: 1px solid #a8c7c4;
+      background: linear-gradient(135deg, #dff2ef, #faecd4 60%, #e4ebfb);
+    }
+
+    .mark svg,
+    .icon {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    .mark svg {
+      width: 34px;
+      height: 34px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 26px;
+      line-height: 1.12;
+      font-weight: 850;
+    }
+
+    .subtitle {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.38;
+    }
+
+    .top-stats {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #ffffff;
+      color: #344454;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .icon-button,
+    .text-button {
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: #ffffff;
+      color: #243442;
+      padding: 0 12px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .icon-button {
+      width: 40px;
+      padding: 0;
+    }
+
+    .text-button.primary {
+      color: white;
+      background: #1f6f5a;
+      border-color: #1f6f5a;
+    }
+
+    .icon-button:hover,
+    .text-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(26, 36, 47, 0.11);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(300px, 0.78fr) minmax(420px, 1.08fr) minmax(300px, 0.78fr);
+      gap: 14px;
+      align-items: start;
+      margin-top: 14px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 11px 13px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(247, 250, 249, 0.92);
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 850;
+    }
+
+    .panel-note {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .meters {
+      display: grid;
+      gap: 11px;
+      padding: 13px;
+    }
+
+    .meter {
+      display: grid;
+      gap: 7px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+    }
+
+    .meter-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .meter-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 850;
+      font-size: 13px;
+      min-width: 0;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      flex: 0 0 auto;
+      background: var(--cash);
+    }
+
+    .dot.trust { background: var(--trust); }
+    .dot.city { background: var(--city); }
+    .dot.control { background: var(--control); }
+
+    .meter-value {
+      font-weight: 900;
+      font-size: 18px;
+    }
+
+    .track {
+      height: 12px;
+      border-radius: 999px;
+      background: #edf1f0;
+      overflow: hidden;
+    }
+
+    .fill {
+      width: 50%;
+      height: 100%;
+      border-radius: inherit;
+      transition: width 0.22s ease, background 0.22s ease;
+      background: var(--cash);
+    }
+
+    .fill.trust { background: var(--trust); }
+    .fill.city { background: var(--city); }
+    .fill.control { background: var(--control); }
+
+    .meter-copy {
+      min-height: 30px;
+      color: #61707f;
+      font-size: 12px;
+      line-height: 1.36;
+    }
+
+    .stat-stars {
+      margin-top: 7px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      color: #d18a1f;
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+    .stat-star-progress {
+      color: #66737f;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .radar {
+      padding: 13px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .radar-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .small-card {
+      min-height: 76px;
+      padding: 9px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      display: grid;
+      gap: 5px;
+    }
+
+    .small-card span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .small-card b {
+      font-size: 19px;
+      line-height: 1.1;
+    }
+
+    .game-panel {
+      padding: 14px;
+      min-height: 690px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 14px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(244, 247, 244, 0.78)),
+        repeating-linear-gradient(90deg, rgba(39, 124, 120, 0.06) 0 1px, transparent 1px 80px),
+        repeating-linear-gradient(0deg, rgba(56, 92, 168, 0.04) 0 1px, transparent 1px 80px);
+    }
+
+    .season-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .season-item {
+      min-height: 58px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.9);
+      padding: 8px;
+      display: grid;
+      gap: 3px;
+    }
+
+    .season-item span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .season-item b {
+      font-size: 17px;
+    }
+
+    .card-stage {
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr);
+      align-items: center;
+      justify-items: center;
+      min-height: 510px;
+    }
+
+    .card-wrap {
+      --leftPeek: 0;
+      --rightPeek: 0;
+      position: relative;
+      width: min(680px, 100%);
+      min-height: 500px;
+      display: grid;
+      place-items: center;
+      perspective: 1200px;
+    }
+
+    .stack-shadow,
+    .stack-shadow::before {
+      position: absolute;
+      width: min(360px, 90%);
+      height: 430px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: #ffffff82;
+      content: "";
+      transform: rotate(-3deg) translateY(8px);
+      z-index: 0;
+    }
+
+    .stack-shadow::before {
+      left: 0;
+      top: 0;
+      transform: rotate(6deg) translate(10px, 8px);
+      background: #ffffff55;
+    }
+
+    .under-choice-sheet {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: min(380px, 94%);
+      min-height: 438px;
+      padding: 16px;
+      border-radius: var(--radius);
+      border: 1px solid #d7e1df;
+      background: #fff;
+      box-shadow: 0 18px 42px rgba(26, 36, 47, 0.1);
+      transform: translate(-50%, -50%) rotate(-2deg);
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .under-choice-sheet::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(223, 242, 239, 0.86), transparent 34%, transparent 66%, rgba(250, 236, 212, 0.9)),
+        #fff;
+      z-index: 0;
+    }
+
+    .under-choice {
+      position: absolute;
+      z-index: 1;
+      top: 35%;
+      width: 128px;
+      display: grid;
+      gap: 7px;
+      transition: transform 0.16s ease;
+    }
+
+    .under-choice.left {
+      left: 8px;
+      color: #163f3d;
+      transform: translate(calc(var(--leftPeek) * -6px), -50%);
+    }
+
+    .under-choice.right {
+      right: 8px;
+      color: #73460e;
+      text-align: right;
+      justify-items: end;
+      transform: translate(calc(var(--rightPeek) * 6px), -50%);
+    }
+
+    .peek-kicker {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .peek-name {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.28;
+      font-weight: 950;
+    }
+
+    .peek-text {
+      margin: 0;
+      color: #526170;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .peek-deltas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .under-choice.right .peek-deltas {
+      justify-content: flex-end;
+    }
+
+    .play-card {
+      position: relative;
+      z-index: 2;
+      width: min(380px, 94%);
+      min-height: 438px;
+      border: 1px solid #cad8d7;
+      border-radius: var(--radius);
+      background: #fff;
+      box-shadow: 0 24px 56px rgba(26, 36, 47, 0.18);
+      padding: 16px;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 14px;
+      transform: translateX(0) rotate(0);
+      transition: transform 0.16s ease, border-color 0.16s ease;
+      touch-action: none;
+      user-select: none;
+      cursor: grab;
+      will-change: transform;
+    }
+
+    .play-card:active {
+      cursor: grabbing;
+    }
+
+    .play-card.dragging {
+      transition: none;
+    }
+
+    .play-card.preview-lock {
+      box-shadow: 0 30px 66px rgba(26, 36, 47, 0.26);
+    }
+
+    .play-card.commit-ready {
+      box-shadow: 0 32px 72px rgba(31, 111, 90, 0.24);
+    }
+
+    .play-card.left-lean {
+      border-color: rgba(39, 124, 120, 0.72);
+    }
+
+    .play-card.right-lean {
+      border-color: rgba(211, 137, 47, 0.72);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 9px;
+    }
+
+    .badge {
+      padding: 5px 8px;
+      border-radius: 999px;
+      color: #173f3d;
+      background: var(--soft-cash);
+      border: 1px solid #b6d9d5;
+      font-size: 11px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .badge.market { background: var(--soft-trust); color: #263f7c; border-color: #bdcaf0; }
+    .badge.contract { background: var(--soft-control); color: #7b3140; border-color: #e4bdc7; }
+    .badge.city { background: var(--soft-city); color: #73460e; border-color: #efc98d; }
+
+    .card-number {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 27px;
+      line-height: 1.16;
+      font-weight: 950;
+      overflow-wrap: break-word;
+    }
+
+    .card-text {
+      color: #485968;
+      font-size: 15px;
+      line-height: 1.58;
+      display: grid;
+      gap: 10px;
+    }
+
+    .story-line,
+    .dilemma-line {
+      margin: 0;
+    }
+
+    .story-line {
+      color: #405161;
+    }
+
+    .dilemma-line {
+      padding: 9px 10px;
+      border-left: 3px solid #d3892f;
+      border-radius: 6px;
+      background: #fbf2e4;
+      color: #5f4624;
+      font-size: 13px;
+      line-height: 1.48;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      padding: 5px 8px;
+      border-radius: 999px;
+      color: #405060;
+      background: #f1f5f4;
+      border: 1px solid var(--line);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .last-result {
+      min-height: 54px;
+      padding: 10px 13px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffffd8;
+      color: #465666;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .delta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .delta {
+      padding: 4px 7px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 900;
+      border: 1px solid transparent;
+    }
+
+    .delta.up {
+      color: #1f6f4d;
+      background: #e3f4eb;
+      border-color: #afd7c1;
+    }
+
+    .delta.down {
+      color: #963747;
+      background: #fae4e8;
+      border-color: #e5b6bf;
+    }
+
+    .log-list {
+      max-height: 560px;
+      overflow: auto;
+      padding: 13px;
+      display: grid;
+      gap: 8px;
+      scrollbar-width: thin;
+    }
+
+    .log-item {
+      min-height: 58px;
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 8px;
+      padding: 9px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+
+    .log-turn {
+      color: #af6f1f;
+      font-weight: 900;
+      font-size: 12px;
+    }
+
+    .log-copy {
+      color: #526170;
+      font-size: 12px;
+      line-height: 1.42;
+    }
+
+    .empty {
+      min-height: 120px;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .modal-layer {
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      padding: 20px;
+      background: rgba(23, 32, 42, 0.45);
+      z-index: 30;
+    }
+
+    .modal-layer.open {
+      display: grid;
+    }
+
+    .modal {
+      width: min(760px, 100%);
+      max-height: calc(100vh - 32px);
+      overflow: auto;
+      border-radius: var(--radius);
+      border: 1px solid #c7d0ce;
+      background: #ffffff;
+      box-shadow: 0 36px 80px rgba(23, 32, 42, 0.24);
+    }
+
+    .modal-body {
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .score-card {
+      min-height: 82px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #f9fbfb;
+      padding: 10px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .score-card span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .score-card b {
+      font-size: 26px;
+    }
+
+    .summary {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #f9fbfb;
+      padding: 12px;
+      color: #465666;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .ending-story {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(135deg, rgba(223, 242, 239, 0.72), rgba(250, 236, 212, 0.56)),
+        #ffffff;
+      padding: 13px;
+      color: #405161;
+    }
+
+    .ending-story strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #17202a;
+      font-size: 15px;
+    }
+
+    .opening-story {
+      display: grid;
+      gap: 12px;
+    }
+
+    .story-panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(135deg, rgba(223, 242, 239, 0.72), rgba(250, 236, 212, 0.56)),
+        #ffffff;
+      padding: 13px;
+      color: #405161;
+      font-size: 14px;
+      line-height: 1.58;
+    }
+
+    .story-panel strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #17202a;
+      font-size: 16px;
+    }
+
+    .story-rules {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 6px;
+      color: #526170;
+      font-size: 13px;
+      line-height: 1.48;
+    }
+
+    .difficulty-panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #f9fbfb;
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .difficulty-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: #17202a;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .difficulty-options {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .difficulty-option {
+      min-height: 86px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      padding: 10px;
+      display: grid;
+      gap: 5px;
+      text-align: left;
+      color: #243442;
+    }
+
+    .difficulty-option.active {
+      border-color: #1f6f5a;
+      background: #edf7f4;
+      outline: 3px solid rgba(31, 111, 90, 0.12);
+    }
+
+    .difficulty-option b {
+      font-size: 14px;
+    }
+
+    .difficulty-option span {
+      color: #66737f;
+      font-size: 11px;
+      line-height: 1.38;
+    }
+
+    .mode-options {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .player-name-row {
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+      display: grid;
+      grid-template-columns: 90px minmax(0, 1fr);
+      align-items: center;
+      gap: 8px 10px;
+    }
+
+    .player-name-row[hidden],
+    .submit-section[hidden] {
+      display: none;
+    }
+
+    .player-name-row label {
+      color: #243442;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .player-name-row input {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 0 12px;
+      color: #17202a;
+      font: inherit;
+      font-weight: 800;
+      background: #ffffff;
+    }
+
+    .player-name-row small {
+      grid-column: 2;
+      color: #66737f;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .leaderboard-section {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .leaderboard-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .leaderboard-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .leaderboard-tab {
+      min-height: 36px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      color: #526170;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .leaderboard-tab.active {
+      border-color: #1f6f5a;
+      background: #edf7f4;
+      color: #1f6f5a;
+    }
+
+    .leaderboard-item {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      padding: 10px;
+    }
+
+    .leaderboard-rank {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: #edf7f4;
+      color: #1f6f5a;
+      font-size: 12px;
+      font-weight: 950;
+    }
+
+    .leaderboard-main {
+      min-width: 0;
+      display: grid;
+      gap: 2px;
+    }
+
+    .leaderboard-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #17202a;
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+    .leaderboard-meta {
+      color: #66737f;
+      font-size: 11px;
+    }
+
+    .leaderboard-score {
+      color: #17202a;
+      font-size: 15px;
+      font-weight: 950;
+    }
+
+    .submit-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .submit-status {
+      color: #66737f;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .server-note {
+      color: #1f6f5a;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .hidden-deltas {
+      color: #66737f;
+      background: #eef2f1;
+      border-color: #d6dfdd;
+    }
+
+    @media (max-width: 1120px) {
+      .layout {
+        grid-template-columns: minmax(280px, 0.76fr) minmax(420px, 1.1fr);
+      }
+
+      .side-right {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .app {
+        width: min(100% - 18px, 680px);
+        padding-top: 9px;
+      }
+
+      .topbar,
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .top-stats {
+        justify-content: stretch;
+      }
+
+      .pill,
+      .text-button {
+        flex: 1 1 auto;
+        justify-content: center;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      .season-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .card-stage {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+
+      .card-wrap {
+        min-height: 470px;
+      }
+
+      .under-choice-sheet {
+        min-height: 392px;
+        transform: translate(-50%, -50%) rotate(-2deg);
+      }
+
+      .under-choice {
+        top: 36%;
+        width: 108px;
+        gap: 6px;
+      }
+
+      .under-choice.left {
+        left: 8px;
+        transform: translate(calc(var(--leftPeek) * -8px), -50%);
+      }
+
+      .under-choice.right {
+        right: 8px;
+        transform: translate(calc(var(--rightPeek) * 8px), -50%);
+      }
+
+      .peek-name {
+        font-size: 15px;
+      }
+
+      .peek-text {
+        font-size: 11px;
+      }
+
+      .play-card {
+        min-height: 392px;
+      }
+
+      .card-title {
+        font-size: 23px;
+      }
+
+      .score-grid,
+      .radar-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .difficulty-options {
+        grid-template-columns: 1fr;
+      }
+
+      .player-name-row {
+        grid-template-columns: 1fr;
+      }
+
+      .player-name-row small {
+        grid-column: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48">
+            <path d="M8 39h32M11 39V18l13-9 13 9v21" />
+            <path d="M17 39V26h10v13M31 39V23h6v16" />
+            <path d="M17 20h4M26 20h4M31 28h3M31 33h3" />
+          </svg>
+        </div>
+        <div>
+          <h1>부동산 밸런스 카드</h1>
+          <p class="subtitle">카드마다 하나의 사건. 선택 하나가 현금흐름, 신뢰, 생활가치, 위험관리를 흔듭니다.</p>
+        </div>
+      </div>
+      <div class="top-stats">
+        <span class="pill" id="turnPill">1턴</span>
+        <span class="pill" id="deckPill">사건풀 50</span>
+        <span class="pill" id="scorePill">균형 50</span>
+        <button class="text-button primary" id="newGameTop">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>
+          새 게임
+        </button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel">
+        <div class="panel-head">
+          <h2 class="panel-title">4대 지표</h2>
+          <span class="panel-note">0이면 종료</span>
+        </div>
+        <div class="meters" id="meters"></div>
+        <div class="radar">
+          <div class="radar-grid">
+            <div class="small-card"><span>현재 점수</span><b id="liveScore">0</b></div>
+            <div class="small-card"><span>생존 턴</span><b id="turnCount">0</b></div>
+            <div class="small-card"><span>최저 지표</span><b id="lowestStat">50</b></div>
+            <div class="small-card"><span>평균 균형</span><b id="avgStat">50</b></div>
+            <div class="small-card"><span>위기 횟수</span><b id="dangerCount">0</b></div>
+            <div class="small-card"><span>누적 별</span><b id="bonusCount">0</b></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel game-panel">
+        <div class="season-row">
+          <div class="season-item"><span>현재 장</span><b id="chapterName">시장</b></div>
+          <div class="season-item"><span>사건 번호</span><b id="cardIndex">1 / 50</b></div>
+          <div class="season-item"><span>연속 생존</span><b id="streakText">0</b></div>
+          <div class="season-item"><span>정책 온도</span><b id="marketMood">중립</b></div>
+        </div>
+
+        <div class="card-stage">
+          <div class="card-wrap">
+            <div class="stack-shadow" aria-hidden="true"></div>
+            <div class="under-choice-sheet" id="underChoiceSheet" aria-hidden="true">
+              <div class="under-choice left">
+                <span class="peek-kicker">A</span>
+                <h3 class="peek-name" id="leftPeekTitle">검토</h3>
+                <p class="peek-text" id="leftPeekText">선택지가 표시됩니다.</p>
+                <div class="peek-deltas" id="leftPeekDeltas"></div>
+              </div>
+              <div class="under-choice right">
+                <span class="peek-kicker">B</span>
+                <h3 class="peek-name" id="rightPeekTitle">진행</h3>
+                <p class="peek-text" id="rightPeekText">선택지가 표시됩니다.</p>
+                <div class="peek-deltas" id="rightPeekDeltas"></div>
+              </div>
+            </div>
+            <article class="play-card" id="playCard">
+              <div class="card-top">
+                <span class="badge" id="cardBadge">시장</span>
+                <span class="card-number" id="cardNumber">#001</span>
+              </div>
+              <h2 class="card-title" id="cardTitle">금리 발표 전야</h2>
+              <div class="card-text" id="cardText">새로운 사건이 표시됩니다.</div>
+              <div class="card-tags" id="cardTags"></div>
+            </article>
+          </div>
+        </div>
+
+        <div class="last-result" id="lastResult">첫 사건을 기다리는 중입니다.</div>
+      </section>
+
+      <section class="panel side-right">
+        <div class="panel-head">
+          <h2 class="panel-title">결정 기록</h2>
+          <span class="panel-note">최근 12개</span>
+        </div>
+        <div class="log-list" id="logList"></div>
+        <div class="leaderboard-section">
+          <div class="panel-head">
+            <h2 class="panel-title">무한 모드 순위</h2>
+            <button class="text-button" id="refreshLeaderboard" type="button">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>
+              새로고침
+            </button>
+          </div>
+          <div class="leaderboard-tabs" id="leaderboardTabs" role="tablist" aria-label="난이도별 순위">
+            <button class="leaderboard-tab active" data-leaderboard-difficulty="easy" type="button">쉬움</button>
+            <button class="leaderboard-tab" data-leaderboard-difficulty="medium" type="button">보통</button>
+            <button class="leaderboard-tab" data-leaderboard-difficulty="hard" type="button">어려움</button>
+          </div>
+          <div class="leaderboard-list" id="leaderboardList">
+            <div class="empty">서버 연결 시 공개 기록이 표시됩니다.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-layer open" id="storyModal" role="dialog" aria-modal="true" aria-labelledby="storyTitle">
+    <div class="modal">
+      <div class="panel-head">
+        <h2 class="panel-title" id="storyTitle">시작 배경</h2>
+      </div>
+      <div class="modal-body opening-story">
+        <div class="story-panel">
+          <strong>낡은 동네의 1년짜리 운용권</strong>
+          당신은 작은 부동산 운용팀의 새 책임자입니다. 이 동네는 오래된 주거지, 비어 가는 상가, 곧 바뀔 교통망, 그리고 서로 다른 이해관계자가 뒤섞여 있습니다.
+        </div>
+        <div class="story-panel">
+          <strong>한 장의 결정이 네 방향으로 흔들립니다</strong>
+          은행은 현금흐름을 묻고, 임차인은 신뢰를 요구합니다. 주민들은 생활가치를 보고, 계약서와 인허가는 위험관리의 빈틈을 노립니다. 좋은 선택도 한쪽을 살리면 다른 한쪽을 깎습니다.
+        </div>
+        <div class="difficulty-panel">
+          <div class="difficulty-title">
+            <span>난이도 선택</span>
+            <span id="difficultyHint">중간: 변화량을 숨기고 시작합니다.</span>
+          </div>
+          <div class="difficulty-options" id="difficultyOptions">
+            <button class="difficulty-option" data-difficulty="easy" type="button">
+              <b>쉬움</b>
+              <span>지표가 넉넉하고 선택지 변화량이 보입니다.</span>
+            </button>
+            <button class="difficulty-option active" data-difficulty="medium" type="button">
+              <b>중간</b>
+              <span>선택지 변화량이 카드에서 숨겨집니다.</span>
+            </button>
+            <button class="difficulty-option" data-difficulty="hard" type="button">
+              <b>어려움</b>
+              <span>변화량이 숨겨지고 시장 압박이 더 강합니다.</span>
+            </button>
+          </div>
+        </div>
+        <div class="difficulty-panel">
+          <div class="difficulty-title">
+            <span>게임 모드</span>
+            <span id="modeHint">50장 도전: 매 판 50개 사건을 해결합니다.</span>
+          </div>
+          <div class="difficulty-options mode-options" id="modeOptions">
+            <button class="difficulty-option active" data-mode="normal" type="button">
+              <b>50장 도전</b>
+              <span>200개 사건 중 50개를 뽑아 엔딩까지 갑니다.</span>
+            </button>
+            <button class="difficulty-option" data-mode="infinite" type="button">
+              <b>무한 모드</b>
+              <span>사건이 계속 이어지고, 종료 후 공개 기록을 등록합니다.</span>
+            </button>
+          </div>
+          <div class="player-name-row" id="playerNameRow" hidden>
+            <label for="playerName">기록 이름</label>
+            <input id="playerName" maxlength="12" autocomplete="nickname" placeholder="예: 동네왕">
+            <small id="playerNameHint">무한 모드 기록에 표시될 이름입니다. 2~12자로 입력하세요.</small>
+          </div>
+        </div>
+        <ul class="story-rules">
+          <li>카드를 좌우로 당기면 다음 종이 가장자리에서 A/B 선택지가 드러납니다.</li>
+          <li>중간까지 당기면 선택지가 보이고, 더 당긴 뒤 놓으면 결정이 실행됩니다.</li>
+          <li>매 판 200개 사건 라이브러리에서 50개만 무작위로 섞어 진행합니다.</li>
+          <li>무한 모드는 서버에 기록을 등록하면 다른 플레이어도 순위표에서 볼 수 있습니다.</li>
+          <li>4개 지표 중 하나라도 0이 되면 프로젝트는 중단됩니다.</li>
+        </ul>
+        <button class="text-button primary" id="startStory">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 10 7-10 7z"/></svg>
+          첫 카드 보기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-layer" id="endModal" role="dialog" aria-modal="true" aria-labelledby="endTitle">
+    <div class="modal">
+      <div class="panel-head">
+        <h2 class="panel-title" id="endTitle">게임 종료</h2>
+        <button class="icon-button" id="closeEnd" title="닫기" aria-label="닫기">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="score-grid" id="scoreGrid"></div>
+        <div class="summary" id="endSummary"></div>
+        <div class="submit-section" id="submitSection" hidden>
+          <button class="text-button primary" id="submitScore" type="button">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+            기록 등록
+          </button>
+          <span class="submit-status" id="leaderboardStatus">무한 모드 기록만 서버에 등록됩니다.</span>
+        </div>
+        <button class="text-button primary" id="restartEnd">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>
+          다시 시작
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const TOTAL_EVENT_POOL = 200;
+    const RUN_EVENT_COUNT = 50;
+    const STAT_STAR_STEP = 20;
+    const STAR_SCORE_RATE = 0.2;
+    const LEADERBOARD_API = "/api/leaderboard";
+
+    const STAT_META = {
+      cash: { label: "현금흐름", colorClass: "cash", copy: "임대료, 이자, 수리비, 공실 충격을 버티는 힘" },
+      trust: { label: "신뢰", colorClass: "trust", copy: "임차인, 금융기관, 파트너, 지역사회와의 관계" },
+      city: { label: "생활가치", colorClass: "city", copy: "주거 안정, 상권 활력, 주민 만족, 장기 수요" },
+      control: { label: "위험관리", colorClass: "control", copy: "실사, 계약, 권리, 인허가, 운영 리스크 통제" }
+    };
+
+    const pressureModifiers = {
+      rate: { left: { cash: 4, trust: 1, city: -1, control: 3 }, right: { cash: -5, trust: 0, city: 3, control: -2 } },
+      vacancy: { left: { cash: -3, trust: 2, city: 4, control: 1 }, right: { cash: 4, trust: -2, city: -3, control: -1 } },
+      contract: { left: { cash: -2, trust: 2, city: 0, control: 5 }, right: { cash: 3, trust: -3, city: 1, control: -5 } },
+      finance: { left: { cash: -2, trust: 3, city: 0, control: 4 }, right: { cash: 5, trust: -1, city: 1, control: -4 } },
+      develop: { left: { cash: -5, trust: 2, city: 5, control: 1 }, right: { cash: 4, trust: -2, city: -4, control: -3 } },
+      operate: { left: { cash: -2, trust: 3, city: 4, control: 2 }, right: { cash: 4, trust: -2, city: -2, control: -2 } },
+      sell: { left: { cash: 5, trust: -1, city: -1, control: 2 }, right: { cash: -2, trust: 2, city: 4, control: -2 } },
+      tech: { left: { cash: -4, trust: 2, city: 5, control: 2 }, right: { cash: 3, trust: -1, city: -2, control: -2 } },
+      crisis: { left: { cash: -3, trust: 4, city: 2, control: 4 }, right: { cash: 4, trust: -4, city: -3, control: -4 } },
+      analysis: { left: { cash: -2, trust: 1, city: 1, control: 5 }, right: { cash: 4, trust: 0, city: -1, control: -4 } }
+    };
+
+    const packChoices = {
+      market: [
+        { left: ["방어 포지션", "현금과 고정금리를 우선한다."], right: ["기회 매입", "가격 조정기를 진입 타이밍으로 본다."] },
+        { left: ["수요 확인", "임차 수요 데이터를 더 모은다."], right: ["선점 계약", "입지 프리미엄을 믿고 빠르게 움직인다."] },
+        { left: ["보수 견적", "예상 비용을 먼저 잠근다."], right: ["가격 협상", "불확실성을 할인 근거로 쓴다."] },
+        { left: ["포트폴리오 조정", "취약 자산 비중을 줄인다."], right: ["역발상 투자", "시장 공포 속에서 매물을 담는다."] },
+        { left: ["임대 안정", "공실 방어를 최우선으로 둔다."], right: ["수익률 추구", "높은 캡레이트를 노린다."] }
+      ],
+      analysis: [
+        { left: ["민감도 분석", "NOI, 공실, 금리를 다시 흔들어 본다."], right: ["빠른 판단", "현재 숫자로 의사결정을 확정한다."] },
+        { left: ["DSCR 방어", "부채 부담을 낮춰 안전마진을 만든다."], right: ["레버리지 확대", "자기자본 수익률을 끌어올린다."] },
+        { left: ["보수적 평가", "낙관 가정을 제거한다."], right: ["성장 가정", "미래 임대료 상승을 반영한다."] },
+        { left: ["추가 자료 요청", "숨은 비용을 더 확인한다."], right: ["협상 압박", "상대의 시간 압박을 이용한다."] },
+        { left: ["현금흐름 우선", "매각차익보다 월 수익을 본다."], right: ["가치상승 우선", "장기 개발 가능성에 점수를 준다."] }
+      ],
+      deal: [
+        { left: ["조건부 제안", "실사 결과에 따라 가격을 조정한다."], right: ["강한 오퍼", "경쟁 매수자를 의식해 확약한다."] },
+        { left: ["파트너 검증", "역할과 책임을 문서화한다."], right: ["관계 우선", "기존 신뢰를 바탕으로 진행한다."] },
+        { left: ["임차인 인터뷰", "현장의 말을 먼저 듣는다."], right: ["재무자료 중심", "장부 수익성을 우선한다."] },
+        { left: ["권리관계 확인", "등기와 특약을 꼼꼼히 본다."], right: ["속도전", "계약금을 걸어 우선권을 잡는다."] },
+        { left: ["협상 여지 확보", "수리비와 공실을 가격에 반영한다."], right: ["프리미엄 인정", "좋은 입지에는 웃돈을 감수한다."] }
+      ],
+      contract: [
+        { left: ["특약 강화", "하자와 임대 승계를 문서화한다."], right: ["간결한 계약", "거래 속도와 관계를 중시한다."] },
+        { left: ["실사 기간 연장", "권리와 물리적 하자를 확인한다."], right: ["종결 앞당김", "자금 집행을 빠르게 끝낸다."] },
+        { left: ["법률 검토", "계약서의 책임 범위를 명확히 한다."], right: ["표준 계약", "비용을 아끼고 관행을 따른다."] },
+        { left: ["하자 보증", "매도인의 보증을 확보한다."], right: ["가격 할인", "리스크를 싸게 인수한다."] },
+        { left: ["임대차 점검", "갱신권과 보증금을 확인한다."], right: ["운영 인수", "기존 운영 방식을 그대로 받는다."] }
+      ],
+      finance: [
+        { left: ["보수적 LTV", "대출 비율을 낮춰 충격을 줄인다."], right: ["공격적 LTV", "더 많은 자산을 담기 위해 대출을 늘린다."] },
+        { left: ["고정금리 전환", "금리 상승 위험을 잠근다."], right: ["변동금리 유지", "당장 낮은 이자비용을 선택한다."] },
+        { left: ["우선주 설계", "투자자 보호장치를 만든다."], right: ["보통주 확대", "상승분을 더 크게 나눈다."] },
+        { left: ["현금 유보", "예비비를 확보한다."], right: ["재투자", "남는 현금을 바로 투입한다."] },
+        { left: ["금융기관 관계", "자료를 투명하게 제공한다."], right: ["조건 비교", "가장 싼 자금만 고른다."] }
+      ],
+      reit: [
+        { left: ["투자자 설명", "수익과 위험을 균형 있게 알린다."], right: ["수익률 강조", "모집 속도를 높인다."] },
+        { left: ["분산 투자", "여러 유형으로 위험을 나눈다."], right: ["핵심 자산 집중", "가장 강한 테마에 몰아준다."] },
+        { left: ["운용보수 투명화", "이해상충을 줄인다."], right: ["성과보수 확대", "운용자의 동기를 높인다."] },
+        { left: ["배당 안정", "현금흐름을 예측 가능하게 만든다."], right: ["성장 재투자", "배당을 줄이고 가치를 키운다."] },
+        { left: ["감정평가 보수화", "가치평가 리스크를 낮춘다."], right: ["시장가 반영", "최근 거래가를 적극 반영한다."] }
+      ],
+      develop: [
+        { left: ["인허가 확인", "가능 용도와 조건을 먼저 잠근다."], right: ["콘셉트 선공개", "수요를 먼저 끌어모은다."] },
+        { left: ["시공비 잠금", "공사비 상승을 방어한다."], right: ["설계 업그레이드", "상품성을 높인다."] },
+        { left: ["단계 개발", "작게 검증하고 확장한다."], right: ["일괄 개발", "속도와 규모의 이점을 노린다."] },
+        { left: ["주민협의", "민원과 지역 반발을 줄인다."], right: ["일정 우선", "공정표를 강하게 밀어붙인다."] },
+        { left: ["분양 리스크 점검", "수요와 가격을 보수적으로 본다."], right: ["마케팅 강화", "초기 관심을 크게 만든다."] }
+      ],
+      operate: [
+        { left: ["임차인 케어", "만족도와 갱신률을 올린다."], right: ["임대료 인상", "수익성을 즉시 높인다."] },
+        { left: ["예방 정비", "작은 하자를 먼저 고친다."], right: ["비용 절감", "필수 지출만 남긴다."] },
+        { left: ["운영 데이터", "공실과 민원을 수치화한다."], right: ["현장 감각", "관리인의 경험을 따른다."] },
+        { left: ["업종 믹스", "상권의 균형을 맞춘다."], right: ["고임대 업종", "지불능력 높은 임차인을 고른다."] },
+        { left: ["장기 계약", "안정적인 임대흐름을 만든다."], right: ["단기 회전", "시장가 상승을 빠르게 반영한다."] }
+      ],
+      harvest: [
+        { left: ["부분 매각", "위험을 줄이고 현금을 회수한다."], right: ["보유 지속", "운영 개선의 결실을 기다린다."] },
+        { left: ["세금 검토", "양도와 상속 비용을 계산한다."], right: ["거래 타이밍", "시장 분위기에 맞춰 움직인다."] },
+        { left: ["리파이낸싱", "부채 구조를 다시 짠다."], right: ["배당 확대", "현금 보상을 앞당긴다."] },
+        { left: ["가족 합의", "이해관계자와 기준을 맞춘다."], right: ["전문가 위임", "빠른 의사결정을 맡긴다."] },
+        { left: ["자산 재배치", "약한 자산을 정리한다."], right: ["브랜드 유지", "좋은 운영 스토리를 계속 쌓는다."] }
+      ],
+      tech: [
+        { left: ["스마트 센서", "에너지와 설비 데이터를 모은다."], right: ["수기 운영", "초기 비용을 아낀다."] },
+        { left: ["리빙랩 참여", "주민과 함께 실험한다."], right: ["자체 서비스", "빠르게 수익모델을 만든다."] },
+        { left: ["데이터 공개", "신뢰와 협업을 얻는다."], right: ["데이터 독점", "경쟁 우위를 지킨다."] },
+        { left: ["친환경 투자", "장기 운영비와 평판을 개선한다."], right: ["단기 수익", "당장 임대 가능한 공간을 늘린다."] },
+        { left: ["플랫폼 연동", "임대관리와 민원을 자동화한다."], right: ["독립 운영", "수수료와 종속성을 피한다."] }
+      ]
+    };
+
+    const chapterPacks = [
+      {
+        key: "market",
+        name: "시장경제",
+        badge: "시장",
+        badgeClass: "market",
+        mood: "변동",
+        pressure: "rate",
+        tags: ["수요공급", "금리", "시장심리"],
+        situations: [
+          ["기준금리 발표 전야", "중앙은행 발표 전날, 매도자는 가격을 낮추지 않고 금융기관은 심사를 보수적으로 바꿨다."],
+          ["전세 수요 급증", "전세 문의가 늘며 임대료 상승 기대가 생겼지만 보증금 반환 리스크도 같이 커졌다."],
+          ["신규 공급 예고", "인근에 대규모 입주가 예정되어 매입가는 흔들리고 공실 전망은 불안정해졌다."],
+          ["상권 회복 신호", "주말 유동인구가 늘었지만 실제 매출 자료는 아직 회복을 확정하지 못한다."],
+          ["환승역 계획 발표", "지도 위의 노선은 매력적이지만 착공 시점과 예산은 아직 불확실하다."],
+          ["지역 여론 악화", "투자자들이 임대료를 과하게 올린다는 뉴스가 퍼지며 지역 신뢰가 흔들린다."],
+          ["공실률 통계 충돌", "민간 플랫폼과 지자체 자료의 공실률이 다르게 나온다."],
+          ["인구 구조 변화", "1인 가구는 늘고 가족 단위 수요는 줄어 평면과 상품성이 다시 중요해졌다."],
+          ["임대료 상한 논의", "정책 변화 가능성이 나오며 수익률 계산에 보수적 가정이 필요해졌다."],
+          ["건축비 상승", "자재비와 인건비가 올라 노후 자산의 수리비 추정이 흔들린다."],
+          ["주변 학교 이전설", "생활권 수요의 기반이 흔들릴 수 있다는 소문이 돌기 시작했다."],
+          ["관광객 유입", "단기 방문객은 늘었지만 주민들은 소음과 주차 문제를 걱정한다."],
+          ["대출 규제 완화", "자금 조달 문턱이 낮아져 매수 경쟁자가 다시 늘어날 조짐이다."],
+          ["법원 경매 물건 증가", "할인 매물이 늘었지만 권리와 명도 리스크가 함께 따라온다."],
+          ["플랫폼 매물 과열", "온라인에서 특정 지역 매물이 빠르게 공유되며 가격 기대가 높아졌다."],
+          ["노후 주택 선호", "리모델링 가능한 저가 주택에 관심이 몰리지만 수리비가 관건이다."],
+          ["업무지구 재택근무", "오피스 수요가 줄어드는 대신 소형 스튜디오와 공유공간 수요가 생긴다."],
+          ["상가 공실 뉴스", "부정적 뉴스가 퍼졌지만 현장에서는 업종별 편차가 크다."],
+          ["물가 상승", "관리비와 수선비가 올라 임대수익의 실제 체감이 낮아진다."],
+          ["저평가 동네 입소문", "아직 숫자는 약하지만 젊은 창업자와 예술가가 들어오기 시작했다."]
+        ]
+      },
+      {
+        key: "analysis",
+        name: "숫자분석",
+        badge: "숫자",
+        badgeClass: "",
+        mood: "검증",
+        pressure: "analysis",
+        tags: ["NOI", "캡레이트", "민감도"],
+        situations: [
+          ["NOI 누락 발견", "매도자가 제시한 수익표에서 관리 인건비와 소모품비가 빠져 있다."],
+          ["캡레이트 착시", "높은 캡레이트처럼 보이지만 임대료가 일시적으로 높게 잡힌 계약이다."],
+          ["DSCR 경계선", "대출 이자와 원리금이 늘면 연간 순영업소득으로 간신히 버티는 구조다."],
+          ["공실률 낙관", "최근 3개월 공실은 낮지만 1년 평균 공실률은 더 높다."],
+          ["수리비 과소평가", "외벽은 멀쩡해 보이나 배관과 전기 설비 교체 시점이 가깝다."],
+          ["임대료 상승 가정", "사업계획서가 매년 5% 상승을 전제로 하지만 주변 거래는 그보다 낮다."],
+          ["세금 반영 누락", "취득세와 보유세가 현금흐름표에 충분히 들어가지 않았다."],
+          ["보증금 활용 유혹", "보증금을 운영자금처럼 쓰면 당장은 편하지만 반환 시점이 부담이다."],
+          ["감가상각 논쟁", "회계상 비용과 실제 수선 지출을 구분해야 한다."],
+          ["민감도 표 요구", "투자자가 금리 1% 상승과 공실 10% 증가 시나리오를 요구한다."],
+          ["권리금 평가", "상가 권리금이 매력적이지만 실제 양도 가능성은 불확실하다."],
+          ["리모델링 ROI", "수리 후 임대료 상승분이 비용을 얼마나 빨리 회수할지 계산해야 한다."],
+          ["매각가 추정", "5년 뒤 매각가를 현재 주변 거래가로만 계산하기 어렵다."],
+          ["운영비 변동", "관리비 상승을 임차인에게 모두 전가할 수 있을지 불확실하다."],
+          ["임차인 신용", "임대료는 높지만 주요 임차인의 재무상태가 약하다."],
+          ["보험료 증가", "화재와 배상책임 보험료가 예상보다 높게 나왔다."],
+          ["분양가 비교", "신축 분양가와 구축 매입가 차이가 줄어들었다."],
+          ["대체투자 비교", "예금과 채권 수익률이 올라 부동산 위험 프리미엄을 다시 봐야 한다."],
+          ["운영자 보수", "직접 운영이면 비용을 아끼지만 시간이 크게 들어간다."],
+          ["데이터 샘플 편향", "플랫폼에 공개된 거래만 보면 실제 시장보다 낙관적으로 보일 수 있다."]
+        ]
+      },
+      {
+        key: "deal",
+        name: "기회와 협상",
+        badge: "협상",
+        badgeClass: "market",
+        mood: "경쟁",
+        pressure: "vacancy",
+        tags: ["매물발굴", "협상", "적합성"],
+        situations: [
+          ["조용한 오프마켓 매물", "중개인이 공개 전 매물을 제안했지만 정보는 아직 제한적이다."],
+          ["매도자 급매 사유", "매도자는 자금 압박을 말하지만 실제 이유는 확인되지 않았다."],
+          ["임차인과 직접 대화", "현 임차인은 만족한다고 말하지만 관리 기록에는 민원이 남아 있다."],
+          ["공동투자 제안", "친구가 함께 투자하자고 하지만 손실 책임과 의사결정 기준이 불명확하다."],
+          ["계약금 압박", "다른 매수자가 있다는 말에 오늘 안에 계약금을 넣으라는 요구가 왔다."],
+          ["가격 할인 조건", "매도자가 하자를 인정하며 할인해 주겠다고 한다."],
+          ["상권 활성화 모임", "상인회가 새 운영자를 원하지만 기대하는 역할이 크다."],
+          ["낮은 호가의 이유", "주변보다 싼 가격이지만 건물 관리 기록이 빈약하다."],
+          ["중개수수료 협상", "수수료를 낮출 수 있지만 중개인의 적극성이 떨어질 수 있다."],
+          ["브랜드 임차인 문의", "유명 브랜드가 입점 의향을 보였으나 임대료 인하를 요구한다."],
+          ["용도변경 아이디어", "기존 창고를 스튜디오로 바꾸면 수익성이 오를 수 있다."],
+          ["동네 평판 체크", "온라인 평가는 좋지만 현장 주민의 의견은 갈린다."],
+          ["장기 보유자 매물", "오랫동안 보유한 매도자는 가격에 대한 애착이 크다."],
+          ["임대차 승계 조건", "기존 임대차를 그대로 받으면 안정적이지만 상승 여지가 줄어든다."],
+          ["파트너의 빠른 결정", "동업자는 기회가 사라진다며 빠르게 움직이길 원한다."],
+          ["매입 후 운영자", "전문 PM사가 제안서를 냈지만 보수가 높다."],
+          ["현장 실측 차이", "광고 면적과 실제 전용면적이 다르다는 얘기가 나온다."],
+          ["지역 창업팀 입점", "젊은 팀들이 낮은 임대료와 유연한 계약을 원한다."],
+          ["커뮤니티 시설 제안", "작은 공유공간을 만들면 주민 호응이 있을 것 같다."],
+          ["협상 마감 시점", "매도자는 이번 주 안에 결론을 요구한다."]
+        ]
+      },
+      {
+        key: "contract",
+        name: "계약과 실사",
+        badge: "실사",
+        badgeClass: "contract",
+        mood: "주의",
+        pressure: "contract",
+        tags: ["계약서", "하자", "권리"],
+        situations: [
+          ["등기부 근저당", "등기부에 오래된 근저당이 남아 있고 말소 조건을 확인해야 한다."],
+          ["임대보증금 승계", "보증금 규모가 커서 실제 인수 현금흐름을 다시 봐야 한다."],
+          ["불법 증축 의심", "옥상 일부가 도면과 다르게 사용되고 있다."],
+          ["누수 흔적", "천장 얼룩은 작지만 과거 누수 민원이 있었다."],
+          ["특약 문구 충돌", "매도인과 매수인이 하자 책임 문구를 다르게 해석한다."],
+          ["명도 일정 불확실", "한 임차인이 퇴거 시점을 확답하지 않는다."],
+          ["관리비 정산", "미납 관리비와 공과금 정산 기준이 모호하다."],
+          ["토지 경계 문제", "담장이 실제 경계와 조금 어긋나 있다는 측량 의견이 나왔다."],
+          ["우선매수권", "기존 임차인이 우선매수권을 주장할 가능성이 있다."],
+          ["소방 점검", "소방 설비 보완 명령이 나올 수 있다는 말이 있다."],
+          ["주차장 사용권", "인근 주차장을 관행적으로 써 왔지만 계약서는 없다."],
+          ["건축물대장 불일치", "건축물대장 용도와 실제 사용 방식이 다르다."],
+          ["계약 해제 조건", "대출 불승인 시 계약 해제 조건을 넣을지 논의 중이다."],
+          ["중도금 일정", "중도금 날짜가 촉박해 자금 일정이 흔들릴 수 있다."],
+          ["시설물 인수 목록", "냉난방기와 간판의 소유권이 불명확하다."],
+          ["권리금 분쟁", "전 임차인과 새 임차인의 권리금 문제가 남아 있다."],
+          ["토양 오염 가능성", "과거 공업용 사용 이력이 있어 환경 실사가 필요하다."],
+          ["하자 담보 기간", "매도인은 짧게, 매수인은 길게 잡자고 한다."],
+          ["계약서 부속합의", "별도 합의서가 본계약과 다르게 작성될 위험이 있다."],
+          ["잔금 전 점검", "잔금 직전 현장 상태를 다시 확인할 시간이 부족하다."]
+        ]
+      },
+      {
+        key: "finance",
+        name: "자금조달",
+        badge: "금융",
+        badgeClass: "",
+        mood: "심사",
+        pressure: "finance",
+        tags: ["LTV", "대출", "파트너"],
+        situations: [
+          ["대출 심사 강화", "은행이 임대료 증빙과 추가 담보를 요구한다."],
+          ["변동금리 유혹", "초기 이자는 낮지만 금리 상승 시 현금흐름이 흔들린다."],
+          ["브릿지론 제안", "단기 자금으로 계약은 가능하지만 만기 리스크가 크다."],
+          ["개인 보증 요구", "금융기관이 대표자의 개인 보증을 요구한다."],
+          ["파트너 출자 지연", "공동투자자의 출자일이 늦어질 수 있다."],
+          ["선순위 조건", "선순위 대출은 싸지만 재무 약정이 까다롭다."],
+          ["후순위 투자자", "후순위 투자자는 높은 수익률과 강한 권리를 요구한다."],
+          ["리파이낸싱 기회", "금리 조건을 갈아탈 수 있지만 수수료가 든다."],
+          ["예비비 부족", "수리비가 늘면 바로 현금 부족이 올 수 있다."],
+          ["대출 만기 집중", "여러 자산의 만기가 같은 분기에 몰려 있다."],
+          ["DSCR 약정", "은행이 일정 DSCR 미만이면 배당 제한을 걸겠다고 한다."],
+          ["투자설명 자료", "투자자들은 수익률보다 리스크 설명을 더 묻는다."],
+          ["환매 조건", "파트너가 일정 기간 뒤 지분 환매 조건을 넣자고 한다."],
+          ["운영자금 한도", "신용한도를 열 수 있지만 사용하면 평판이 흔들릴 수 있다."],
+          ["보증금 반환 대비", "대형 임차인의 보증금 반환 시점이 다가온다."],
+          ["자기자본 수익률", "레버리지를 올리면 수익률은 좋아 보이지만 손실도 커진다."],
+          ["금융기관 미팅", "은행 담당자가 사업계획의 보수성을 보고 싶어 한다."],
+          ["금리 스왑 제안", "금리 위험을 줄일 수 있지만 구조가 복잡하다."],
+          ["크라우드 펀딩", "소액 투자자를 모을 수 있지만 공시와 소통 부담이 크다."],
+          ["현금 회수 압박", "투자자가 빠른 배당을 요구해 재투자 계획이 흔들린다."]
+        ]
+      },
+      {
+        key: "reit",
+        name: "리츠와 신디케이션",
+        badge: "간접투자",
+        badgeClass: "market",
+        mood: "공시",
+        pressure: "finance",
+        tags: ["리츠", "펀드", "가치평가"],
+        situations: [
+          ["리츠 편입 검토", "안정 자산을 리츠로 편입하면 유동성은 좋아지지만 공시 부담이 생긴다."],
+          ["운용보수 논쟁", "투자자들이 보수가 높다며 구조를 다시 보자고 한다."],
+          ["배당 정책", "높은 배당과 장기 재투자 사이에서 운용 철학을 정해야 한다."],
+          ["감정평가 차이", "두 평가기관의 가치 산정이 크게 다르다."],
+          ["투자자 질의", "투자자 설명회에서 공실률과 임차인 집중도를 묻는다."],
+          ["자산 편중", "포트폴리오가 특정 상권에 너무 몰려 있다."],
+          ["성과보수 조건", "운용자는 성과보수를 원하지만 투자자는 기준을 엄격히 요구한다."],
+          ["매입 파이프라인", "다음 편입 후보가 있지만 현재 자금 여력이 제한적이다."],
+          ["소액 투자자 민원", "수익률 변동을 오해한 투자자들이 문의를 보내고 있다."],
+          ["임차인 집중 위험", "대형 임차인 하나가 NOI 대부분을 차지한다."],
+          ["공시 일정", "정기 보고서 제출 시점과 거래 일정이 겹쳤다."],
+          ["자산관리회사 선정", "운용 경험이 많은 회사는 비용이 높다."],
+          ["공모 흥행", "시장 관심이 높지만 지나친 기대는 부담이다."],
+          ["사모 구조", "소수 투자자로 빠르게 진행할 수 있지만 유동성은 낮다."],
+          ["수익증권 할인", "시장 가격이 순자산가치보다 낮게 거래된다."],
+          ["투자위원회 반대", "위원회 일부가 개발 자산 비중을 걱정한다."],
+          ["ESG 리츠 테마", "친환경 인증을 받으면 투자자 풀이 넓어질 수 있다."],
+          ["임대차 만기 분산", "만기 일정이 몰려 있어 배당 안정성이 흔들린다."],
+          ["운용보고서 작성", "좋은 숫자보다 명확한 설명이 더 필요하다."],
+          ["해외 투자자 문의", "해외 투자자는 거버넌스와 환위험 설명을 요구한다."]
+        ]
+      },
+      {
+        key: "develop",
+        name: "개발",
+        badge: "개발",
+        badgeClass: "city",
+        mood: "인허가",
+        pressure: "develop",
+        tags: ["인허가", "시공", "분양"],
+        situations: [
+          ["용도지역 해석", "계획한 복합시설이 가능한지 조례 해석이 갈린다."],
+          ["주민 설명회", "주민들은 생활 편의시설을 원하지만 교통 혼잡을 걱정한다."],
+          ["시공비 견적 상승", "기존 견적보다 공사비가 12% 높게 나왔다."],
+          ["설계 변경", "공용공간을 늘리면 임대면적은 줄지만 만족도는 오를 수 있다."],
+          ["분양 예약 부진", "초기 관심 등록이 예상보다 낮다."],
+          ["토지 합필 문제", "인접 토지와 합필해야 효율적인 개발이 가능하다."],
+          ["인허가 보완 요구", "지자체가 교통과 소방 계획을 보완하라고 한다."],
+          ["공사 지연", "비가 오래 와서 공정표가 흔들린다."],
+          ["마케팅 콘셉트", "프리미엄 전략과 접근성 전략 중 하나를 택해야 한다."],
+          ["시공사 신용", "낮은 견적을 낸 시공사의 재무 상태가 약하다."],
+          ["분양가 규제", "가격을 마음대로 올릴 수 없다는 정책 리스크가 있다."],
+          ["오픈 전 임차인", "핵심 임차인을 먼저 확보하면 금융기관 설득이 쉬워진다."],
+          ["공공기여 협상", "지자체가 커뮤니티 시설 제공을 요구한다."],
+          ["철거 민원", "철거 소음과 먼지로 주변 민원이 생길 수 있다."],
+          ["준공 검사", "작은 도면 변경이 준공 검사에서 문제가 될 수 있다."],
+          ["친환경 인증", "인증 비용은 들지만 운영비와 평판을 개선할 수 있다."],
+          ["건설 자재 수급", "특정 자재 납기가 늦어져 일정이 밀린다."],
+          ["개발 이익 공유", "지역과 이익을 나누자는 제안이 들어왔다."],
+          ["상권 앵커 시설", "큰 임차인을 유치하면 주변 가치가 올라갈 수 있다."],
+          ["완공 후 운영 계획", "개발만 끝내고 팔지, 직접 운영할지 결정해야 한다."]
+        ]
+      },
+      {
+        key: "operate",
+        name: "운영",
+        badge: "운영",
+        badgeClass: "",
+        mood: "관리",
+        pressure: "operate",
+        tags: ["임대관리", "공실", "가치창출"],
+        situations: [
+          ["임차인 갱신 협상", "좋은 임차인이 재계약을 원하지만 임대료 인상에는 민감하다."],
+          ["야간 소음 민원", "상가 운영 시간이 길어지며 주민 민원이 들어온다."],
+          ["관리비 투명성", "임차인들이 관리비 산정 기준을 공개하라고 요구한다."],
+          ["공실 마케팅", "빈 공간을 채우기 위해 할인과 브랜드 전략을 고민한다."],
+          ["시설 고장", "엘리베이터가 멈춰 긴급 수리가 필요하다."],
+          ["청소 품질", "청소 비용을 줄였더니 건물 이미지가 나빠졌다."],
+          ["임대료 체납", "한 임차인이 일시적 어려움으로 임대료를 늦게 낸다."],
+          ["업종 충돌", "새 임차인의 업종이 기존 임차인과 충돌할 수 있다."],
+          ["공용공간 활용", "로비를 작은 커뮤니티 공간으로 바꿀 수 있다."],
+          ["장기수선계획", "당장 문제는 없지만 큰 수선 시점이 다가온다."],
+          ["주차 운영", "주차 배정 기준 때문에 임차인 사이 갈등이 생겼다."],
+          ["임대 플랫폼", "온라인 임대 플랫폼을 쓰면 노출은 늘지만 수수료가 든다."],
+          ["계절 수요", "방학과 휴가철에 매출과 공실이 달라진다."],
+          ["지역 행사 협업", "동네 축제에 건물을 개방하면 평판이 좋아질 수 있다."],
+          ["PM사 교체", "현재 관리회사의 대응이 느리다는 불만이 있다."],
+          ["보안 강화", "출입 시스템을 바꾸면 안전은 좋아지지만 비용이 든다."],
+          ["임차인 교육", "시설 사용법을 알려주면 고장과 민원이 줄 수 있다."],
+          ["공실 단기임대", "빈 공간을 단기 팝업으로 돌릴 수 있다."],
+          ["물류 동선", "배송 차량 동선이 보행자와 충돌한다."],
+          ["건물 브랜드", "이름과 콘셉트를 정리하면 좋은 임차인을 끌어올 수 있다."]
+        ]
+      },
+      {
+        key: "harvest",
+        name: "회수와 승계",
+        badge: "회수",
+        badgeClass: "city",
+        mood: "매각",
+        pressure: "sell",
+        tags: ["매각", "상속", "현금화"],
+        situations: [
+          ["매각 제안", "예상보다 높은 가격의 매수 제안이 들어왔다."],
+          ["가족 승계 논의", "가족 구성원들이 자산을 계속 보유할지 의견이 갈린다."],
+          ["양도세 계산", "매각 차익은 크지만 세금과 비용을 빼면 체감 수익이 줄어든다."],
+          ["리파이낸싱 시점", "가치가 올라 대출 조건을 다시 짤 수 있다."],
+          ["부분 지분 매각", "현금은 확보되지만 의사결정 파트너가 늘어난다."],
+          ["장기 임차인 퇴거", "매각 전 안정성을 높일지, 비워서 개발성을 보여줄지 고민이다."],
+          ["시장 정점 논쟁", "가격은 좋아 보이지만 더 오를 수 있다는 기대도 있다."],
+          ["상속 평가", "자산 가치를 어떻게 평가하느냐에 따라 가족 부담이 달라진다."],
+          ["배당 확대 요구", "투자자들은 운영 이익을 더 많이 배당하길 원한다."],
+          ["운영 스토리", "좋은 관리 기록은 매각가를 높일 수 있다."],
+          ["약한 자산 정리", "수익률 낮은 자산을 팔아 핵심 자산에 집중할 수 있다."],
+          ["교환 거래", "다른 투자자가 자산 교환을 제안한다."],
+          ["매각 실사 대응", "매수자 실사팀이 세부 자료를 요구한다."],
+          ["브랜드 가치", "지역과 쌓은 신뢰가 단순 감정가보다 높은 평가를 받을 수 있다."],
+          ["세대교체", "젊은 운영자가 디지털 방식으로 바꾸자고 한다."],
+          ["상속 분쟁 조짐", "분배 기준이 불명확해 갈등이 생길 수 있다."],
+          ["매각 후 임대차", "팔고 다시 임차해 운영을 계속하는 구조가 제안됐다."],
+          ["자산 담보 재투자", "보유 자산을 담보로 다음 투자를 할 수 있다."],
+          ["평판 비용", "무리한 매각 조건이 지역 평판을 해칠 수 있다."],
+          ["포트폴리오 결산", "한 해의 선택들이 숫자와 관계에 모두 남았다."]
+        ]
+      },
+      {
+        key: "tech",
+        name: "프롭테크와 스마트시티",
+        badge: "프롭테크",
+        badgeClass: "market",
+        mood: "실험",
+        pressure: "tech",
+        tags: ["데이터", "리빙랩", "스마트시티"],
+        situations: [
+          ["에너지 센서 설치", "전기와 냉난방 데이터를 모으면 운영비를 줄일 수 있다."],
+          ["임대관리 앱", "민원 접수와 납부 관리를 자동화하는 서비스가 제안됐다."],
+          ["주민 데이터 동의", "생활 편의 데이터를 쓰려면 동의 절차가 필요하다."],
+          ["리빙랩 공모", "지자체가 지역 문제 해결형 실험 공간을 모집한다."],
+          ["스마트 주차", "주차 배정 알고리즘을 도입하면 갈등을 줄일 수 있다."],
+          ["공기질 모니터링", "실내 공기질 데이터가 건물 이미지를 높일 수 있다."],
+          ["디지털 트윈", "건물 운영을 시뮬레이션할 수 있지만 초기 구축비가 크다."],
+          ["상권 데이터 분석", "유동인구 데이터가 업종 믹스 결정을 도울 수 있다."],
+          ["보안 카메라 논쟁", "안전은 좋아지지만 사생활 침해 우려가 나온다."],
+          ["AI 임대료 추천", "알고리즘이 임대료 인상을 추천하지만 현장 체감과 다르다."],
+          ["커뮤니티 플랫폼", "입주민 소통 앱을 만들면 관계가 좋아질 수 있다."],
+          ["친환경 인증 데이터", "인증을 받으려면 에너지 사용 기록이 필요하다."],
+          ["무인 점포 입점", "무인 서비스는 운영비가 낮지만 거리 분위기를 차갑게 만들 수 있다."],
+          ["스마트 계량기", "사용량을 세밀하게 알면 관리비 분쟁을 줄일 수 있다."],
+          ["공공 API 연동", "교통과 상권 데이터를 연결하면 입지 분석이 정교해진다."],
+          ["데이터 보안 사고", "관리 플랫폼에서 개인정보 관리 문제가 제기됐다."],
+          ["모빌리티 허브", "건물 앞에 공유 이동수단 거점을 만들자는 제안이 왔다."],
+          ["스마트 쓰레기함", "청결은 좋아지지만 유지비가 든다."],
+          ["온라인 투자 설명", "디지털 대시보드를 공개하면 투자자 신뢰가 올라갈 수 있다."],
+          ["도시 운영 파트너십", "공공기관과 협력하면 속도는 느리지만 확장성이 생긴다."]
+        ]
+      }
+    ];
+
+    const storyFrames = {
+      market: [
+        ["월요일 오전, 동네 운영회의에서 중개사가 새 자료를 올려놓았다.", "재무 담당자는 숫자를 믿자고 하고, 현장 매니저는 분위기가 바뀌었다고 말한다."],
+        ["은행 상담 직후, 팀 채팅방에 금리 뉴스가 연달아 올라왔다.", "지금 움직이면 기회를 잡지만, 틀리면 현금흐름이 먼저 무너진다."],
+        ["현장 답사 중 상인회장이 다가와 동네의 체감 경기를 설명했다.", "표에 없는 이야기를 믿을지, 검증된 데이터만 볼지 결정해야 한다."]
+      ],
+      analysis: [
+        ["밤늦게 엑셀 파일을 다시 열자, 예상보다 작은 숫자 하나가 크게 보이기 시작했다.", "숫자를 더 파면 속도는 늦어지고, 넘기면 리스크가 숨어 들어온다."],
+        ["투자위원회 전날, 파트너가 수익률 표를 더 보기 좋게 고치자고 한다.", "좋은 이야기는 설득을 돕지만, 나쁜 가정은 나중에 비용이 된다."],
+        ["관리인이 보내온 영수증 묶음이 사업계획서와 맞지 않는다.", "지금 귀찮은 검증을 할지, 거래 흐름을 살릴지 선택해야 한다."]
+      ],
+      deal: [
+        ["매도자는 커피를 내려놓으며 오늘 안에 답을 달라고 했다.", "기회를 놓치지 않는 속도와, 나중에 후회하지 않을 근거 사이에서 갈린다."],
+        ["현장에 간 팀원이 임차인 표정이 좋지 않다고 메시지를 보냈다.", "가격 협상만 볼지, 운영의 첫 관계까지 볼지 정해야 한다."],
+        ["동업자는 이 매물이 우리 팀의 첫 대표 사례가 될 수 있다고 말한다.", "멋진 스토리는 강하지만, 책임 구조가 흐리면 오래 버티기 어렵다."]
+      ],
+      contract: [
+        ["계약서 마지막 장의 특약 문구에서 변호사가 펜을 멈췄다.", "한 줄을 더 쓰면 관계가 뻣뻣해지고, 안 쓰면 책임이 비어버린다."],
+        ["잔금 전 점검에서 관리인이 작은 하자는 늘 있는 일이라고 웃어넘겼다.", "작은 흔적을 비용으로 볼지, 신뢰로 넘길지 결정해야 한다."],
+        ["등기부와 현장 사용 방식이 어긋난다는 보고가 올라왔다.", "종결을 미루면 기회비용이 생기지만, 서두르면 권리 문제가 따라온다."]
+      ],
+      finance: [
+        ["은행 회의실에서 대출 담당자가 추가 담보 이야기를 꺼냈다.", "자금은 거래를 가능하게 하지만, 과한 부채는 선택지를 줄인다."],
+        ["투자자는 빠른 배당을 원하고 운영팀은 예비비를 남기자고 한다.", "지금 만족시킬 사람과, 나중에 지킬 건물 사이에서 균형을 잡아야 한다."],
+        ["금리 조건표가 세 장 놓였고, 가장 싼 조건에는 가장 작은 글씨의 약정이 붙어 있다.", "낮은 비용과 통제권은 대개 같은 방향으로 움직이지 않는다."]
+      ],
+      reit: [
+        ["투자자 설명회 화면에 예상 배당률이 크게 떠 있다.", "박수를 받는 숫자와 오래 버틸 구조는 다를 수 있다."],
+        ["운용보고서 초안을 보던 감사역이 위험 설명이 얕다고 지적했다.", "신뢰는 좋은 소식보다 나쁜 소식을 어떻게 말하느냐에서 갈린다."],
+        ["소액 투자자 게시판에 공실률 질문이 빠르게 쌓이고 있다.", "조용히 넘어가면 편하지만, 설명을 피한 기록은 남는다."]
+      ],
+      develop: [
+        ["설계사무소 테이블 위에 새 조감도가 펼쳐졌다.", "멋진 건물은 사람을 끌지만, 공사비와 민원은 바로 숫자로 돌아온다."],
+        ["주민 설명회에서 첫 질문은 수익이 아니라 소음과 주차였다.", "개발은 땅 위에 짓지만, 허가는 사람들 사이에서 난다."],
+        ["시공사가 보낸 수정 견적서에 빨간 숫자가 늘어났다.", "품질을 지키면 현금이 줄고, 비용을 줄이면 나중에 하자가 말한다."]
+      ],
+      operate: [
+        ["아침 첫 전화는 임대 문의가 아니라 민원이었다.", "운영은 화려한 매입보다 조용하지만, 매일 지표를 조금씩 깎거나 회복시킨다."],
+        ["좋은 임차인이 재계약을 망설이며 조건표를 내밀었다.", "관계를 지키면 당장 수익이 줄고, 수익을 밀면 공실이 따라올 수 있다."],
+        ["관리인이 작은 고장은 다음 달에 고치자고 말한다.", "미룬 비용은 사라지지 않고, 보통 더 큰 비용으로 돌아온다."]
+      ],
+      harvest: [
+        ["매각 제안서가 도착하자 팀 분위기가 갑자기 밝아졌다.", "회수는 끝이 아니라, 그동안 만든 가치가 숫자로 평가받는 순간이다."],
+        ["가족 회의에서 누군가는 팔자고 하고, 누군가는 지키자고 한다.", "부동산은 자산이면서 관계의 기록이기도 하다."],
+        ["세무사가 계산기를 두드리다 잠시 말을 멈췄다.", "현금화는 달콤하지만, 세금과 승계의 문은 생각보다 좁다."]
+      ],
+      tech: [
+        ["리빙랩 회의실에서 주민, 공무원, 스타트업이 같은 화면을 보고 있다.", "기술은 문제를 줄일 수 있지만, 동의 없는 데이터는 신뢰를 깎는다."],
+        ["센서 대시보드가 처음으로 빨간 경고를 띄웠다.", "보이는 데이터가 늘면 통제도 늘지만, 대응 책임도 같이 늘어난다."],
+        ["플랫폼 업체가 데모를 보여주며 운영비 절감을 약속했다.", "자동화는 편하지만, 관계까지 자동으로 좋아지지는 않는다."]
+      ]
+    };
+
+    function storyFor(pack, situationIndex, situationText) {
+      const frames = storyFrames[pack.key] || storyFrames.market;
+      const frame = frames[situationIndex % frames.length];
+      return {
+        scene: `${frame[0]} ${situationText}`,
+        dilemma: frame[1]
+      };
+    }
+
+    function hardenDelta(delta, index) {
+      const hardened = {};
+      Object.entries(delta).forEach(([key, value]) => {
+        let next = value;
+        if (next > 0) next = Math.max(1, next - (index % 4 === 0 ? 2 : 1));
+        if (next < 0) next = next - 2 - (index % 5 === 0 ? 1 : 0);
+        if (next === 0 && index % 6 === 0) next = -1;
+        hardened[key] = next;
+      });
+      return hardened;
+    }
+
+    function turnPressure(card) {
+      const pressure = { cash: -1 };
+      if (state.turn % 2 === 0) pressure.control = (pressure.control || 0) - 1;
+      if (state.turn % 3 === 0) pressure.trust = (pressure.trust || 0) - 1;
+      if (state.turn % 4 === 0) pressure.city = (pressure.city || 0) - 1;
+      if (lowestStat() <= 22) {
+        const lowestKey = Object.entries(state.stats).sort((a, b) => a[1] - b[1])[0][0];
+        pressure[lowestKey] = (pressure[lowestKey] || 0) - 2;
+      }
+      if (card.key === "finance" || card.key === "develop") pressure.cash -= 1;
+      if (card.key === "contract") pressure.control = (pressure.control || 0) - 1;
+      if (card.key === "tech") pressure.trust = (pressure.trust || 0) - 1;
+      return pressure;
+    }
+
+    const statNames = {
+      cash: "현금흐름",
+      trust: "신뢰",
+      city: "생활가치",
+      control: "위험관리"
+    };
+
+    const difficultySettings = {
+      easy: {
+        label: "쉬움",
+        start: 58,
+        showPreviewDeltas: true,
+        showResultDeltas: true,
+        deltaPenalty: -1,
+        pressurePenalty: 1,
+        hint: "쉬움: 변화량을 보고 안정적으로 연습합니다."
+      },
+      medium: {
+        label: "중간",
+        start: 48,
+        showPreviewDeltas: false,
+        showResultDeltas: true,
+        deltaPenalty: 0,
+        pressurePenalty: 0,
+        hint: "중간: 변화량을 숨기고 선택 감각으로 버팁니다."
+      },
+      hard: {
+        label: "어려움",
+        start: 42,
+        showPreviewDeltas: false,
+        showResultDeltas: false,
+        deltaPenalty: 2,
+        pressurePenalty: -1,
+        hint: "어려움: 변화량이 숨겨지고 시장 압박이 강합니다."
+      }
+    };
+
+    const state = {
+      stats: { cash: 48, trust: 48, city: 48, control: 48 },
+      difficulty: "medium",
+      mode: "normal",
+      playerName: "",
+      leaderboardDifficulty: "easy",
+      deck: [],
+      turn: 0,
+      log: [],
+      last: "첫 사건을 기다리는 중입니다.",
+      ended: false,
+      dangerCount: 0,
+      score: 0,
+      bonusCount: 0,
+      statStars: { cash: 0, trust: 0, city: 0, control: 0 },
+      statStarProgress: { cash: 0, trust: 0, city: 0, control: 0 },
+      finalResult: null,
+      submitted: false,
+      seed: Date.now()
+    };
+
+    const els = {
+      meters: document.getElementById("meters"),
+      turnPill: document.getElementById("turnPill"),
+      deckPill: document.getElementById("deckPill"),
+      scorePill: document.getElementById("scorePill"),
+      liveScore: document.getElementById("liveScore"),
+      turnCount: document.getElementById("turnCount"),
+      lowestStat: document.getElementById("lowestStat"),
+      avgStat: document.getElementById("avgStat"),
+      dangerCount: document.getElementById("dangerCount"),
+      bonusCount: document.getElementById("bonusCount"),
+      chapterName: document.getElementById("chapterName"),
+      cardIndex: document.getElementById("cardIndex"),
+      streakText: document.getElementById("streakText"),
+      marketMood: document.getElementById("marketMood"),
+      cardBadge: document.getElementById("cardBadge"),
+      cardNumber: document.getElementById("cardNumber"),
+      cardTitle: document.getElementById("cardTitle"),
+      cardText: document.getElementById("cardText"),
+      cardTags: document.getElementById("cardTags"),
+      leftPeekTitle: document.getElementById("leftPeekTitle"),
+      leftPeekText: document.getElementById("leftPeekText"),
+      leftPeekDeltas: document.getElementById("leftPeekDeltas"),
+      rightPeekTitle: document.getElementById("rightPeekTitle"),
+      rightPeekText: document.getElementById("rightPeekText"),
+      rightPeekDeltas: document.getElementById("rightPeekDeltas"),
+      cardWrap: document.querySelector(".card-wrap"),
+      playCard: document.getElementById("playCard"),
+      lastResult: document.getElementById("lastResult"),
+      logList: document.getElementById("logList"),
+      leaderboardList: document.getElementById("leaderboardList"),
+      leaderboardTabs: document.getElementById("leaderboardTabs"),
+      refreshLeaderboard: document.getElementById("refreshLeaderboard"),
+      newGameTop: document.getElementById("newGameTop"),
+      storyModal: document.getElementById("storyModal"),
+      startStory: document.getElementById("startStory"),
+      difficultyOptions: document.getElementById("difficultyOptions"),
+      difficultyHint: document.getElementById("difficultyHint"),
+      modeOptions: document.getElementById("modeOptions"),
+      modeHint: document.getElementById("modeHint"),
+      playerNameRow: document.getElementById("playerNameRow"),
+      playerName: document.getElementById("playerName"),
+      playerNameHint: document.getElementById("playerNameHint"),
+      endModal: document.getElementById("endModal"),
+      closeEnd: document.getElementById("closeEnd"),
+      restartEnd: document.getElementById("restartEnd"),
+      submitSection: document.getElementById("submitSection"),
+      submitScore: document.getElementById("submitScore"),
+      leaderboardStatus: document.getElementById("leaderboardStatus"),
+      scoreGrid: document.getElementById("scoreGrid"),
+      endSummary: document.getElementById("endSummary")
+    };
+
+    function clamp(value, min = 0, max = 100) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function seededRandom(seed) {
+      let value = seed % 2147483647;
+      if (value <= 0) value += 2147483646;
+      return () => {
+        value = value * 16807 % 2147483647;
+        return (value - 1) / 2147483646;
+      };
+    }
+
+    function addDelta(a, b) {
+      return {
+        cash: (a.cash || 0) + (b.cash || 0),
+        trust: (a.trust || 0) + (b.trust || 0),
+        city: (a.city || 0) + (b.city || 0),
+        control: (a.control || 0) + (b.control || 0)
+      };
+    }
+
+    const STAT_KEYS = ["cash", "trust", "city", "control"];
+
+    function varyDelta(delta, index) {
+      const wiggle = (index % 5) - 2;
+      return {
+        cash: delta.cash + (index % 3 === 0 ? wiggle : 0),
+        trust: delta.trust + (index % 4 === 0 ? -wiggle : 0),
+        city: delta.city + (index % 3 === 1 ? wiggle : 0),
+        control: delta.control + (index % 4 === 1 ? -wiggle : 0)
+      };
+    }
+
+    const diversityProfiles = [
+      { cash: 3, trust: -2, city: 1, control: -2 },
+      { cash: -2, trust: 3, city: -2, control: 1 },
+      { cash: 1, trust: -3, city: 4, control: -1 },
+      { cash: -3, trust: 1, city: -1, control: 4 },
+      { cash: 4, trust: 1, city: -3, control: -2 },
+      { cash: -4, trust: 2, city: 2, control: 1 },
+      { cash: 2, trust: -1, city: -4, control: 3 },
+      { cash: -1, trust: 4, city: 1, control: -3 }
+    ];
+
+    function clampDeltaValue(value) {
+      return Math.max(-9, Math.min(7, Math.round(value)));
+    }
+
+    function diversifyDelta(delta, packIndex, situationIndex, side) {
+      const index = packIndex * 20 + situationIndex;
+      const sideOffset = side === "right" ? 5 : 0;
+      const profile = diversityProfiles[(index + sideOffset) % diversityProfiles.length];
+      const mixed = {};
+      STAT_KEYS.forEach(key => {
+        mixed[key] = clampDeltaValue((delta[key] || 0) + (profile[key] || 0));
+      });
+
+      const pivot = STAT_KEYS[(index + sideOffset) % STAT_KEYS.length];
+      const support = STAT_KEYS[(index + sideOffset + 2) % STAT_KEYS.length];
+
+      if (index % 4 === (side === "left" ? 0 : 2)) {
+        const current = mixed[pivot] || 0;
+        mixed[pivot] = clampDeltaValue(current === 0 ? 2 : current * -0.65);
+      }
+
+      if (index % 5 === (side === "left" ? 1 : 3)) {
+        mixed[support] = clampDeltaValue((mixed[support] || 0) + (mixed[support] <= 0 ? 4 : -4));
+      }
+
+      const values = STAT_KEYS.map(key => mixed[key] || 0);
+      if (!values.some(value => value > 0)) {
+        mixed[STAT_KEYS[(index + sideOffset + 1) % STAT_KEYS.length]] = 2 + (index % 3);
+      }
+      if (!values.some(value => value < 0)) {
+        mixed[STAT_KEYS[(index + sideOffset + 3) % STAT_KEYS.length]] = -2 - (index % 3);
+      }
+
+      return mixed;
+    }
+
+    function buildDeck() {
+      const cards = [];
+      chapterPacks.forEach((pack, packIndex) => {
+        const choices = packChoices[pack.key];
+        pack.situations.forEach((situation, situationIndex) => {
+          const choice = choices[situationIndex % choices.length];
+          const pressure = pressureModifiers[pack.pressure];
+          const leftBase = varyDelta(pressure.left, situationIndex + packIndex);
+          const rightBase = varyDelta(pressure.right, situationIndex + packIndex + 3);
+          const leftDelta = diversifyDelta(
+            hardenDelta(addDelta(leftBase, { control: situationIndex % 6 === 0 ? 2 : 0 }), situationIndex + packIndex),
+            packIndex,
+            situationIndex,
+            "left"
+          );
+          const rightDelta = diversifyDelta(
+            hardenDelta(addDelta(rightBase, { cash: situationIndex % 5 === 0 ? 2 : 0 }), situationIndex + packIndex + 3),
+            packIndex,
+            situationIndex,
+            "right"
+          );
+          const number = packIndex * 20 + situationIndex + 1;
+          const story = storyFor(pack, situationIndex, situation[1]);
+          cards.push({
+            id: `${pack.key}-${situationIndex + 1}`,
+            key: pack.key,
+            number,
+            chapter: pack.name,
+            badge: pack.badge,
+            badgeClass: pack.badgeClass,
+            mood: pack.mood,
+            title: situation[0],
+            text: story.scene,
+            dilemma: story.dilemma,
+            tags: pack.tags,
+            left: {
+              label: choice.left[0],
+              text: choice.left[1],
+              delta: leftDelta
+            },
+            right: {
+              label: choice.right[0],
+              text: choice.right[1],
+              delta: rightDelta
+            }
+          });
+        });
+      });
+      return cards;
+    }
+
+    function shuffle(cards) {
+      const rand = seededRandom(state.seed);
+      const copy = [...cards];
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(rand() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function isInfiniteMode() {
+      return state.mode === "infinite";
+    }
+
+    function createRunDeck() {
+      const deck = shuffle(buildDeck());
+      return isInfiniteMode() ? deck : deck.slice(0, RUN_EVENT_COUNT);
+    }
+
+    function extendInfiniteDeck() {
+      state.seed = Date.now() + state.turn;
+      state.deck.push(...shuffle(buildDeck()));
+    }
+
+    function currentCard() {
+      return state.deck[state.turn] || state.deck[state.deck.length - 1];
+    }
+
+    function averageStat() {
+      const values = Object.values(state.stats);
+      return Math.round(values.reduce((sum, value) => sum + value, 0) / values.length);
+    }
+
+    function lowestStat() {
+      return Math.min(...Object.values(state.stats));
+    }
+
+    function deltaText(delta) {
+      return Object.entries(delta)
+        .filter(([, value]) => value !== 0)
+        .map(([key, value]) => `<span class="delta ${value > 0 ? "up" : "down"}">${statNames[key]} ${value > 0 ? "+" : ""}${value}</span>`)
+        .join("");
+    }
+
+    function deltaSentence(delta) {
+      return Object.entries(delta)
+        .filter(([, value]) => value !== 0)
+        .map(([key, value]) => `${statNames[key]} ${value > 0 ? "+" : ""}${value}`)
+        .join(", ");
+    }
+
+    function currentDifficulty() {
+      return difficultySettings[state.difficulty] || difficultySettings.medium;
+    }
+
+    function cleanPlayerName(value) {
+      return value.trim().replace(/[<>]/g, "").replace(/\s+/g, " ").slice(0, 12);
+    }
+
+    function turnScoreGain() {
+      const base = { easy: 8, medium: 10, hard: 12 }[state.difficulty] || 10;
+      const balance = lowestStat() >= 45 ? 3 : 0;
+      const momentum = averageStat() >= 62 ? 5 : 0;
+      return base + balance + momentum;
+    }
+
+    function totalStars() {
+      return Object.values(state.statStars).reduce((sum, value) => sum + value, 0);
+    }
+
+    function applyDeltaWithScore(delta) {
+      const starAwards = [];
+
+      Object.entries(delta).forEach(([key, value]) => {
+        const raw = state.stats[key] + value;
+        if (isInfiniteMode() && raw >= 100) {
+          const excess = Math.max(0, Math.round(raw - 100));
+          if (state.statStars[key] === 0) starAwards.push(key);
+          state.statStarProgress[key] += excess;
+          while (state.statStarProgress[key] >= STAT_STAR_STEP) {
+            state.statStarProgress[key] -= STAT_STAR_STEP;
+            starAwards.push(key);
+          }
+          state.stats[key] = 100;
+          return;
+        }
+        state.stats[key] = clamp(raw);
+      });
+
+      const survivalScore = turnScoreGain();
+      state.score += survivalScore;
+
+      let starBonus = 0;
+      const starDetails = [];
+      starAwards.forEach(key => {
+        const bonus = Math.max(1, Math.round(state.score * STAR_SCORE_RATE));
+        state.score += bonus;
+        starBonus += bonus;
+        state.statStars[key] += 1;
+        starDetails.push(`${statNames[key]} ★${state.statStars[key]} +${bonus}점`);
+      });
+      state.bonusCount = totalStars();
+
+      return { survivalScore, starBonus, starDetails, starsEarned: starAwards.length };
+    }
+
+    function adjustDeltaForDifficulty(delta) {
+      const config = currentDifficulty();
+      const adjusted = {};
+      Object.entries(delta).forEach(([key, value]) => {
+        let next = value;
+        if (next > 0) next = Math.max(1, next - Math.max(0, config.deltaPenalty));
+        if (next < 0) next = next - Math.max(0, config.deltaPenalty);
+        if (config.deltaPenalty < 0 && next < 0) next = Math.min(-1, next - config.deltaPenalty);
+        if (config.deltaPenalty < 0 && next > 0) next += 1;
+        adjusted[key] = next;
+      });
+      return adjusted;
+    }
+
+    function adjustPressureForDifficulty(pressure) {
+      const config = currentDifficulty();
+      const adjusted = {};
+      Object.entries(pressure).forEach(([key, value]) => {
+        let next = value;
+        if (next < 0) next += config.pressurePenalty;
+        if (next > 0 && config.pressurePenalty < 0) next = Math.max(1, next + config.pressurePenalty);
+        if (next !== 0) adjusted[key] = next;
+      });
+      return adjusted;
+    }
+
+    function hiddenDeltaHint() {
+      return `<span class="delta hidden-deltas">영향 비공개</span>`;
+    }
+
+    function effectiveChoiceDelta(card, side) {
+      const choiceDelta = adjustDeltaForDifficulty(card[side].delta);
+      const pressure = adjustPressureForDifficulty(turnPressure(card));
+      return addDelta(choiceDelta, pressure);
+    }
+
+    function starDisplay(key) {
+      const stars = state.statStars[key] || 0;
+      const progress = state.statStarProgress[key] || 0;
+      if (!isInfiniteMode() && stars === 0) return "";
+      const starText = stars > 0 ? "★".repeat(Math.min(stars, 5)) + (stars > 5 ? ` +${stars - 5}` : "") : "별 없음";
+      const progressText = stars > 0 || state.stats[key] >= 100
+        ? `다음 별 ${progress}/${STAT_STAR_STEP}`
+        : "100점 도달 시 별 획득";
+      return `
+        <div class="stat-stars">
+          <span>${starText}</span>
+          <span class="stat-star-progress">${progressText}</span>
+        </div>
+      `;
+    }
+
+    function renderMeters() {
+      els.meters.innerHTML = Object.entries(STAT_META).map(([key, meta]) => {
+        const value = state.stats[key];
+        const danger = value <= 18;
+        return `
+          <div class="meter">
+            <div class="meter-top">
+              <span class="meter-label"><span class="dot ${meta.colorClass}"></span>${meta.label}</span>
+              <strong class="meter-value">${Math.round(value)}</strong>
+            </div>
+            <div class="track"><div class="fill ${meta.colorClass}" style="width:${clamp(value)}%"></div></div>
+            <div class="meter-copy">${danger ? "위험 구간입니다. 다음 선택에서 회복이 필요합니다." : meta.copy}</div>
+            ${starDisplay(key)}
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderCard() {
+      const card = currentCard();
+      if (!card) return;
+      els.chapterName.textContent = card.chapter;
+      els.cardIndex.textContent = isInfiniteMode()
+        ? `${state.turn + 1} / ∞`
+        : `${Math.min(state.turn + 1, state.deck.length)} / ${state.deck.length}`;
+      els.streakText.textContent = state.turn;
+      els.marketMood.textContent = card.mood;
+      els.cardBadge.textContent = card.badge;
+      els.cardBadge.className = `badge ${card.badgeClass || ""}`;
+      els.cardNumber.textContent = `#${String(card.number).padStart(3, "0")}`;
+      els.cardTitle.textContent = card.title;
+      els.cardText.innerHTML = `
+        <p class="story-line">${card.text}</p>
+        <p class="dilemma-line">${card.dilemma}</p>
+      `;
+      els.cardTags.innerHTML = card.tags.map(tag => `<span class="tag">${tag}</span>`).join("");
+      const config = currentDifficulty();
+      const leftDelta = effectiveChoiceDelta(card, "left");
+      const rightDelta = effectiveChoiceDelta(card, "right");
+      els.leftPeekTitle.textContent = card.left.label;
+      els.leftPeekText.textContent = card.left.text;
+      els.leftPeekDeltas.innerHTML = config.showPreviewDeltas ? deltaText(leftDelta) : hiddenDeltaHint();
+      els.rightPeekTitle.textContent = card.right.label;
+      els.rightPeekText.textContent = card.right.text;
+      els.rightPeekDeltas.innerHTML = config.showPreviewDeltas ? deltaText(rightDelta) : hiddenDeltaHint();
+    }
+
+    function renderLogs() {
+      if (state.log.length === 0) {
+        els.logList.innerHTML = `<div class="empty">아직 기록 없음</div>`;
+        return;
+      }
+      els.logList.innerHTML = state.log.slice(0, 12).map(item => `
+        <div class="log-item">
+          <span class="log-turn">${item.turn}턴</span>
+          <span class="log-copy">${item.text}</span>
+        </div>
+      `).join("");
+    }
+
+    function renderMeta() {
+      const avg = averageStat();
+      const low = lowestStat();
+      els.turnPill.textContent = `${state.turn + 1}턴`;
+      els.deckPill.textContent = isInfiniteMode() ? "무한 모드" : `사건풀 ${state.deck.length}`;
+      els.scorePill.textContent = `점수 ${state.score}`;
+      els.liveScore.textContent = state.score;
+      els.turnCount.textContent = state.turn;
+      els.lowestStat.textContent = Math.round(low);
+      els.avgStat.textContent = avg;
+      els.dangerCount.textContent = state.dangerCount;
+      els.bonusCount.textContent = state.bonusCount;
+      els.lastResult.innerHTML = state.last;
+    }
+
+    function render() {
+      renderMeters();
+      renderCard();
+      renderLogs();
+      renderMeta();
+      els.playCard.setAttribute("aria-disabled", state.ended ? "true" : "false");
+    }
+
+    function renderDifficultyOptions() {
+      document.querySelectorAll("[data-difficulty]").forEach(button => {
+        button.classList.toggle("active", button.dataset.difficulty === state.difficulty);
+      });
+      els.difficultyHint.textContent = currentDifficulty().hint;
+    }
+
+    function renderModeOptions() {
+      document.querySelectorAll("[data-mode]").forEach(button => {
+        button.classList.toggle("active", button.dataset.mode === state.mode);
+      });
+      els.playerNameRow.hidden = !isInfiniteMode();
+      els.modeHint.textContent = isInfiniteMode()
+        ? "무한 모드: 이름을 입력하고 공개 기록에 도전합니다."
+        : "50장 도전: 매 판 50개 사건을 해결합니다.";
+    }
+
+    function renderLeaderboardTabs() {
+      document.querySelectorAll("[data-leaderboard-difficulty]").forEach(button => {
+        button.classList.toggle("active", button.dataset.leaderboardDifficulty === state.leaderboardDifficulty);
+      });
+    }
+
+    function escapeText(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }
+
+    function canUseServerRecords() {
+      return location.protocol !== "file:";
+    }
+
+    function renderLeaderboard(records = []) {
+      if (!canUseServerRecords()) {
+        els.leaderboardList.innerHTML = `<div class="empty">서버 버전에서 공개 기록을 볼 수 있습니다.</div>`;
+        return;
+      }
+
+      if (!records.length) {
+        els.leaderboardList.innerHTML = `<div class="empty">아직 등록된 무한 모드 기록이 없습니다.</div>`;
+        return;
+      }
+
+      els.leaderboardList.innerHTML = records.slice(0, 10).map((item, index) => `
+        <div class="leaderboard-item">
+          <span class="leaderboard-rank">${index + 1}</span>
+          <span class="leaderboard-main">
+            <span class="leaderboard-name">${escapeText(item.name)}</span>
+            <span class="leaderboard-meta">${escapeText(item.difficultyLabel || item.difficulty)} · ${item.turn}턴 · ${item.avg}균형 · 별 ${item.bonusCount || 0}</span>
+          </span>
+          <span class="leaderboard-score">${item.score}</span>
+        </div>
+      `).join("");
+    }
+
+    async function loadLeaderboard() {
+      if (!canUseServerRecords()) {
+        renderLeaderboard([]);
+        return;
+      }
+
+      try {
+        renderLeaderboardTabs();
+        const response = await fetch(`${LEADERBOARD_API}?difficulty=${encodeURIComponent(state.leaderboardDifficulty)}`);
+        if (!response.ok) throw new Error("leaderboard unavailable");
+        const records = await response.json();
+        renderLeaderboard(records);
+      } catch {
+        els.leaderboardList.innerHTML = `<div class="empty">순위표 서버에 연결할 수 없습니다.</div>`;
+      }
+    }
+
+    async function submitLeaderboardRecord() {
+      if (!state.finalResult || !isInfiniteMode() || state.submitted) return;
+      if (!canUseServerRecords()) {
+        els.leaderboardStatus.textContent = "로컬 파일에서는 등록할 수 없습니다. 서버 버전에서 실행하세요.";
+        return;
+      }
+
+      els.submitScore.disabled = true;
+      els.leaderboardStatus.textContent = "기록을 서버에 등록하는 중입니다.";
+
+      try {
+        const response = await fetch(LEADERBOARD_API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: state.playerName || "익명 투자자",
+            score: state.finalResult.score,
+            turn: state.turn,
+            avg: state.finalResult.avg,
+            low: state.finalResult.low,
+            bonusCount: state.finalResult.bonusCount,
+            baseScore: state.finalResult.baseScore,
+            difficulty: state.difficulty,
+            difficultyLabel: currentDifficulty().label
+          })
+        });
+        if (!response.ok) throw new Error("submit failed");
+        const result = await response.json();
+        state.submitted = true;
+        els.leaderboardStatus.textContent = "기록이 등록되었습니다. 오른쪽 순위표에 반영했습니다.";
+        renderLeaderboard(result.records || []);
+      } catch {
+        els.submitScore.disabled = false;
+        els.leaderboardStatus.textContent = "등록에 실패했습니다. 서버 연결을 확인하세요.";
+      }
+    }
+
+    function choose(side) {
+      if (state.ended) return;
+      const card = currentCard();
+      const choice = card[side];
+      const combined = effectiveChoiceDelta(card, side);
+      const scoreGain = applyDeltaWithScore(combined);
+      if (lowestStat() <= 24) state.dangerCount += 1;
+      const effects = currentDifficulty().showResultDeltas ? deltaText(combined) : hiddenDeltaHint();
+      const bonusLine = scoreGain.starBonus > 0
+        ? `<br><span class="server-note">별 획득 보너스 ${scoreGain.starBonus}점: ${scoreGain.starDetails.join(", ")}</span>`
+        : "";
+      state.last = `<strong>${choice.label}</strong> 선택. ${choice.text}<br>이번 턴 시장 압박까지 반영되었습니다. 생존 점수 +${scoreGain.survivalScore}.${bonusLine}<div class="delta-row">${effects}</div>`;
+      state.log.unshift({
+        turn: state.turn + 1,
+        text: `${card.title}: ${choice.label}. ${deltaSentence(combined)}`
+      });
+      state.turn += 1;
+
+      const failed = Object.entries(state.stats).find(([, value]) => value <= 0);
+      if (failed) {
+        endGame(`${statNames[failed[0]]}이 바닥났습니다.`);
+        return;
+      }
+
+      if (isInfiniteMode() && state.turn >= state.deck.length) {
+        extendInfiniteDeck();
+        state.last += `<br><span class="server-note">새 사건 묶음이 열렸습니다. 기록 도전이 계속됩니다.</span>`;
+      }
+
+      if (state.turn >= state.deck.length) {
+        endGame("50개 사건을 모두 통과했습니다.");
+        return;
+      }
+
+      render();
+    }
+
+    function endingStory(reason, score) {
+      const avg = averageStat();
+      const low = lowestStat();
+      const lowestKey = Object.entries(state.stats).sort((a, b) => a[1] - b[1])[0][0];
+      const clearedRun = state.turn >= state.deck.length && !reason.includes("바닥");
+      const difficultyLabel = currentDifficulty().label;
+      const statLine = `현금흐름 ${Math.round(state.stats.cash)}, 신뢰 ${Math.round(state.stats.trust)}, 생활가치 ${Math.round(state.stats.city)}, 위험관리 ${Math.round(state.stats.control)}`;
+
+      if (isInfiniteMode()) {
+        return {
+          title: "엔딩: 무한 운영 기록",
+          body: `${state.playerName || "익명 투자자"}님의 운영은 ${state.turn}턴에서 멈췄습니다. 200개 사건 라이브러리를 반복해서 넘기는 동안 시장은 같은 문제를 다른 얼굴로 다시 던졌고, 지표가 100을 넘긴 순간마다 별이 기록으로 남았습니다. 마지막에는 ${statNames[lowestKey]}의 균형이 가장 크게 흔들렸습니다. 최종 장부는 ${statLine}, 획득 별 ${state.bonusCount}개, 점수 ${score}점입니다.`
+        };
+      }
+
+      if (clearedRun && avg >= 52 && low >= 30) {
+        return {
+          title: "엔딩: 동네 가치업 1차 승인",
+          body: `${difficultyLabel} 난이도의 50개 사건을 넘긴 뒤, 운영위원회는 당신의 팀에 다음 시즌 운용권을 연장합니다. 상가는 과열되지 않았고, 임차인은 떠나지 않았으며, 은행은 숫자를 믿기 시작했습니다. 200개 사건 라이브러리 중 이번에 마주친 50개 변수는 동네를 무너뜨리지 않고 앞으로 밀어 올린 첫 기록으로 남습니다. 최종 장부는 ${statLine}, 점수 ${score}점입니다.`
+        };
+      }
+
+      if (clearedRun) {
+        return {
+          title: "엔딩: 버텼지만 얇은 장부",
+          body: `50번째 결정을 마쳤지만 회의실의 표정은 완전히 밝지 않습니다. 사람들은 당신이 위기를 넘긴 것은 인정하지만, 낮게 남은 지표가 다음 분기의 숙제로 적힙니다. 이번 시즌은 생존했고, 다음 시즌은 회복입니다. 최종 장부는 ${statLine}, 점수 ${score}점입니다.`
+        };
+      }
+
+      const failureStories = {
+        cash: {
+          title: "엔딩: 유동성 회의",
+          body: `현금흐름이 마르자 은행은 추가 담보와 상환 계획을 요구합니다. 좋은 입지도, 멋진 리모델링 계획도 월말 잔고 앞에서는 힘을 잃었습니다. 주민 설명회는 미뤄졌고, 팀은 매각 가능한 자산부터 다시 분류하기 시작합니다. 최종 장부는 ${statLine}, 점수 ${score}점입니다.`
+        },
+        trust: {
+          title: "엔딩: 닫힌 회의실",
+          body: `신뢰가 무너지자 임차인, 금융기관, 시공 파트너가 같은 질문을 던집니다. "이번 약속은 지켜집니까?" 숫자는 아직 일부 남아 있었지만 관계의 비용이 너무 커졌습니다. 동네 프로젝트는 새 협의체가 꾸려질 때까지 멈춰 섭니다. 최종 장부는 ${statLine}, 점수 ${score}점입니다.`
+        },
+        city: {
+          title: "엔딩: 텅 빈 골목",
+          body: `생활가치가 바닥나자 동네는 수익률표보다 빠르게 식어 갑니다. 공사 소음, 임대료 압박, 사라진 편의시설이 주민들의 일상을 흔들었습니다. 자산은 남았지만 살고 싶은 이유가 사라져 프로젝트는 재설계 단계로 돌아갑니다. 최종 장부는 ${statLine}, 점수 ${score}점입니다.`
+        },
+        control: {
+          title: "엔딩: 빨간 도장",
+          body: `위험관리가 무너지자 계약서의 작은 빈칸들이 한꺼번에 문제로 변합니다. 권리관계, 인허가, 하자 대응이 얽히며 빠른 결정의 이익을 모두 지워 버렸습니다. 팀은 거래를 멈추고 실사 체크리스트부터 다시 씁니다. 최종 장부는 ${statLine}, 점수 ${score}점입니다.`
+        }
+      };
+
+      return {
+        title: failureStories[lowestKey].title,
+        body: `${reason} ${failureStories[lowestKey].body}`
+      };
+    }
+
+    function endGame(reason) {
+      state.ended = true;
+      render();
+      const avg = averageStat();
+      const low = lowestStat();
+      const clearedRun = state.turn >= state.deck.length && !reason.includes("바닥");
+      const balanceBonus = Math.round(avg * 0.9 + low * 0.6);
+      const completionBonus = clearedRun && !isInfiniteMode() ? 100 : 0;
+      const score = Math.max(0, state.score + balanceBonus + completionBonus - state.dangerCount * 2);
+      state.finalResult = { score, avg, low, reason, bonusCount: state.bonusCount, baseScore: state.score };
+      state.submitted = false;
+      els.scoreGrid.innerHTML = [
+        ["최종 점수", `${score}`],
+        ["생존 턴", `${state.turn}`],
+        ["평균 균형", `${avg}`],
+        ["최저 지표", `${Math.round(low)}`],
+        ["획득 별", `${state.bonusCount}`],
+        ["누적 점수", `${state.score}`]
+      ].map(([label, value]) => `
+        <div class="score-card">
+          <span>${label}</span>
+          <b>${value}</b>
+        </div>
+      `).join("");
+      const tone = isInfiniteMode()
+        ? `${state.playerName || "익명 투자자"}님의 무한 모드 기록입니다. 서버 버전에서는 이 결과를 공개 순위표에 등록할 수 있습니다.`
+        : clearedRun
+        ? "이번 런의 50개 사건을 모두 넘겼습니다. 한쪽 지표만 밀어붙이지 않은 판단이 오래 버티는 힘이 됐습니다."
+        : state.turn >= 36
+          ? "막판까지 버텼지만 특정 지표의 누적 손실이 크게 남았습니다. 다음 판에서는 낮은 지표를 회복시키는 선택을 더 일찍 잡아야 합니다."
+          : state.turn >= 18
+            ? "중반 진입 전후에 압박이 커졌습니다. 빠른 현금화, 민원 회피, 실사 생략처럼 즉시 이득이 큰 선택의 후폭풍을 살펴야 합니다."
+            : "초반부터 균형이 급격히 무너졌습니다. 첫 10턴에서는 수익보다 네 지표의 바닥선을 만드는 선택이 중요합니다.";
+      const story = endingStory(reason, score);
+      els.endSummary.innerHTML = `
+        <strong>${reason}</strong><br>
+        ${tone}
+        <div class="ending-story">
+          <strong>${story.title}</strong>
+          ${story.body}
+        </div>
+      `;
+      els.submitSection.hidden = !isInfiniteMode();
+      els.submitScore.disabled = false;
+      els.leaderboardStatus.textContent = canUseServerRecords()
+        ? "기록 등록을 누르면 공개 순위표에 저장됩니다."
+        : "로컬 파일에서는 등록할 수 없습니다. 서버 버전에서 실행하세요.";
+      els.endModal.classList.add("open");
+    }
+
+    function resetGame(showStory = false) {
+      const start = currentDifficulty().start;
+      state.stats = { cash: start, trust: start, city: start, control: start };
+      state.seed = Date.now();
+      state.deck = createRunDeck();
+      state.turn = 0;
+      state.log = [];
+      state.last = "첫 사건을 기다리는 중입니다.";
+      state.ended = false;
+      state.dangerCount = 0;
+      state.score = 0;
+      state.bonusCount = 0;
+      state.statStars = { cash: 0, trust: 0, city: 0, control: 0 };
+      state.statStarProgress = { cash: 0, trust: 0, city: 0, control: 0 };
+      state.finalResult = null;
+      state.submitted = false;
+      els.endModal.classList.remove("open");
+      els.submitSection.hidden = true;
+      els.storyModal.classList.toggle("open", showStory);
+      els.playCard.style.transform = "";
+      els.playCard.classList.remove("dragging", "left-lean", "right-lean", "preview-lock", "commit-ready");
+      resetPeek();
+      renderDifficultyOptions();
+      renderModeOptions();
+      render();
+    }
+
+    function setPeek(moved) {
+      const left = clamp(moved / 70, 0, 1);
+      const right = clamp(-moved / 70, 0, 1);
+      els.cardWrap.style.setProperty("--leftPeek", left.toFixed(2));
+      els.cardWrap.style.setProperty("--rightPeek", right.toFixed(2));
+    }
+
+    function resetPeek() {
+      els.cardWrap.style.setProperty("--leftPeek", "0");
+      els.cardWrap.style.setProperty("--rightPeek", "0");
+      els.playCard.style.transform = "";
+    }
+
+    function startDrag(event) {
+      if (state.ended) return;
+      event.preventDefault();
+      els.playCard.setPointerCapture?.(event.pointerId);
+      els.playCard.classList.add("dragging");
+      const startX = event.clientX;
+      const previewThreshold = 70;
+      const commitThreshold = 145;
+      let moved = 0;
+      const move = moveEvent => {
+        moved = moveEvent.clientX - startX;
+        const direction = Math.sign(moved) || 1;
+        const distance = Math.abs(moved);
+        const visualDistance = Math.min(distance, previewThreshold) * 2.25;
+        const visualMove = direction * visualDistance;
+        const rotate = direction * (Math.min(distance, previewThreshold) / 6.2);
+        els.playCard.style.transform = `translateX(${visualMove}px) rotate(${rotate}deg)`;
+        els.playCard.classList.toggle("left-lean", moved < -32);
+        els.playCard.classList.toggle("right-lean", moved > 32);
+        els.playCard.classList.toggle("preview-lock", distance >= previewThreshold);
+        els.playCard.classList.toggle("commit-ready", distance >= commitThreshold);
+        setPeek(moved);
+      };
+      const up = () => {
+        window.removeEventListener("pointermove", move);
+        window.removeEventListener("pointerup", up);
+        els.playCard.style.transform = "";
+        els.playCard.classList.remove("dragging");
+        els.playCard.classList.remove("left-lean", "right-lean", "preview-lock", "commit-ready");
+        resetPeek();
+        if (moved < -commitThreshold) {
+          choose("right");
+          return;
+        }
+        if (moved > commitThreshold) {
+          choose("left");
+          return;
+        }
+      };
+      window.addEventListener("pointermove", move);
+      window.addEventListener("pointerup", up);
+    }
+
+    els.playCard.addEventListener("pointerdown", startDrag);
+    els.newGameTop.addEventListener("click", () => resetGame(true));
+    els.difficultyOptions.addEventListener("click", event => {
+      const button = event.target.closest("[data-difficulty]");
+      if (!button) return;
+      state.difficulty = button.dataset.difficulty;
+      resetGame(true);
+    });
+    els.modeOptions.addEventListener("click", event => {
+      const button = event.target.closest("[data-mode]");
+      if (!button) return;
+      state.mode = button.dataset.mode;
+      resetGame(true);
+    });
+    els.playerName.addEventListener("input", () => {
+      state.playerName = cleanPlayerName(els.playerName.value);
+      els.playerNameHint.textContent = "무한 모드 기록에 표시될 이름입니다. 2~12자로 입력하세요.";
+    });
+    els.startStory.addEventListener("click", () => {
+      if (isInfiniteMode()) {
+        const name = cleanPlayerName(els.playerName.value);
+        if (name.length < 2) {
+          els.playerNameHint.textContent = "무한 모드는 기록 이름을 2자 이상 입력해야 시작할 수 있습니다.";
+          els.playerName.focus();
+          return;
+        }
+        state.playerName = name;
+        els.playerName.value = name;
+      }
+      els.storyModal.classList.remove("open");
+    });
+    els.closeEnd.addEventListener("click", () => els.endModal.classList.remove("open"));
+    els.restartEnd.addEventListener("click", () => resetGame(true));
+    els.submitScore.addEventListener("click", submitLeaderboardRecord);
+    els.refreshLeaderboard.addEventListener("click", loadLeaderboard);
+    els.leaderboardTabs.addEventListener("click", event => {
+      const button = event.target.closest("[data-leaderboard-difficulty]");
+      if (!button) return;
+      state.leaderboardDifficulty = button.dataset.leaderboardDifficulty;
+      renderLeaderboardTabs();
+      loadLeaderboard();
+    });
+    window.addEventListener("keydown", event => {
+      if (event.key === "ArrowLeft") choose("right");
+      if (event.key === "ArrowRight") choose("left");
+    });
+
+    resetGame(true);
+    renderLeaderboardTabs();
+    loadLeaderboard();
+    console.assert(buildDeck().length === TOTAL_EVENT_POOL, `card pool must contain ${TOTAL_EVENT_POOL} events`);
+    console.assert(state.mode === "infinite" || state.deck.length === RUN_EVENT_COUNT, `run deck must contain ${RUN_EVENT_COUNT} events`);
+  </script>
+</body>
+</html>
