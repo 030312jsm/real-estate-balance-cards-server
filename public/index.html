@@ -1035,44 +1035,122 @@
 
     @media (max-width: 820px) {
       .app {
-        width: min(100% - 18px, 680px);
-        padding-top: 9px;
+        width: min(100% - 12px, 680px);
+        padding: 6px 0 16px;
       }
 
       .topbar,
       .layout {
         grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .topbar {
+        padding: 10px;
+      }
+
+      .brand {
+        align-items: flex-start;
+        gap: 9px;
+      }
+
+      .mark {
+        width: 42px;
+        height: 42px;
+      }
+
+      .mark svg {
+        width: 29px;
+        height: 29px;
       }
 
       .top-stats {
-        justify-content: stretch;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        justify-content: initial;
+        width: 100%;
       }
 
       .pill,
       .text-button {
-        flex: 1 1 auto;
+        min-height: 40px;
         justify-content: center;
       }
 
       h1 {
-        font-size: 22px;
+        font-size: 21px;
+      }
+
+      .subtitle {
+        font-size: 12px;
+      }
+
+      .panel-head {
+        min-height: 44px;
+        padding: 9px 10px;
+      }
+
+      .meters {
+        gap: 8px;
+        padding: 10px;
+      }
+
+      .meter {
+        gap: 5px;
+        padding: 9px;
+      }
+
+      .meter-copy {
+        min-height: auto;
+        font-size: 11px;
+      }
+
+      .stat-stars {
+        margin-top: 2px;
+      }
+
+      .radar {
+        padding: 10px;
+      }
+
+      .radar-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .small-card {
+        min-height: 62px;
+        padding: 8px;
       }
 
       .season-row {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
+      .season-item {
+        min-height: 52px;
+      }
+
+      .game-panel {
+        min-height: auto;
+        padding: 10px;
+        gap: 10px;
+      }
+
       .card-stage {
         grid-template-columns: 1fr;
         min-height: auto;
+        overflow: hidden;
       }
 
       .card-wrap {
-        min-height: 470px;
+        width: min(100%, 350px);
+        min-height: 414px;
+        justify-self: center;
       }
 
       .under-choice-sheet {
-        min-height: 392px;
+        min-height: 368px;
+        width: min(326px, 88vw);
         transform: translate(-50%, -50%) rotate(-2deg);
       }
 
@@ -1101,20 +1179,33 @@
       }
 
       .play-card {
-        min-height: 392px;
+        min-height: 368px;
+        width: min(318px, 86vw);
+        padding: 14px;
       }
 
       .card-title {
-        font-size: 23px;
+        font-size: 21px;
       }
 
-      .score-grid,
-      .radar-grid {
+      .card-text {
+        font-size: 13px;
+      }
+
+      .last-result {
+        font-size: 12px;
+      }
+
+      .score-grid {
         grid-template-columns: 1fr;
       }
 
       .difficulty-options {
         grid-template-columns: 1fr;
+      }
+
+      .leaderboard-tabs {
+        gap: 5px;
       }
 
       .player-name-row {
@@ -1339,7 +1430,7 @@
   <script>
     const TOTAL_EVENT_POOL = 200;
     const RUN_EVENT_COUNT = 50;
-    const STAT_STAR_STEP = 20;
+    const STAT_STAR_RESET = 20;
     const STAR_SCORE_RATE = 0.2;
     const LEADERBOARD_API = "/api/leaderboard";
 
@@ -1890,7 +1981,6 @@
       score: 0,
       bonusCount: 0,
       statStars: { cash: 0, trust: 0, city: 0, control: 0 },
-      statStarProgress: { cash: 0, trust: 0, city: 0, control: 0 },
       finalResult: null,
       submitted: false,
       seed: Date.now()
@@ -2157,14 +2247,8 @@
       Object.entries(delta).forEach(([key, value]) => {
         const raw = state.stats[key] + value;
         if (isInfiniteMode() && raw >= 100) {
-          const excess = Math.max(0, Math.round(raw - 100));
-          if (state.statStars[key] === 0) starAwards.push(key);
-          state.statStarProgress[key] += excess;
-          while (state.statStarProgress[key] >= STAT_STAR_STEP) {
-            state.statStarProgress[key] -= STAT_STAR_STEP;
-            starAwards.push(key);
-          }
-          state.stats[key] = 100;
+          starAwards.push(key);
+          state.stats[key] = STAT_STAR_RESET;
           return;
         }
         state.stats[key] = clamp(raw);
@@ -2225,12 +2309,9 @@
 
     function starDisplay(key) {
       const stars = state.statStars[key] || 0;
-      const progress = state.statStarProgress[key] || 0;
       if (!isInfiniteMode() && stars === 0) return "";
       const starText = stars > 0 ? "★".repeat(Math.min(stars, 5)) + (stars > 5 ? ` +${stars - 5}` : "") : "별 없음";
-      const progressText = stars > 0 || state.stats[key] >= 100
-        ? `다음 별 ${progress}/${STAT_STAR_STEP}`
-        : "100점 도달 시 별 획득";
+      const progressText = `다음 별 ${Math.round(state.stats[key])}/100`;
       return `
         <div class="stat-stars">
           <span>${starText}</span>
@@ -2588,7 +2669,6 @@
       state.score = 0;
       state.bonusCount = 0;
       state.statStars = { cash: 0, trust: 0, city: 0, control: 0 };
-      state.statStarProgress = { cash: 0, trust: 0, city: 0, control: 0 };
       state.finalResult = null;
       state.submitted = false;
       els.endModal.classList.remove("open");
