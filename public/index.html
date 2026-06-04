@@ -557,6 +557,13 @@
       border-color: rgba(211, 137, 47, 0.72);
     }
 
+    .play-card.quest-card {
+      border-color: #efc98d;
+      background:
+        linear-gradient(180deg, rgba(250, 236, 212, 0.45), rgba(255, 255, 255, 0) 34%),
+        #fff;
+    }
+
     .card-top {
       display: flex;
       align-items: flex-start;
@@ -647,6 +654,77 @@
       line-height: 1.45;
     }
 
+    .quest-board {
+      border: 1px solid #d8e3e1;
+      border-radius: var(--radius);
+      background: #ffffffd8;
+      padding: 10px 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .quest-board[hidden] {
+      display: none;
+    }
+
+    .quest-board-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: #243442;
+      font-size: 12px;
+      font-weight: 950;
+    }
+
+    .quest-board-title b {
+      color: #af6f1f;
+      font-size: 12px;
+    }
+
+    .quest-list {
+      display: grid;
+      gap: 7px;
+    }
+
+    .quest-row {
+      display: grid;
+      gap: 5px;
+      padding: 8px;
+      border: 1px solid #e1e8e7;
+      border-radius: var(--radius);
+      background: #fbfdfc;
+    }
+
+    .quest-row-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: #17202a;
+      font-size: 12px;
+      font-weight: 950;
+    }
+
+    .quest-row-top span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .quest-row-top b {
+      color: #1f6f5a;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .quest-row-copy {
+      color: #526170;
+      font-size: 11px;
+      line-height: 1.42;
+    }
+
     .delta-row {
       display: flex;
       flex-wrap: wrap;
@@ -679,7 +757,7 @@
       overflow: auto;
       padding: 13px;
       display: grid;
-      gap: 8px;
+      gap: 0;
       scrollbar-width: thin;
     }
 
@@ -688,19 +766,37 @@
       display: grid;
       grid-template-columns: 56px 1fr;
       gap: 8px;
-      padding: 9px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: #fff;
+      padding: 9px 9px 9px 0;
+      border-left: 2px solid #dbe5e3;
+      background: transparent;
+      position: relative;
+    }
+
+    .log-item::before {
+      content: "";
+      position: absolute;
+      left: -6px;
+      top: 18px;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 2px solid #1f6f5a;
     }
 
     .log-turn {
       color: #af6f1f;
       font-weight: 900;
       font-size: 12px;
+      text-align: right;
+      padding-right: 6px;
     }
 
     .log-copy {
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
       color: #526170;
       font-size: 12px;
       line-height: 1.42;
@@ -1046,6 +1142,117 @@
       border-color: #d6dfdd;
     }
 
+    .mobile-score-strip {
+      display: none;
+    }
+
+    .stat-graph {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .stat-graph strong {
+      color: #17202a;
+      font-size: 15px;
+    }
+
+    .stat-graph svg {
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .graph-grid-line {
+      stroke: #e5ecea;
+      stroke-width: 1;
+    }
+
+    .graph-star-guide {
+      stroke: #f0d9a7;
+      stroke-width: 1;
+      stroke-dasharray: 3 4;
+    }
+
+    .graph-star-label {
+      fill: #af6f1f;
+      font-size: 11px;
+      font-weight: 950;
+    }
+
+    .graph-line {
+      fill: none;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 700;
+      stroke-dashoffset: 700;
+      animation: drawGraph 1.25s ease forwards;
+    }
+
+    .graph-line.cash { stroke: var(--cash); }
+    .graph-line.trust { stroke: var(--trust); }
+    .graph-line.city { stroke: var(--city); }
+    .graph-line.control { stroke: var(--control); }
+
+    .graph-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: #526170;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .graph-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .graph-legend i {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    .graph-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .graph-filter {
+      min-height: 32px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #ffffff;
+      color: #344454;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .graph-filter.active {
+      border-color: #1f6f5a;
+      background: #edf7f4;
+      color: #1f6f5a;
+    }
+
+    .graph-note {
+      color: #66737f;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    @keyframes drawGraph {
+      to { stroke-dashoffset: 0; }
+    }
+
     .version-footer {
       width: min(1420px, calc(100% - 28px));
       margin: 14px auto 0;
@@ -1066,12 +1273,46 @@
       margin-bottom: 4px;
     }
 
-    .version-list {
+    .version-footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .patch-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .patch-item {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #f9fbfb;
+      padding: 11px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .patch-item b {
+      color: #17202a;
+      font-size: 14px;
+    }
+
+    .patch-item p {
+      margin: 0;
+      color: #526170;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .patch-detail-list {
       margin: 8px 0 0;
       padding-left: 18px;
     }
 
-    .version-list li + li {
+    .patch-detail-list li + li {
       margin-top: 3px;
     }
 
@@ -1118,9 +1359,13 @@
 
       .top-stats {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: 1fr;
         justify-content: initial;
         width: 100%;
+      }
+
+      .top-stats .pill {
+        display: none;
       }
 
       .pill,
@@ -1143,40 +1388,65 @@
       }
 
       .meters {
-        gap: 8px;
-        padding: 10px;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 6px;
+        padding: 8px;
       }
 
       .meter {
-        gap: 5px;
-        padding: 9px;
+        gap: 4px;
+        padding: 7px 5px;
+        min-height: 86px;
+        align-content: center;
       }
 
       .meter-main {
-        grid-template-columns: 50px minmax(0, 1fr);
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: 4px;
       }
 
       .stat-gauge {
-        width: 48px;
-        height: 48px;
+        width: 42px;
+        height: 42px;
       }
 
       .stat-gauge svg {
-        width: 22px;
-        height: 22px;
+        width: 19px;
+        height: 19px;
+      }
+
+      .meter-top {
+        display: grid;
+        justify-items: center;
+        gap: 2px;
+      }
+
+      .dot {
+        display: none;
+      }
+
+      .meter-label {
+        justify-content: center;
+        font-size: 10px;
+        line-height: 1.15;
+        text-align: center;
+      }
+
+      .meter-value {
+        font-size: 17px;
       }
 
       .meter-copy {
-        min-height: auto;
-        font-size: 11px;
+        display: none;
       }
 
       .stat-stars {
-        margin-top: 2px;
+        display: none;
       }
 
       .radar {
-        padding: 10px;
+        display: none;
       }
 
       .radar-grid {
@@ -1189,7 +1459,7 @@
       }
 
       .season-row {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        display: none;
       }
 
       .season-item {
@@ -1260,6 +1530,51 @@
 
       .last-result {
         font-size: 12px;
+      }
+
+      .quest-board {
+        padding: 8px;
+        gap: 6px;
+      }
+
+      .quest-row {
+        padding: 7px;
+      }
+
+      .quest-row-copy {
+        font-size: 10px;
+      }
+
+      .mobile-score-strip {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 7px;
+      }
+
+      .mobile-score-item {
+        min-height: 56px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #ffffffd8;
+        padding: 8px;
+        display: grid;
+        gap: 3px;
+      }
+
+      .mobile-score-item span {
+        color: var(--muted);
+        font-size: 10px;
+      }
+
+      .mobile-score-item b {
+        color: #17202a;
+        font-size: 17px;
+        line-height: 1.1;
+      }
+
+      body.is-playing .leaderboard-section,
+      body.is-playing .version-footer {
+        display: none;
       }
 
       .score-grid {
@@ -1372,12 +1687,21 @@
         </div>
 
         <div class="last-result" id="lastResult">첫 사건을 기다리는 중입니다.</div>
+        <div class="quest-board" id="questBoard" hidden></div>
+        <div class="mobile-score-strip" aria-label="플레이 요약">
+          <div class="mobile-score-item"><span>점수</span><b id="mobileLiveScore">0</b></div>
+          <div class="mobile-score-item"><span>생존 턴</span><b id="mobileTurnCount">0</b></div>
+          <div class="mobile-score-item"><span>사건</span><b id="mobileCardIndex">1 / 50</b></div>
+          <div class="mobile-score-item"><span>위기</span><b id="mobileDangerCount">0</b></div>
+          <div class="mobile-score-item"><span>극복</span><b id="mobileDangerRecoveryCount">0</b></div>
+          <div class="mobile-score-item"><span>별</span><b id="mobileBonusCount">0</b></div>
+        </div>
       </section>
 
       <section class="panel side-right">
         <div class="panel-head">
-          <h2 class="panel-title">결정 기록</h2>
-          <span class="panel-note">최근 12개</span>
+          <h2 class="panel-title">진행 기록</h2>
+          <span class="panel-note">시간순</span>
         </div>
         <div class="log-list" id="logList"></div>
         <div class="leaderboard-section">
@@ -1463,6 +1787,32 @@
           <li>무한 모드는 서버에 기록을 등록하면 다른 플레이어도 순위표에서 볼 수 있습니다.</li>
           <li>4개 지표 중 하나라도 0이 되면 프로젝트는 중단됩니다.</li>
         </ul>
+        <div class="difficulty-panel">
+          <div class="difficulty-title">
+            <span>시작 전 확인</span>
+            <button class="text-button" id="openPatchNotesStory" type="button">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg>
+              패치 기록 보기
+            </button>
+          </div>
+          <div class="leaderboard-section">
+            <div class="panel-head">
+              <h2 class="panel-title">무한 모드 순위</h2>
+              <button class="text-button" id="startRefreshLeaderboard" type="button">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>
+                새로고침
+              </button>
+            </div>
+            <div class="leaderboard-tabs" id="startLeaderboardTabs" role="tablist" aria-label="시작 화면 난이도별 순위">
+              <button class="leaderboard-tab active" data-start-leaderboard-difficulty="easy" type="button">쉬움</button>
+              <button class="leaderboard-tab" data-start-leaderboard-difficulty="medium" type="button">보통</button>
+              <button class="leaderboard-tab" data-start-leaderboard-difficulty="hard" type="button">어려움</button>
+            </div>
+            <div class="leaderboard-list" id="startLeaderboardList">
+              <div class="empty">서버 연결 시 공개 기록이 표시됩니다.</div>
+            </div>
+          </div>
+        </div>
         <button class="text-button primary" id="startStory">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 10 7-10 7z"/></svg>
           첫 카드 보기
@@ -1482,6 +1832,7 @@
       <div class="modal-body">
         <div class="score-grid" id="scoreGrid"></div>
         <div class="summary" id="endSummary"></div>
+        <div class="stat-graph" id="statGraph"></div>
         <div class="submit-section" id="submitSection" hidden>
           <button class="text-button primary" id="submitScore" type="button">
             <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
@@ -1497,23 +1848,146 @@
     </div>
   </div>
 
+  <div class="modal-layer" id="patchModal" role="dialog" aria-modal="true" aria-labelledby="patchTitle">
+    <div class="modal">
+      <div class="panel-head">
+        <h2 class="panel-title" id="patchTitle">패치 기록</h2>
+        <button class="icon-button" id="closePatchNotes" title="닫기" aria-label="닫기">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="patch-list" id="patchNotesList"></div>
+      </div>
+    </div>
+  </div>
+
   <footer class="version-footer" id="versionFooter" aria-label="버전 정보"></footer>
 
   <script>
-    const GAME_VERSION = "v0.12.3";
+    const GAME_VERSION = "v0.12.7";
     const PATCH_HISTORY = [
-      ["v0.12.3", "무한 모드 입력 안정화, 4대 지표 원형 표시 전용 UI"],
-      ["v0.12.2", "입력 안정화 및 패치 기록 문구 정리"],
-      ["v0.12.1", "엔딩 본문 함수가 그대로 노출되던 표시 오류 수정"],
-      ["v0.12.0", "엔딩 서사 확장, 400개 사건, 방향키 홀드 입력, 위기 극복 보너스"],
-      ["v0.11.0", "무한 모드 별 리셋, 모바일 카드 배치 개선"],
-      ["v0.10.0", "서버 순위표, 무한 모드 점수와 별 보너스"],
-      ["v0.9.0", "난이도 선택, 50장 랜덤 런, 엔딩 스토리"],
-      ["v0.8.0", "카드 뒷면 선택지 피크와 드래그 실행감"],
-      ["v0.7.0", "부동산 밸런스 카드 기본 룰"]
+      {
+        version: "v0.12.7",
+        summary: "엔딩 그래프 별 눈금 표시, 랜덤 퀘스트 카드 50종",
+        details: [
+          "엔딩 지표 그래프 왼쪽 축에 별 단계가 ★1, ★2처럼 누적 기준선으로 표시되도록 추가했습니다.",
+          "플레이 도중 무작위로 등장하는 퀘스트 카드 50종을 구성했습니다.",
+          "퀘스트는 기존 카드처럼 좌우 선택으로 수락하거나 거절하며, 수락 후 제한 턴 안에 목표 지표를 달성하면 큰 보상을 받습니다.",
+          "퀘스트 실패 시 아무 일 없이 지나가거나 지표 하락, 별 손실, 프로젝트 중단 같은 위험 결과가 섞여 나오도록 했습니다."
+        ]
+      },
+      {
+        version: "v0.12.6",
+        summary: "엔딩 그래프 별 환산 및 지표별 보기 필터",
+        details: [
+          "엔딩 지표 그래프에서 별 1개를 지표 100점으로 환산해 누적 성장 흐름을 표시하도록 수정했습니다.",
+          "그래프 상단에 전체/현금흐름/신뢰/생활가치/위험관리 필터를 추가했습니다.",
+          "필터를 누르면 선택한 지표만 단독 그래프로 다시 확인할 수 있습니다."
+        ]
+      },
+      {
+        version: "v0.12.5",
+        summary: "모바일 플레이 화면 재배치, 진행 기록 타임라인, 엔딩 지표 그래프",
+        details: [
+          "모바일 플레이 중 4대 지표를 상단 간단 요약으로 줄이고, 점수와 생존 턴은 카드 아래에 배치했습니다.",
+          "시작 화면에서 무한 모드 순위와 패치 기록을 확인할 수 있도록 보조 영역을 추가했습니다.",
+          "결정 기록을 시간순 타임라인처럼 나열하도록 바꾸고, 엔딩 화면에 4대 지표 진행 그래프를 추가했습니다."
+        ]
+      },
+      {
+        version: "v0.12.4",
+        summary: "보호 상태 지표 감소 방지, 패치 기록 상세 모달",
+        details: [
+          "특수 보호 상태가 켜져 있을 때 음수 지표 변화량이 실제 수치에 반영되지 않도록 계산 로직을 수정했습니다.",
+          "하단 패치 기록을 긴 목록 대신 현재 빌드 표시와 상세 기록 버튼으로 분리했습니다.",
+          "패치 기록 모달에서 각 버전별 세부 수정 내용을 볼 수 있게 했습니다."
+        ]
+      },
+      {
+        version: "v0.12.3",
+        summary: "무한 모드 입력 안정화, 4대 지표 원형 표시 전용 UI",
+        details: [
+          "무한 모드 이름 입력 단계에서도 특수 입력이 정상 감지되도록 입력 처리를 보강했습니다.",
+          "4대 지표에서 막대형 표시를 제거하고 원형 게이지 중심 UI로 정리했습니다.",
+          "모바일 화면에서 원형 지표와 카드 영역이 겹치지 않도록 재검증했습니다."
+        ]
+      },
+      {
+        version: "v0.12.2",
+        summary: "입력 안정화 및 패치 기록 문구 정리",
+        details: [
+          "브라우저에서 일부 조합키가 입력되지 않는 문제를 피하기 위해 문자 시퀀스 방식의 입력 처리를 추가했습니다.",
+          "패치 기록의 노출 문구를 플레이어에게 자연스럽게 보이도록 정리했습니다."
+        ]
+      },
+      {
+        version: "v0.12.1",
+        summary: "엔딩 본문 표시 오류 수정",
+        details: [
+          "엔딩 본문에 템플릿 함수와 치환 문자열이 그대로 보이던 문제를 수정했습니다.",
+          "엔딩 선택 시 실제 문장으로 변환한 뒤 화면에 표시하도록 처리했습니다."
+        ]
+      },
+      {
+        version: "v0.12.0",
+        summary: "엔딩 서사 확장, 400개 사건, 방향키 홀드 입력, 위기 극복 보너스",
+        details: [
+          "사건 라이브러리를 400개로 확장하고 본안/후속 대응 변형을 추가했습니다.",
+          "일반 모드와 무한 모드 엔딩을 결과, 지표, 턴 수, 위기 회복에 따라 여러 갈래로 확장했습니다.",
+          "방향키를 누르는 동안 카드가 기울고 마지막 해제 방향으로 결정되는 입력 방식을 추가했습니다.",
+          "위기 구간에서 회복할 때 50점 보너스를 지급하도록 했습니다."
+        ]
+      },
+      {
+        version: "v0.11.0",
+        summary: "무한 모드 별 리셋, 모바일 카드 배치 개선",
+        details: [
+          "무한 모드에서 지표가 100을 넘으면 별을 얻고 해당 지표가 20으로 돌아가도록 수정했습니다.",
+          "별이 반복 복사되는 문제를 방지했습니다.",
+          "모바일 첫 진입 화면에서 카드가 화면 밖으로 밀리지 않도록 카드 폭과 스택 배치를 조정했습니다."
+        ]
+      },
+      {
+        version: "v0.10.0",
+        summary: "서버 순위표, 무한 모드 점수와 별 보너스",
+        details: [
+          "서버 버전에서 공개 순위표를 볼 수 있도록 API 연동 구조를 추가했습니다.",
+          "무한 모드 기록 등록과 난이도별 순위 탭을 구성했습니다.",
+          "별 획득 시 현재 점수 기준 보너스를 지급하는 점수 체계를 추가했습니다."
+        ]
+      },
+      {
+        version: "v0.9.0",
+        summary: "난이도 선택, 50장 랜덤 런, 엔딩 스토리",
+        details: [
+          "쉬움, 중간, 어려움 난이도 구조를 추가했습니다.",
+          "전체 사건풀에서 50장을 섞어 진행하는 런 구조를 만들었습니다.",
+          "게임 종료 시 결과에 따른 엔딩 스토리를 표시하도록 했습니다."
+        ]
+      },
+      {
+        version: "v0.8.0",
+        summary: "카드 뒷면 선택지 피크와 드래그 실행감",
+        details: [
+          "카드를 좌우로 당길 때 뒤쪽 종이 가장자리에서 선택지가 보이도록 구성했습니다.",
+          "중간까지 당기면 선택지가 보이고, 더 당긴 뒤 놓으면 결정이 실행되는 감각을 추가했습니다."
+        ]
+      },
+      {
+        version: "v0.7.0",
+        summary: "부동산 밸런스 카드 기본 룰",
+        details: [
+          "4대 지표를 유지하며 부동산 사건 카드를 선택하는 기본 게임 구조를 만들었습니다.",
+          "선택 결과에 따라 현금흐름, 신뢰, 생활가치, 위험관리가 변하도록 구성했습니다."
+        ]
+      }
     ];
     const TOTAL_EVENT_POOL = 400;
     const RUN_EVENT_COUNT = 50;
+    const QUEST_LIBRARY_SIZE = 50;
+    const NORMAL_QUEST_COUNT = 8;
+    const INFINITE_QUEST_COUNT = 12;
     const STAT_STAR_RESET = 20;
     const STAR_SCORE_RATE = 0.2;
     const CRISIS_RECOVERY_BONUS = 50;
@@ -2100,6 +2574,10 @@
       deck: [],
       turn: 0,
       log: [],
+      activeQuests: [],
+      completedQuests: [],
+      failedQuests: [],
+      statHistory: [],
       last: "첫 사건을 기다리는 중입니다.",
       ended: false,
       dangerCount: 0,
@@ -2108,6 +2586,7 @@
       score: 0,
       bonusCount: 0,
       statStars: { cash: 0, trust: 0, city: 0, control: 0 },
+      graphFilter: "all",
       finalResult: null,
       submitted: false,
       seed: Date.now(),
@@ -2125,6 +2604,12 @@
       dangerCount: document.getElementById("dangerCount"),
       dangerRecoveryCount: document.getElementById("dangerRecoveryCount"),
       bonusCount: document.getElementById("bonusCount"),
+      mobileLiveScore: document.getElementById("mobileLiveScore"),
+      mobileTurnCount: document.getElementById("mobileTurnCount"),
+      mobileCardIndex: document.getElementById("mobileCardIndex"),
+      mobileDangerCount: document.getElementById("mobileDangerCount"),
+      mobileDangerRecoveryCount: document.getElementById("mobileDangerRecoveryCount"),
+      mobileBonusCount: document.getElementById("mobileBonusCount"),
       chapterName: document.getElementById("chapterName"),
       cardIndex: document.getElementById("cardIndex"),
       streakText: document.getElementById("streakText"),
@@ -2143,13 +2628,18 @@
       cardWrap: document.querySelector(".card-wrap"),
       playCard: document.getElementById("playCard"),
       lastResult: document.getElementById("lastResult"),
+      questBoard: document.getElementById("questBoard"),
       logList: document.getElementById("logList"),
       leaderboardList: document.getElementById("leaderboardList"),
       leaderboardTabs: document.getElementById("leaderboardTabs"),
+      startLeaderboardList: document.getElementById("startLeaderboardList"),
+      startLeaderboardTabs: document.getElementById("startLeaderboardTabs"),
       refreshLeaderboard: document.getElementById("refreshLeaderboard"),
+      startRefreshLeaderboard: document.getElementById("startRefreshLeaderboard"),
       newGameTop: document.getElementById("newGameTop"),
       storyModal: document.getElementById("storyModal"),
       startStory: document.getElementById("startStory"),
+      openPatchNotesStory: document.getElementById("openPatchNotesStory"),
       difficultyOptions: document.getElementById("difficultyOptions"),
       difficultyHint: document.getElementById("difficultyHint"),
       modeOptions: document.getElementById("modeOptions"),
@@ -2160,11 +2650,15 @@
       endModal: document.getElementById("endModal"),
       closeEnd: document.getElementById("closeEnd"),
       restartEnd: document.getElementById("restartEnd"),
+      patchModal: document.getElementById("patchModal"),
+      closePatchNotes: document.getElementById("closePatchNotes"),
+      patchNotesList: document.getElementById("patchNotesList"),
       submitSection: document.getElementById("submitSection"),
       submitScore: document.getElementById("submitScore"),
       leaderboardStatus: document.getElementById("leaderboardStatus"),
       scoreGrid: document.getElementById("scoreGrid"),
       endSummary: document.getElementById("endSummary"),
+      statGraph: document.getElementById("statGraph"),
       versionFooter: document.getElementById("versionFooter")
     };
 
@@ -2200,6 +2694,10 @@
     }
 
     const STAT_KEYS = ["cash", "trust", "city", "control"];
+
+    function emptyDelta() {
+      return { cash: 0, trust: 0, city: 0, control: 0 };
+    }
 
     function varyDelta(delta, index) {
       const wiggle = (index % 5) - 2;
@@ -2315,13 +2813,193 @@
       return cards;
     }
 
-    function shuffle(cards) {
-      const rand = seededRandom(state.seed);
+    function questFailureLabel(type) {
+      const labels = {
+        none: "보상 없음",
+        drop: "지표 하락",
+        star: "별 손실",
+        gameover: "프로젝트 중단"
+      };
+      return labels[type] || labels.none;
+    }
+
+    function questRewardLabel(quest) {
+      return `${statNames[quest.rewardStat]} +${quest.rewardAmount}`;
+    }
+
+    function buildQuestLibrary() {
+      const themes = [
+        {
+          name: "은행 신뢰 테스트",
+          scene: "주거래 은행이 다음 대출 심사 전에 운용팀의 회복력을 숫자로 증명하라고 요구했다.",
+          accept: "자료 공개와 현장 점검 일정을 모두 열어 둔다.",
+          decline: "은행 보고를 다음 분기로 미루고 기존 한도만 유지한다."
+        },
+        {
+          name: "상인회 공동 캠페인",
+          scene: "골목 상인회가 공실을 줄이는 대신 임대료와 이벤트 비용을 함께 조정하자고 제안했다.",
+          accept: "상인회와 공동 예산을 만들고 단기 수익 일부를 양보한다.",
+          decline: "운영팀 단독으로 임대 조건을 정리하기로 한다."
+        },
+        {
+          name: "임차인 유지 약속",
+          scene: "핵심 임차인이 재계약 전 마지막 조건을 꺼냈다. 빠른 답변이 필요하다.",
+          accept: "임차인의 요구를 공개 협상 테이블에 올린다.",
+          decline: "표준 계약 조건만 유지하고 추가 약속을 피한다."
+        },
+        {
+          name: "하자 보수 집중 점검",
+          scene: "장마 전 안전 점검에서 오래된 배관과 누수 흔적이 동시에 발견됐다.",
+          accept: "수리비를 먼저 집행하고 원인 추적을 끝까지 한다.",
+          decline: "긴급 보수만 마친 뒤 다음 분기 예산으로 넘긴다."
+        },
+        {
+          name: "생활권 가치 실험",
+          scene: "주민들이 작은 커뮤니티 공간을 열어 달라고 요청했다. 수익률표에는 바로 잡히지 않는 제안이다.",
+          accept: "낮은 임대료 구간을 열고 주민 프로그램을 실험한다.",
+          decline: "생활권 실험보다 기존 임대수익을 우선한다."
+        },
+        {
+          name: "인허가 마감선",
+          scene: "구청 담당자가 보완 서류를 빨리 맞추면 다음 심의에 올릴 수 있다고 알려왔다.",
+          accept: "외부 전문가를 붙여 서류와 주민 설명을 동시에 준비한다.",
+          decline: "심의 일정을 늦추고 현재 운영 안정에 집중한다."
+        },
+        {
+          name: "데이터 공개 주간",
+          scene: "투자자와 주민이 같은 자료를 보자는 요구가 커졌다. 숫자를 숨기기는 어려워졌다.",
+          accept: "공실, 수선비, 민원 데이터를 한 번에 공개한다.",
+          decline: "필수 자료만 제공하고 세부 운영 데이터는 보류한다."
+        },
+        {
+          name: "리모델링 파일럿",
+          scene: "오래된 동 하나를 작은 시범 사업으로 바꾸면 전체 자산의 방향성을 보여 줄 수 있다.",
+          accept: "파일럿 범위를 작게 잡고 결과를 공개한다.",
+          decline: "시범 사업보다 기존 임대 회복에 자원을 남긴다."
+        },
+        {
+          name: "위기 대응 훈련",
+          scene: "보험사와 관리업체가 화재, 공실, 민원 복합 상황에 대한 대응 훈련을 제안했다.",
+          accept: "운영팀 전원이 참여하는 비상 플로우를 만든다.",
+          decline: "문서 매뉴얼만 보강하고 훈련은 생략한다."
+        },
+        {
+          name: "장기 보유 선언",
+          scene: "시장에는 단기 매각 소문이 돌지만, 동네는 장기 운영 의지를 확인하고 싶어 한다.",
+          accept: "운영 원칙을 공개하고 다음 시즌 목표를 약속한다.",
+          decline: "매각 가능성을 닫지 않고 유연성을 남긴다."
+        }
+      ];
+      const routes = [
+        { name: "유동성 기준선", targetStat: "cash", rewardStat: "cash", baseTarget: 66, rewardAmount: 22, limit: 5 },
+        { name: "관계 회복선", targetStat: "trust", rewardStat: "city", baseTarget: 68, rewardAmount: 21, limit: 6 },
+        { name: "생활권 증명", targetStat: "city", rewardStat: "trust", baseTarget: 70, rewardAmount: 24, limit: 7 },
+        { name: "리스크 잠금", targetStat: "control", rewardStat: "cash", baseTarget: 72, rewardAmount: 23, limit: 5 },
+        { name: "균형 돌파", targetStat: "rotate", rewardStat: "rotateNext", baseTarget: 74, rewardAmount: 27, limit: 8 }
+      ];
+      const failureCycle = ["none", "drop", "drop", "star", "none", "drop", "star", "gameover"];
+      const quests = [];
+
+      themes.forEach((theme, themeIndex) => {
+        routes.forEach((route, routeIndex) => {
+          const index = themeIndex * routes.length + routeIndex;
+          const targetStat = route.targetStat === "rotate"
+            ? STAT_KEYS[(themeIndex + routeIndex) % STAT_KEYS.length]
+            : route.targetStat;
+          const rewardStat = route.rewardStat === "rotateNext"
+            ? STAT_KEYS[(themeIndex + routeIndex + 1) % STAT_KEYS.length]
+            : route.rewardStat;
+          const penaltyStat = STAT_KEYS[(themeIndex + routeIndex + 2) % STAT_KEYS.length];
+          const targetValue = Math.min(90, route.baseTarget + ((themeIndex + routeIndex) % 5) * 3);
+          const rewardAmount = route.rewardAmount + (themeIndex % 4) * 2;
+          const failureType = failureCycle[index % failureCycle.length];
+          const failureDelta = emptyDelta();
+          failureDelta[penaltyStat] = -(12 + (index % 5) * 3);
+          if (index % 6 === 0) {
+            failureDelta[STAT_KEYS[(themeIndex + 3) % STAT_KEYS.length]] -= 5;
+          }
+          const declineDelta = emptyDelta();
+          if (index % 4 === 0) declineDelta.trust = -1;
+          if (index % 5 === 0) declineDelta.control = 1;
+
+          quests.push({
+            id: `quest-${index + 1}`,
+            title: `${theme.name}: ${route.name}`,
+            story: `${theme.scene} ${route.name}을 넘기면 다음 협상에서 강한 조건을 얻을 수 있다.`,
+            targetStat,
+            targetValue,
+            rewardStat,
+            rewardAmount,
+            limit: route.limit + (themeIndex % 3),
+            failureType,
+            failureDelta,
+            penaltyStat,
+            declineDelta,
+            acceptText: `${theme.accept} 목표 달성 시 ${statNames[rewardStat]}이 크게 오른다.`,
+            declineText: `${theme.decline} 퀘스트 보상은 포기하지만 일정 압박은 줄어든다.`
+          });
+        });
+      });
+
+      return quests.slice(0, QUEST_LIBRARY_SIZE);
+    }
+
+    function questCardFromDefinition(quest, slotIndex) {
+      return {
+        id: `offer-${quest.id}-${slotIndex}`,
+        isQuestOffer: true,
+        noPressure: true,
+        quest,
+        key: "quest",
+        number: TOTAL_EVENT_POOL + slotIndex + 1,
+        chapter: "특별 퀘스트",
+        badge: "퀘스트",
+        badgeClass: "city",
+        mood: "목표",
+        title: quest.title,
+        text: quest.story,
+        dilemma: `수락하면 ${quest.limit}턴 안에 ${statNames[quest.targetStat]} ${quest.targetValue} 이상을 달성해야 한다. 성공 보상은 ${questRewardLabel(quest)}, 실패 위험은 ${questFailureLabel(quest.failureType)}이다.`,
+        tags: ["퀘스트", statNames[quest.targetStat], `${quest.limit}턴`, questFailureLabel(quest.failureType)],
+        left: {
+          label: "수락",
+          text: quest.acceptText,
+          delta: emptyDelta()
+        },
+        right: {
+          label: "거절",
+          text: quest.declineText,
+          delta: quest.declineDelta || emptyDelta()
+        }
+      };
+    }
+
+    function shuffleWithSeed(cards, seed = state.seed) {
+      const rand = seededRandom(seed);
       const copy = [...cards];
       for (let i = copy.length - 1; i > 0; i -= 1) {
         const j = Math.floor(rand() * (i + 1));
         [copy[i], copy[j]] = [copy[j], copy[i]];
       }
+      return copy;
+    }
+
+    function shuffle(cards) {
+      return shuffleWithSeed(cards, state.seed);
+    }
+
+    function injectQuestCards(deck, questCount) {
+      const copy = [...deck];
+      const quests = shuffleWithSeed(buildQuestLibrary(), state.seed + questCount * 97 + copy.length)
+        .slice(0, questCount);
+      const rand = seededRandom(state.seed + questCount * 131 + 17);
+      quests.forEach((quest, index) => {
+        const band = Math.max(3, Math.floor(copy.length / Math.max(1, quests.length)));
+        const low = Math.min(copy.length, 3 + index * band);
+        const high = Math.min(copy.length, low + band);
+        const span = Math.max(1, high - low + 1);
+        const position = Math.min(copy.length, low + Math.floor(rand() * span));
+        copy.splice(position, 0, questCardFromDefinition(quest, index));
+      });
       return copy;
     }
 
@@ -2331,12 +3009,14 @@
 
     function createRunDeck() {
       const deck = shuffle(buildDeck());
-      return isInfiniteMode() ? deck : deck.slice(0, RUN_EVENT_COUNT);
+      if (isInfiniteMode()) return injectQuestCards(deck, INFINITE_QUEST_COUNT);
+      return injectQuestCards(deck.slice(0, RUN_EVENT_COUNT - NORMAL_QUEST_COUNT), NORMAL_QUEST_COUNT)
+        .slice(0, RUN_EVENT_COUNT);
     }
 
     function extendInfiniteDeck() {
       state.seed = Date.now() + state.turn;
-      state.deck.push(...shuffle(buildDeck()));
+      state.deck.push(...injectQuestCards(shuffle(buildDeck()), INFINITE_QUEST_COUNT));
     }
 
     function currentCard() {
@@ -2385,10 +3065,25 @@
       return Object.values(state.statStars).reduce((sum, value) => sum + value, 0);
     }
 
-    function applyDeltaWithScore(delta) {
+    function recordStatHistory(label = "시작") {
+      state.statHistory.push({
+        turn: state.turn,
+        label,
+        stats: { ...state.stats },
+        stars: { ...state.statStars }
+      });
+    }
+
+    function applyStatDelta(delta) {
       const starAwards = [];
+      const protectedKeys = [];
 
       Object.entries(delta).forEach(([key, value]) => {
+        if (!STAT_KEYS.includes(key) || value === 0) return;
+        if (state.invincible && value < 0) {
+          protectedKeys.push(key);
+          return;
+        }
         const raw = state.stats[key] + value;
         if (isInfiniteMode() && raw >= 100) {
           starAwards.push(key);
@@ -2398,9 +3093,10 @@
         state.stats[key] = clamp(raw);
       });
 
-      const survivalScore = turnScoreGain();
-      state.score += survivalScore;
+      return { starAwards, protectedKeys };
+    }
 
+    function awardStarBonuses(starAwards) {
       let starBonus = 0;
       const starDetails = [];
       starAwards.forEach(key => {
@@ -2412,7 +3108,148 @@
       });
       state.bonusCount = totalStars();
 
-      return { survivalScore, starBonus, starDetails, starsEarned: starAwards.length };
+      return { starBonus, starDetails, starsEarned: starAwards.length };
+    }
+
+    function applyDeltaWithScore(delta) {
+      const statResult = applyStatDelta(delta);
+      const survivalScore = turnScoreGain();
+      state.score += survivalScore;
+      const starResult = awardStarBonuses(statResult.starAwards);
+
+      return {
+        survivalScore,
+        starBonus: starResult.starBonus,
+        starDetails: starResult.starDetails,
+        starsEarned: starResult.starsEarned,
+        protectedKeys: statResult.protectedKeys
+      };
+    }
+
+    function acceptQuest(quest) {
+      const entry = {
+        instanceId: `${quest.id}-${state.turn}-${state.activeQuests.length}`,
+        quest,
+        targetStat: quest.targetStat,
+        targetValue: quest.targetValue,
+        acceptedTurn: state.turn,
+        deadlineTurn: state.turn + quest.limit
+      };
+      state.activeQuests.push(entry);
+      return `퀘스트 수락: ${quest.title}. ${quest.limit}턴 안에 ${statNames[quest.targetStat]} ${quest.targetValue} 이상을 달성해야 합니다.`;
+    }
+
+    function removeQuestStar(preferredKey) {
+      const direct = state.statStars[preferredKey] > 0 ? preferredKey : null;
+      const fallback = Object.entries(state.statStars)
+        .sort((a, b) => b[1] - a[1])
+        .find(([, value]) => value > 0)?.[0];
+      const key = direct || fallback;
+      if (!key) return null;
+      state.statStars[key] -= 1;
+      state.bonusCount = totalStars();
+      return key;
+    }
+
+    function questProtectionLine(protectedKeys) {
+      if (!protectedKeys.length) return "";
+      return ` 보호 상태로 ${[...new Set(protectedKeys)].map(key => statNames[key]).join(", ")} 감소가 반영되지 않았습니다.`;
+    }
+
+    function applyQuestReward(entry) {
+      const quest = entry.quest;
+      const rewardDelta = emptyDelta();
+      rewardDelta[quest.rewardStat] = quest.rewardAmount;
+      const statResult = applyStatDelta(rewardDelta);
+      const starResult = awardStarBonuses(statResult.starAwards);
+      state.completedQuests.push({
+        title: quest.title,
+        turn: state.turn,
+        reward: questRewardLabel(quest)
+      });
+
+      const starLine = starResult.starBonus > 0
+        ? ` 별 보너스 +${starResult.starBonus}점(${starResult.starDetails.join(", ")}).`
+        : "";
+      return `퀘스트 성공: ${quest.title}. ${questRewardLabel(quest)} 보상을 받았습니다.${starLine}`;
+    }
+
+    function applyQuestFailure(entry) {
+      const quest = entry.quest;
+      const result = { message: "", gameOver: false };
+      state.failedQuests.push({
+        title: quest.title,
+        turn: state.turn,
+        type: quest.failureType
+      });
+
+      if (quest.failureType === "none") {
+        result.message = `퀘스트 실패: ${quest.title}. 보상 없이 지나갔습니다.`;
+        return result;
+      }
+
+      if (quest.failureType === "drop") {
+        const statResult = applyStatDelta(quest.failureDelta);
+        result.message = `퀘스트 실패: ${quest.title}. ${deltaSentence(quest.failureDelta)} 손실이 발생했습니다.${questProtectionLine(statResult.protectedKeys)}`;
+        return result;
+      }
+
+      if (quest.failureType === "star") {
+        const removedKey = removeQuestStar(quest.penaltyStat);
+        if (removedKey) {
+          result.message = `퀘스트 실패: ${quest.title}. ${statNames[removedKey]} 별 1개를 잃었습니다.`;
+          return result;
+        }
+        const fallbackDelta = emptyDelta();
+        fallbackDelta[quest.penaltyStat] = -16;
+        const statResult = applyStatDelta(fallbackDelta);
+        result.message = `퀘스트 실패: ${quest.title}. 잃을 별이 없어 ${statNames[quest.penaltyStat]}이 하락했습니다.${questProtectionLine(statResult.protectedKeys)}`;
+        return result;
+      }
+
+      if (quest.failureType === "gameover") {
+        if (state.invincible) {
+          result.message = `퀘스트 실패: ${quest.title}. 중단 위험은 장부의 완충장치로 미뤄졌습니다.`;
+          return result;
+        }
+        result.message = `퀘스트 실패: ${quest.title}. 핵심 약속을 지키지 못했습니다.`;
+        result.gameOver = true;
+        return result;
+      }
+
+      result.message = `퀘스트 실패: ${quest.title}. 보상 없이 지나갔습니다.`;
+      return result;
+    }
+
+    function resolveQuestProgress() {
+      const messages = [];
+      const survivors = [];
+      let gameOver = false;
+
+      for (const entry of state.activeQuests) {
+        if (gameOver) {
+          survivors.push(entry);
+          continue;
+        }
+
+        const reached = state.stats[entry.targetStat] >= entry.targetValue && state.turn > entry.acceptedTurn;
+        if (reached) {
+          messages.push(applyQuestReward(entry));
+          continue;
+        }
+
+        if (state.turn >= entry.deadlineTurn) {
+          const failure = applyQuestFailure(entry);
+          messages.push(failure.message);
+          if (failure.gameOver) gameOver = true;
+          continue;
+        }
+
+        survivors.push(entry);
+      }
+
+      state.activeQuests = survivors;
+      return { messages, gameOver };
     }
 
     function adjustDeltaForDifficulty(delta) {
@@ -2447,6 +3284,7 @@
 
     function effectiveChoiceDelta(card, side) {
       const choiceDelta = adjustDeltaForDifficulty(card[side].delta);
+      if (card.noPressure) return choiceDelta;
       const pressure = adjustPressureForDifficulty(turnPressure(card));
       return addDelta(choiceDelta, pressure);
     }
@@ -2507,6 +3345,7 @@
       els.marketMood.textContent = card.mood;
       els.cardBadge.textContent = card.badge;
       els.cardBadge.className = `badge ${card.badgeClass || ""}`;
+      els.playCard.classList.toggle("quest-card", Boolean(card.isQuestOffer));
       els.cardNumber.textContent = `#${String(card.number).padStart(3, "0")}`;
       els.cardTitle.textContent = card.title;
       els.cardText.innerHTML = `
@@ -2530,7 +3369,7 @@
         els.logList.innerHTML = `<div class="empty">아직 기록 없음</div>`;
         return;
       }
-      els.logList.innerHTML = state.log.slice(0, 12).map(item => `
+      els.logList.innerHTML = [...state.log].reverse().map(item => `
         <div class="log-item">
           <span class="log-turn">${item.turn}턴</span>
           <span class="log-copy">${item.text}</span>
@@ -2547,7 +3386,48 @@
       els.dangerCount.textContent = state.dangerCount;
       els.dangerRecoveryCount.textContent = state.dangerRecoveryCount;
       els.bonusCount.textContent = state.bonusCount;
+      els.mobileLiveScore.textContent = state.score;
+      els.mobileTurnCount.textContent = state.turn;
+      els.mobileCardIndex.textContent = isInfiniteMode()
+        ? `${state.turn + 1} / ∞`
+        : `${Math.min(state.turn + 1, state.deck.length)} / ${state.deck.length}`;
+      els.mobileDangerCount.textContent = state.dangerCount;
+      els.mobileDangerRecoveryCount.textContent = state.dangerRecoveryCount;
+      els.mobileBonusCount.textContent = state.bonusCount;
       els.lastResult.innerHTML = state.last;
+    }
+
+    function renderQuestBoard() {
+      if (!state.activeQuests.length) {
+        els.questBoard.hidden = true;
+        els.questBoard.innerHTML = "";
+        return;
+      }
+
+      els.questBoard.hidden = false;
+      const rows = state.activeQuests.map(entry => {
+        const current = Math.round(state.stats[entry.targetStat]);
+        const remaining = Math.max(0, entry.deadlineTurn - state.turn);
+        return `
+          <div class="quest-row">
+            <div class="quest-row-top">
+              <span>${entry.quest.title}</span>
+              <b>${remaining}턴 남음</b>
+            </div>
+            <div class="quest-row-copy">
+              목표: ${statNames[entry.targetStat]} ${current}/${entry.targetValue} · 보상 ${questRewardLabel(entry.quest)} · 실패 ${questFailureLabel(entry.quest.failureType)}
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      els.questBoard.innerHTML = `
+        <div class="quest-board-title">
+          <span>진행 중 퀘스트</span>
+          <b>${state.activeQuests.length}개</b>
+        </div>
+        <div class="quest-list">${rows}</div>
+      `;
     }
 
     function render() {
@@ -2555,7 +3435,9 @@
       renderCard();
       renderLogs();
       renderMeta();
+      renderQuestBoard();
       els.playCard.setAttribute("aria-disabled", state.ended ? "true" : "false");
+      updateBodyState();
     }
 
     function renderDifficultyOptions() {
@@ -2586,17 +3468,112 @@
 
     function renderVersionFooter() {
       els.versionFooter.innerHTML = `
-        <strong>${GAME_VERSION} 패치 기록</strong>
-        <span>현재 빌드: 부동산 밸런스 카드 ${GAME_VERSION}</span>
-        <ol class="version-list">
-          ${PATCH_HISTORY.map(([version, note]) => `<li><b>${version}</b> ${note}</li>`).join("")}
-        </ol>
+        <div class="version-footer-row">
+          <div>
+            <strong>현재 빌드: 부동산 밸런스 카드 ${GAME_VERSION}</strong>
+            <span>최근 변경: ${PATCH_HISTORY[0].summary}</span>
+          </div>
+          <button class="text-button" id="openPatchNotes" type="button">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg>
+            패치 기록 보기
+          </button>
+        </div>
       `;
+      document.getElementById("openPatchNotes").addEventListener("click", () => {
+        renderPatchNotes();
+        els.patchModal.classList.add("open");
+      });
+    }
+
+    function renderPatchNotes() {
+      els.patchNotesList.innerHTML = PATCH_HISTORY.map(item => `
+        <div class="patch-item">
+          <b>${item.version} ${item.summary}</b>
+          <ul class="patch-detail-list">
+            ${item.details.map(detail => `<li>${detail}</li>`).join("")}
+          </ul>
+        </div>
+      `).join("");
+    }
+
+    function renderStatGraph() {
+      const history = state.statHistory.length
+        ? state.statHistory
+        : [{ turn: 0, stats: { ...state.stats }, stars: { ...state.statStars } }];
+      const width = 360;
+      const height = 170;
+      const pad = 24;
+      const graphWidth = width - pad * 2;
+      const graphHeight = height - pad * 2;
+      const maxIndex = Math.max(1, history.length - 1);
+      const activeKey = state.graphFilter || "all";
+      const visibleKeys = activeKey === "all" ? Object.keys(STAT_META) : [activeKey];
+      const graphValue = (entry, key) => {
+        const stars = entry.stars?.[key] || 0;
+        return stars * 100 + (entry.stats?.[key] || 0);
+      };
+      const allValues = history.flatMap(entry => visibleKeys.map(key => graphValue(entry, key)));
+      const maxValue = Math.max(100, ...allValues);
+      const graphMax = Math.ceil(maxValue / 100) * 100;
+      const maxVisibleStars = Math.max(0, ...history.flatMap(entry => visibleKeys.map(key => entry.stars?.[key] || 0)));
+      const starMarkers = maxVisibleStars > 0
+        ? Array.from({ length: maxVisibleStars }, (_, index) => {
+          const level = (index + 1) * 100;
+          const y = pad + (1 - level / graphMax) * graphHeight;
+          return `
+            <line class="graph-star-guide" x1="${pad}" y1="${y.toFixed(1)}" x2="${width - pad}" y2="${y.toFixed(1)}" />
+            <text class="graph-star-label" x="3" y="${(y + 4).toFixed(1)}">★${index + 1}</text>
+          `;
+        }).join("")
+        : "";
+      const pointFor = (entry, index, key) => {
+        const x = pad + (index / maxIndex) * graphWidth;
+        const y = pad + (1 - graphValue(entry, key) / graphMax) * graphHeight;
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      };
+      const lines = visibleKeys.map((key, index) => {
+        const points = history.map((entry, historyIndex) => pointFor(entry, historyIndex, key)).join(" ");
+        return `<polyline class="graph-line ${key}" style="animation-delay:${(index * 0.18).toFixed(2)}s" points="${points}" />`;
+      }).join("");
+      const controls = [
+        ["all", "전체"],
+        ...Object.entries(STAT_META).map(([key, meta]) => [key, meta.label])
+      ].map(([key, label]) => `
+        <button class="graph-filter ${activeKey === key ? "active" : ""}" data-graph-filter="${key}" type="button">${label}</button>
+      `).join("");
+      const legend = visibleKeys.map(key => {
+        const meta = STAT_META[key];
+        return `
+        <span style="color:${meta.colorVar}"><i></i>${meta.label}</span>
+      `;
+      }).join("");
+      els.statGraph.innerHTML = `
+        <strong>지표 진행 그래프</strong>
+        <div class="graph-note">무한 모드 별 1개는 그래프에서 +100으로 환산됩니다. 현재 최대 눈금은 ${graphMax}입니다.</div>
+        <div class="graph-controls">${controls}</div>
+        <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="턴별 지표 변화 그래프">
+          <line class="graph-grid-line" x1="${pad}" y1="${pad}" x2="${pad}" y2="${height - pad}" />
+          <line class="graph-grid-line" x1="${pad}" y1="${height - pad}" x2="${width - pad}" y2="${height - pad}" />
+          <line class="graph-grid-line" x1="${pad}" y1="${pad + graphHeight / 2}" x2="${width - pad}" y2="${pad + graphHeight / 2}" />
+          ${starMarkers}
+          ${lines}
+        </svg>
+        <div class="graph-legend">${legend}</div>
+      `;
+    }
+
+    function updateBodyState() {
+      const storyOpen = els.storyModal.classList.contains("open");
+      document.body.classList.toggle("is-playing", !storyOpen && !state.ended);
+      document.body.classList.toggle("is-story-open", storyOpen);
     }
 
     function renderLeaderboardTabs() {
       document.querySelectorAll("[data-leaderboard-difficulty]").forEach(button => {
         button.classList.toggle("active", button.dataset.leaderboardDifficulty === state.leaderboardDifficulty);
+      });
+      document.querySelectorAll("[data-start-leaderboard-difficulty]").forEach(button => {
+        button.classList.toggle("active", button.dataset.startLeaderboardDifficulty === state.leaderboardDifficulty);
       });
     }
 
@@ -2613,17 +3590,22 @@
     }
 
     function renderLeaderboard(records = []) {
+      const setLists = html => {
+        els.leaderboardList.innerHTML = html;
+        els.startLeaderboardList.innerHTML = html;
+      };
+
       if (!canUseServerRecords()) {
-        els.leaderboardList.innerHTML = `<div class="empty">서버 버전에서 공개 기록을 볼 수 있습니다.</div>`;
+        setLists(`<div class="empty">서버 버전에서 공개 기록을 볼 수 있습니다.</div>`);
         return;
       }
 
       if (!records.length) {
-        els.leaderboardList.innerHTML = `<div class="empty">아직 등록된 무한 모드 기록이 없습니다.</div>`;
+        setLists(`<div class="empty">아직 등록된 무한 모드 기록이 없습니다.</div>`);
         return;
       }
 
-      els.leaderboardList.innerHTML = records.slice(0, 10).map((item, index) => `
+      setLists(records.slice(0, 10).map((item, index) => `
         <div class="leaderboard-item">
           <span class="leaderboard-rank">${index + 1}</span>
           <span class="leaderboard-main">
@@ -2632,7 +3614,7 @@
           </span>
           <span class="leaderboard-score">${item.score}</span>
         </div>
-      `).join("");
+      `).join(""));
     }
 
     async function loadLeaderboard() {
@@ -2649,6 +3631,7 @@
         renderLeaderboard(records);
       } catch {
         els.leaderboardList.innerHTML = `<div class="empty">순위표 서버에 연결할 수 없습니다.</div>`;
+        els.startLeaderboardList.innerHTML = `<div class="empty">순위표 서버에 연결할 수 없습니다.</div>`;
       }
     }
 
@@ -2725,24 +3708,58 @@
       const choice = card[side];
       const combined = effectiveChoiceDelta(card, side);
       const scoreGain = applyDeltaWithScore(combined);
-      const invincibleLine = state.invincible ? protectInvincibleFailure() : "";
-      const dangerResult = resolveDangerState();
-      const effects = currentDifficulty().showResultDeltas ? deltaText(combined) : hiddenDeltaHint();
+      const effects = currentDifficulty().showResultDeltas
+        ? (deltaText(combined) || `<span class="delta hidden-deltas">변화 없음</span>`)
+        : hiddenDeltaHint();
       const bonusLine = scoreGain.starBonus > 0
         ? `<br><span class="server-note">별 획득 보너스 ${scoreGain.starBonus}점: ${scoreGain.starDetails.join(", ")}</span>`
         : "";
+      const protectedLine = scoreGain.protectedKeys.length
+        ? `<br><span class="server-note">보호 상태로 ${[...new Set(scoreGain.protectedKeys)].map(key => statNames[key]).join(", ")} 감소가 반영되지 않았습니다.</span>`
+        : "";
+      const turnPhrase = card.noPressure
+        ? "이번 턴은 퀘스트 판단으로 처리되었습니다."
+        : "이번 턴 시장 압박까지 반영되었습니다.";
+
+      state.turn += 1;
+
+      const questMessages = [];
+      if (card.isQuestOffer && side === "left") {
+        questMessages.push(acceptQuest(card.quest));
+      } else if (card.isQuestOffer && side === "right") {
+        questMessages.push(`퀘스트 거절: ${card.quest.title}. 이번 목표는 장부에 올리지 않았습니다.`);
+      }
+
+      const questResult = resolveQuestProgress();
+      questMessages.push(...questResult.messages);
+      const invincibleLine = state.invincible ? protectInvincibleFailure() : "";
+      const dangerResult = resolveDangerState();
       const recoveryLine = dangerResult.recovered
         ? `<br><span class="server-note">위기 극복 보너스 +${dangerResult.recoveryBonus}점이 지급되었습니다.</span>`
         : "";
       const dangerLine = dangerResult.entered
         ? `<br><span class="server-note">위기 구간에 진입했습니다. 다음 회복 시 +${CRISIS_RECOVERY_BONUS}점을 얻습니다.</span>`
         : "";
-      state.last = `<strong>${choice.label}</strong> 선택. ${choice.text}<br>이번 턴 시장 압박까지 반영되었습니다. 생존 점수 +${scoreGain.survivalScore}.${bonusLine}${recoveryLine}${dangerLine}${invincibleLine}<div class="delta-row">${effects}</div>`;
+      const questLine = questMessages.length
+        ? `<br><span class="server-note">${questMessages.join("<br>")}</span>`
+        : "";
+      state.last = `<strong>${choice.label}</strong> 선택. ${choice.text}<br>${turnPhrase} 생존 점수 +${scoreGain.survivalScore}.${bonusLine}${protectedLine}${questLine}${recoveryLine}${dangerLine}${invincibleLine}<div class="delta-row">${effects}</div>`;
       state.log.unshift({
-        turn: state.turn + 1,
-        text: `${card.title}: ${choice.label}. ${deltaSentence(combined)}`
+        turn: state.turn,
+        text: `${card.title}: ${choice.label}. ${deltaSentence(combined) || "지표 변화 없음"}`
       });
-      state.turn += 1;
+      questMessages.forEach(message => {
+        state.log.unshift({
+          turn: state.turn,
+          text: message.replace(/<[^>]+>/g, "")
+        });
+      });
+      recordStatHistory(`${card.title}: ${choice.label}`);
+
+      if (questResult.gameOver) {
+        endGame("퀘스트 실패로 프로젝트가 중단되었습니다.");
+        return;
+      }
 
       const failed = Object.entries(state.stats).find(([, value]) => value <= 0);
       if (failed && !state.invincible) {
@@ -2791,6 +3808,8 @@
         strongest: statNames[strongestKey],
         player: state.playerName || "익명 투자자",
         stars: state.bonusCount,
+        questSuccess: state.completedQuests.length,
+        questFail: state.failedQuests.length,
         dangerRecoveries: state.dangerRecoveryCount,
         dangerCount: state.dangerCount,
         turn: state.turn
@@ -3000,6 +4019,8 @@
         ["최저 지표", `${Math.round(low)}`],
         ["위기 극복", `${state.dangerRecoveryCount}`],
         ["획득 별", `${state.bonusCount}`],
+        ["퀘스트 성공", `${state.completedQuests.length}`],
+        ["퀘스트 실패", `${state.failedQuests.length}`],
         ["누적 점수", `${state.score}`]
       ].map(([label, value]) => `
         <div class="score-card">
@@ -3020,14 +4041,18 @@
       const unlockLine = hardUnlockedNow
         ? `<br><span class="server-note">중간 난이도 50장 클리어로 어려움 모드가 해금되었습니다.</span>`
         : "";
+      const questTone = state.completedQuests.length || state.failedQuests.length
+        ? `<br><span class="server-note">퀘스트 성공 ${state.completedQuests.length}개, 실패 ${state.failedQuests.length}개가 이번 장부에 기록되었습니다.</span>`
+        : "";
       els.endSummary.innerHTML = `
         <strong>${reason}</strong><br>
-        ${tone}${unlockLine}
+        ${tone}${unlockLine}${questTone}
         <div class="ending-story">
           <strong>${story.title}</strong>
           ${story.body}
         </div>
       `;
+      renderStatGraph();
       els.submitSection.hidden = !isInfiniteMode();
       els.submitScore.disabled = false;
       els.leaderboardStatus.textContent = canUseServerRecords()
@@ -3043,6 +4068,10 @@
       state.deck = createRunDeck();
       state.turn = 0;
       state.log = [];
+      state.activeQuests = [];
+      state.completedQuests = [];
+      state.failedQuests = [];
+      state.statHistory = [];
       state.last = "첫 사건을 기다리는 중입니다.";
       state.ended = false;
       state.dangerCount = 0;
@@ -3051,10 +4080,13 @@
       state.score = 0;
       state.bonusCount = 0;
       state.statStars = { cash: 0, trust: 0, city: 0, control: 0 };
+      state.graphFilter = "all";
       state.finalResult = null;
       state.submitted = false;
       state.manualEnded = false;
+      recordStatHistory("시작");
       els.endModal.classList.remove("open");
+      els.statGraph.innerHTML = "";
       els.submitSection.hidden = true;
       els.storyModal.classList.toggle("open", showStory);
       els.playCard.style.transform = "";
@@ -3079,7 +4111,9 @@
     }
 
     function isModalOpen() {
-      return els.storyModal.classList.contains("open") || els.endModal.classList.contains("open");
+      return els.storyModal.classList.contains("open")
+        || els.endModal.classList.contains("open")
+        || els.patchModal.classList.contains("open");
     }
 
     function resetKeyboardControl() {
@@ -3312,15 +4346,35 @@
         els.playerName.value = name;
       }
       els.storyModal.classList.remove("open");
+      updateBodyState();
     });
     els.closeEnd.addEventListener("click", () => els.endModal.classList.remove("open"));
+    els.closePatchNotes.addEventListener("click", () => els.patchModal.classList.remove("open"));
     els.restartEnd.addEventListener("click", () => resetGame(true));
+    els.statGraph.addEventListener("click", event => {
+      const button = event.target.closest("[data-graph-filter]");
+      if (!button) return;
+      state.graphFilter = button.dataset.graphFilter;
+      renderStatGraph();
+    });
+    els.openPatchNotesStory.addEventListener("click", () => {
+      renderPatchNotes();
+      els.patchModal.classList.add("open");
+    });
     els.submitScore.addEventListener("click", submitLeaderboardRecord);
     els.refreshLeaderboard.addEventListener("click", loadLeaderboard);
+    els.startRefreshLeaderboard.addEventListener("click", loadLeaderboard);
     els.leaderboardTabs.addEventListener("click", event => {
       const button = event.target.closest("[data-leaderboard-difficulty]");
       if (!button) return;
       state.leaderboardDifficulty = button.dataset.leaderboardDifficulty;
+      renderLeaderboardTabs();
+      loadLeaderboard();
+    });
+    els.startLeaderboardTabs.addEventListener("click", event => {
+      const button = event.target.closest("[data-start-leaderboard-difficulty]");
+      if (!button) return;
+      state.leaderboardDifficulty = button.dataset.startLeaderboardDifficulty;
       renderLeaderboardTabs();
       loadLeaderboard();
     });
@@ -3332,6 +4386,7 @@
     renderVersionFooter();
     loadLeaderboard();
     console.assert(buildDeck().length === TOTAL_EVENT_POOL, `card pool must contain ${TOTAL_EVENT_POOL} events`);
+    console.assert(buildQuestLibrary().length === QUEST_LIBRARY_SIZE, `quest library must contain ${QUEST_LIBRARY_SIZE} quests`);
     console.assert(state.mode === "infinite" || state.deck.length === RUN_EVENT_COUNT, `run deck must contain ${RUN_EVENT_COUNT} events`);
   </script>
 </body>
