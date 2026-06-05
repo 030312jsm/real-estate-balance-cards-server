@@ -8363,4 +8363,1001 @@
 
       if (isInfiniteMode() && state.turn >= state.deck.length) {
         extendInfiniteDeck();
-        state.last += `<br><span class="server-note">새 사건 묶음이 열렸습니다. 기록 도전이 계속됩니다.</spa
+        state.last += `<br><span class="server-note">새 사건 묶음이 열렸습니다. 기록 도전이 계속됩니다.</span>`;
+      }
+
+      if (state.turn >= state.deck.length) {
+        const clearMessage = state.tutorialRun
+          ? "튜토리얼 고정 런을 완료했습니다."
+          : isDoubleMode()
+            ? "더블로드 100개 사건을 모두 통과했습니다."
+            : "50개 사건을 모두 통과했습니다.";
+        endGame(clearMessage);
+        return;
+      }
+
+      checkAchievements();
+      render();
+    }
+
+    function pickEnding(items, salt = 0) {
+      const index = Math.abs(Math.floor((state.seed + state.turn * 31 + state.score * 7 + state.dangerRecoveryCount * 13 + salt) % items.length));
+      return items[index];
+    }
+
+    function endingStory(reason, score) {
+      const avg = averageStat();
+      const low = lowestStat();
+      const lowestKey = Object.entries(state.stats).sort((a, b) => a[1] - b[1])[0][0];
+      const strongestKey = Object.entries(state.stats).sort((a, b) => b[1] - a[1])[0][0];
+      const clearedRun = !isInfiniteMode() && state.turn >= state.deck.length && !reason.includes("바닥");
+      const difficultyLabel = currentDifficulty().label;
+      const firstCard = state.deck[0] || currentCard();
+      const lastCard = state.deck[Math.max(0, state.turn - 1)] || currentCard();
+      const statLine = `현금흐름 ${Math.round(state.stats.cash)}, 신뢰 ${Math.round(state.stats.trust)}, 생활가치 ${Math.round(state.stats.city)}, 위험관리 ${Math.round(state.stats.control)}`;
+      const arcLine = `${firstCard.chapter}의 ${firstCard.title}에서 시작해 ${lastCard.chapter}의 ${lastCard.title}까지 이어진 기록`;
+      if (state.tutorialRun) {
+        return {
+          title: "엔딩: 첫 장부의 균형",
+          body: `정해진 튜토리얼 런을 끝까지 마쳤습니다. ${arcLine}은 SWAY의 기본 흐름을 보여주는 작은 실습 장부로 남았습니다. 카드를 밀면 뒤쪽 선택지가 보이고, 방향키도 같은 강도로 선택을 준비하며, 진행 기록은 한 턴의 선택과 퀘스트 결과를 한 줄에 묶어 보여줍니다. 최종 장부는 ${statLine}, 점수 ${score}점입니다.`
+        };
+      }
+      const context = {
+        avg,
+        low,
+        score,
+        reason,
+        statLine,
+        arcLine,
+        difficultyLabel,
+        lowest: statNames[lowestKey],
+        strongest: statNames[strongestKey],
+        player: state.playerName || "익명 투자자",
+        stars: state.bonusCount,
+        questSuccess: state.completedQuests.length,
+        questFail: state.failedQuests.length,
+        dangerRecoveries: state.dangerRecoveryCount,
+        dangerCount: state.dangerCount,
+        turn: state.turn,
+        targetCards: isDoubleMode() ? 100 : 50
+      };
+      const pick = (items, salt = 0) => {
+        const selected = pickEnding(items, salt);
+        return {
+          title: selected.title,
+          body: typeof selected.body === "function" ? selected.body(context) : selected.body
+        };
+      };
+
+      const manualEndings = [
+        {
+          title: "엔딩: 조용한 장부 폐쇄",
+          body: c => `${c.player}님은 더 버틸 수 있었지만, 장부를 스스로 닫았습니다. ${c.arcLine}은 외부에는 평범한 운영 기록으로 남았지만, 내부 파일에는 무너질 뻔한 순간마다 보이지 않는 완충장치가 작동한 흔적이 남았습니다. 최종 장부는 ${c.statLine}, 획득 별 ${c.stars}개, 위기 극복 ${c.dangerRecoveries}회, 점수 ${c.score}점입니다.`
+        },
+        {
+          title: "엔딩: 비공개 운용 종료",
+          body: c => `프로젝트는 파산하지 않았고, 누구도 마지막 회의를 긴급회의라고 부르지 않았습니다. 다만 ${c.player}님은 더 긴 무한 운영보다 지금의 기록을 남기는 쪽을 골랐습니다. ${c.arcLine}은 공개 순위표에 올라갈 수 있는 하나의 시즌으로 봉인됩니다. 최종 장부는 ${c.statLine}, 별 ${c.stars}개, 점수 ${c.score}점입니다.`
+        }
+      ];
+
+      if (state.manualEnded) {
+        return pick(manualEndings, 4);
+      }
+
+      const infiniteEndings = {
+        early: [
+          {
+            title: "엔딩: 너무 빠른 야근",
+            body: c => `${c.player}님의 무한 운영은 ${c.turn}턴에서 멈췄습니다. 400개 사건 라이브러리는 아직 초반부였지만, ${c.lowest}의 균형이 먼저 흔들렸습니다. 팀은 첫 달 회의록을 다시 펼쳐 어떤 선택이 현장 신호를 놓쳤는지 표시합니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+          },
+          {
+            title: "엔딩: 첫 순환의 비용",
+            body: c => `시장은 아직 모든 얼굴을 보여주지 않았습니다. 그래도 ${c.player}님의 장부에는 초반 속도전이 남긴 비용이 선명합니다. 다음 도전에서는 400개 사건 중 비슷한 사건이 다시 나왔을 때, 같은 선택을 반복하지 않는 것이 첫 목표가 됩니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+          }
+        ],
+        long: [
+          {
+            title: "엔딩: 끝나지 않는 운영위원회",
+            body: c => `${c.player}님은 ${c.turn}턴 동안 동네의 질문을 계속 받았습니다. 금리, 공실, 임차인, 인허가, 기술 실험이 순서를 바꿔 돌아왔고, 별 ${c.stars}개는 네 지표가 한계를 넘겼던 순간의 증거가 되었습니다. 마지막에는 ${c.lowest}이 가장 약하게 남았습니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+          },
+          {
+            title: "엔딩: 순위표에 남은 도시",
+            body: c => `무한 모드는 끝났지만 ${c.player}님의 시즌은 순위표의 한 줄로 남습니다. ${c.arcLine}은 단순한 카드 흐름이 아니라, 같은 동네를 여러 번 다시 통과한 운영자의 기록입니다. 위기 극복 ${c.dangerRecoveries}회, 별 ${c.stars}개, 최종 점수 ${c.score}점입니다.`
+          },
+          {
+            title: "엔딩: 반복되는 시장의 얼굴",
+            body: c => `400개 사건은 모두 다르게 보였지만, 오래 버틴 뒤에는 같은 질문으로 돌아왔습니다. 현금을 남길 것인가, 신뢰를 지킬 것인가, 동네의 삶을 살릴 것인가, 위험을 잠글 것인가. ${c.player}님의 답은 ${c.turn}턴까지 이어졌고, 가장 강했던 축은 ${c.strongest}였습니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+          }
+        ],
+        legend: [
+          {
+            title: "엔딩: 별이 붙은 운용권",
+            body: c => `${c.player}님의 장부에는 별 ${c.stars}개가 붙었습니다. 지표가 100을 넘을 때마다 팀은 그 성과를 현금이 아니라 운영 신뢰의 표식으로 남겼고, 다시 20에서 시작해 다음 고비를 넘겼습니다. ${c.turn}턴의 기록은 동네 운용권을 하나의 장기 서사로 바꿨습니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+          },
+          {
+            title: "엔딩: 위기를 통과한 기록",
+            body: c => `${c.player}님은 위기 구간을 ${c.dangerRecoveries}번 빠져나왔습니다. 낮은 지표를 방치하지 않고 다시 끌어올린 순간마다 50점 보너스가 붙었고, 그 기록은 단순 생존보다 더 강한 회복력으로 평가됩니다. 최종 장부는 ${c.statLine}, 별 ${c.stars}개, 점수 ${c.score}점입니다.`
+          }
+        ]
+      };
+
+      if (isInfiniteMode()) {
+        if (state.bonusCount >= 6 || state.dangerRecoveryCount >= 4 || state.turn >= 120) {
+          return pick(infiniteEndings.legend, 22);
+        }
+        if (state.turn < 35) return pick(infiniteEndings.early, 11);
+        return pick(infiniteEndings.long, 17);
+      }
+
+      const clearedGreat = [
+        {
+          title: "엔딩: 동네 가치업 승인",
+          body: c => `${c.difficultyLabel} 난이도의 ${c.targetCards}개 사건을 넘긴 뒤, 운영위원회는 다음 시즌 운용권을 연장합니다. ${c.arcLine}은 400개 사건 라이브러리에서 뽑힌 한 시즌이었지만, 그 안에서 팀은 ${c.strongest}을 중심축으로 삼아 흔들림을 줄였습니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+        },
+        {
+          title: "엔딩: 숫자와 골목의 합의",
+          body: c => `은행은 장부를 보고 고개를 끄덕였고, 상인회는 회의가 끝난 뒤에도 자리를 떠나지 않았습니다. 이번 시즌은 수익률만 이긴 판이 아니라, 현금과 관계와 생활권을 동시에 설득한 판입니다. 최종 장부는 ${c.statLine}, 위기 극복 ${c.dangerRecoveries}회, 점수 ${c.score}점입니다.`
+        },
+        {
+          title: "엔딩: 다음 분기의 초대장",
+          body: c => `${c.targetCards}번째 카드가 지나간 뒤, 팀은 더 큰 자산보다 더 긴 운영권을 제안받습니다. ${c.arcLine}은 작은 동네 프로젝트가 어떻게 신뢰 가능한 운용 사례로 바뀌는지 보여 준 보고서가 됩니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+        },
+        {
+          title: "엔딩: 조용한 우승",
+          body: c => `크게 떠드는 성과 발표는 없었습니다. 대신 공실표가 안정되고, 민원 기록이 줄고, 금융기관의 질문이 짧아졌습니다. ${c.difficultyLabel} 난이도에서 가장 좋은 승리는 이렇게 조용한 얼굴을 하고 있습니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+        }
+      ];
+
+      const comebackEndings = [
+        {
+          title: "엔딩: 회복의 장부",
+          body: c => `이번 시즌은 완벽하지 않았습니다. 하지만 위기 구간을 ${c.dangerRecoveries}번 빠져나오며 팀은 숫자를 회복하는 법을 배웠습니다. ${c.targetCards}번째 결정 뒤 운영위원회는 높은 점수보다 회복 속도를 더 크게 평가합니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+        },
+        {
+          title: "엔딩: 낮은 지표의 반격",
+          body: c => `${c.lowest}이 여러 차례 흔들렸지만 완전히 무너지지는 않았습니다. 팀은 늦은 회복 선택으로 주민과 금융기관을 다시 설득했고, 장부에는 위기 극복 보너스가 차곡차곡 쌓였습니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+        },
+        {
+          title: "엔딩: 손실을 줄인 사람들",
+          body: c => `큰 성공보다 중요한 것은 무너지는 순간의 대응이었습니다. 이번 시즌의 보고서는 매입 성공기가 아니라, 위험을 알아차리고 방향을 바꾼 사람들의 기록으로 남습니다. 최종 장부는 ${c.statLine}, 위기 극복 ${c.dangerRecoveries}회, 점수 ${c.score}점입니다.`
+        }
+      ];
+
+      const fragileEndings = [
+        {
+          title: "엔딩: 버텼지만 얇은 장부",
+          body: c => `${c.targetCards}번째 결정을 마쳤지만 회의실의 표정은 완전히 밝지 않습니다. 사람들은 생존을 인정하지만, 낮게 남은 ${c.lowest}이 다음 분기의 숙제로 적힙니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+        },
+        {
+          title: "엔딩: 조건부 연장",
+          body: c => `운영권은 연장됐지만 조건이 붙었습니다. 다음 시즌에는 ${c.lowest}을 회복하지 못하면 더 큰 자산도, 더 긴 자금도 허락되지 않습니다. 이번 시즌은 승리와 경고가 함께 찍힌 보고서입니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+        },
+        {
+          title: "엔딩: 골목의 숙제",
+          body: c => `동네는 버텼지만 아직 좋아졌다고 말하기엔 이릅니다. ${c.arcLine}은 선택의 누적이 어떤 지표를 살리고 어떤 지표를 남겨두는지 보여 줬습니다. 다음 판의 목표는 생존이 아니라 균형입니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+        }
+      ];
+
+      if (clearedRun && avg >= 62 && low >= 42) return pick(clearedGreat, 31);
+      if (clearedRun && state.dangerRecoveryCount >= 2) return pick(comebackEndings, 37);
+      if (clearedRun && avg >= 52 && low >= 30) return pick(clearedGreat, 43);
+      if (clearedRun) return pick(fragileEndings, 47);
+
+      const failureStories = {
+        cash: [
+          {
+            title: "엔딩: 유동성 회의",
+            body: c => `${c.reason} 은행은 추가 담보와 상환 계획을 요구합니다. 좋은 입지도 멋진 리모델링 계획도 월말 잔고 앞에서는 힘을 잃었습니다. 팀은 매각 가능한 자산부터 다시 분류합니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+          },
+          {
+            title: "엔딩: 월말의 빈 계좌",
+            body: c => `${c.reason} 임대료 입금일보다 이자 납부일이 먼저 다가왔고, 운영팀은 선택지를 잃었습니다. 이번 실패는 수익률 계산보다 현금 유보가 먼저였다는 사실을 남깁니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+          },
+          {
+            title: "엔딩: 너무 빠른 확장",
+            body: c => `${c.reason} 더 많은 자산을 담으려던 계획은 현금흐름의 얇은 바닥을 드러냈습니다. 동네의 가능성은 남아 있지만, 장부는 다음 투자보다 생존 비용을 먼저 요구합니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+          }
+        ],
+        trust: [
+          {
+            title: "엔딩: 닫힌 회의실",
+            body: c => `${c.reason} 임차인, 금융기관, 시공 파트너가 같은 질문을 던집니다. "이번 약속은 지켜집니까?" 숫자는 일부 남아 있었지만 관계의 비용이 너무 커졌습니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+          },
+          {
+            title: "엔딩: 설명하지 않은 비용",
+            body: c => `${c.reason} 빠르게 넘긴 설명들이 뒤늦게 모여 신뢰를 갉아먹었습니다. 팀은 다음 시즌을 시작하기 전에 계약서보다 먼저 사과문과 공개 자료를 준비해야 합니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+          },
+          {
+            title: "엔딩: 파트너의 퇴장",
+            body: c => `${c.reason} 가장 오래 버틴 파트너가 회의실을 나가며 더는 함께하기 어렵다고 말했습니다. 이번 실패는 돈보다 느리게 쌓이고 빠르게 사라지는 신뢰의 속도를 보여 줍니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+          }
+        ],
+        city: [
+          {
+            title: "엔딩: 텅 빈 골목",
+            body: c => `${c.reason} 생활가치가 식자 수익률표보다 빠르게 동네가 비어 갑니다. 공사 소음, 임대료 압박, 사라진 편의시설이 주민들의 일상을 흔들었습니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+          },
+          {
+            title: "엔딩: 살 이유가 사라진 자산",
+            body: c => `${c.reason} 건물은 남았지만 사람들이 머물 이유가 줄었습니다. 이번 프로젝트는 자산가치가 생활권을 이기면 결국 둘 다 약해진다는 기록으로 남습니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+          },
+          {
+            title: "엔딩: 민원의 지도",
+            body: c => `${c.reason} 주민 민원 지도에는 같은 골목이 반복해서 표시됐고, 운영팀은 그제야 숫자표 밖의 손실을 봅니다. 재설계는 매입 전략이 아니라 동네의 하루에서 다시 시작됩니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+          }
+        ],
+        control: [
+          {
+            title: "엔딩: 빨간 도장",
+            body: c => `${c.reason} 계약서의 작은 빈칸들이 한꺼번에 문제로 변했습니다. 권리관계, 인허가, 하자 대응이 얽히며 빠른 결정의 이익을 지워 버립니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+          },
+          {
+            title: "엔딩: 실사의 부재",
+            body: c => `${c.reason} 현장에서 작게 보였던 리스크가 서류 위에서 크게 돌아왔습니다. 팀은 거래를 멈추고 실사 체크리스트를 처음부터 다시 씁니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+          },
+          {
+            title: "엔딩: 빠른 종결의 대가",
+            body: c => `${c.reason} 속도는 경쟁자를 이겼지만, 통제되지 않은 리스크는 운영팀을 이겼습니다. 이번 시즌은 기회를 잡는 법보다 멈춰야 할 때를 아는 법을 남깁니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
+          }
+        ]
+      };
+
+      return pick(failureStories[lowestKey], 53);
+    }
+
+    function endGame(reason, options = {}) {
+      state.ended = true;
+      state.manualEnded = Boolean(options.manual);
+      render();
+      const avg = averageStat();
+      const low = lowestStat();
+      const clearedRun = state.turn >= state.deck.length && !reason.includes("바닥");
+      const balanceBonus = Math.round(avg * 0.9 + low * 0.6);
+      const completionBonus = clearedRun && !isInfiniteMode() && !state.tutorialRun ? 100 : 0;
+      const score = Math.max(0, state.score + balanceBonus + completionBonus - state.dangerCount * 2);
+      state.finalResult = { score, avg, low, reason, bonusCount: state.bonusCount, baseScore: state.score };
+      state.submitted = false;
+      const playMs = state.runStartedAt ? Math.max(0, Date.now() - state.runStartedAt) : 0;
+      state.runStartedAt = 0;
+      updatePlayerStats({
+        totalSurvivedTurns: state.turn,
+        totalBaseScore: state.score,
+        totalFinalScore: score,
+        totalPlayMs: playMs
+      });
+      setPlayerStatMax("bestScore", score);
+      setPlayerStatMax("bestTurn", state.turn);
+      const hardUnlockedNow = clearedRun && !isInfiniteMode() && !state.tutorialRun && state.difficulty === "medium" && !state.hardUnlocked;
+      if (hardUnlockedNow) unlockHardMode();
+      els.scoreGrid.innerHTML = [
+        ["최종 점수", `${score}`],
+        ["생존 턴", `${state.turn}`],
+        ["평균 균형", `${avg}`],
+        ["최저 지표", `${Math.round(low)}`],
+        ["위기 극복", `${state.dangerRecoveryCount}`],
+        ["획득 별", `${state.bonusCount}`],
+        ["퀘스트 성공", `${state.completedQuests.length}`],
+        ["퀘스트 실패", `${state.failedQuests.length}`],
+        ["누적 점수", `${state.score}`]
+      ].map(([label, value]) => `
+        <div class="score-card">
+          <span>${label}</span>
+          <b>${value}</b>
+        </div>
+      `).join("");
+      const tone = state.tutorialRun
+        ? "튜토리얼 고정 런을 완료했습니다. 이 결과는 해금과 공개 순위표에는 영향을 주지 않고, 조작 흐름을 익히기 위한 기록으로만 남습니다."
+        : isInfiniteMode()
+        ? `${state.playerName || "익명 투자자"}님의 무한 모드 기록입니다. 서버 버전에서는 이 결과를 공개 순위표에 등록할 수 있습니다.`
+        : clearedRun
+        ? `이번 런의 ${isDoubleMode() ? "100개" : "50개"} 사건을 모두 넘겼습니다. 한쪽 지표만 밀어붙이지 않은 판단이 오래 버티는 힘이 됐습니다.`
+        : state.turn >= 36
+          ? "막판까지 버텼지만 특정 지표의 누적 손실이 크게 남았습니다. 다음 판에서는 낮은 지표를 회복시키는 선택을 더 일찍 잡아야 합니다."
+          : state.turn >= 18
+            ? "중반 진입 전후에 압박이 커졌습니다. 빠른 현금화, 민원 회피, 실사 생략처럼 즉시 이득이 큰 선택의 후폭풍을 살펴야 합니다."
+            : "초반부터 균형이 급격히 무너졌습니다. 첫 10턴에서는 수익보다 네 지표의 바닥선을 만드는 선택이 중요합니다.";
+      const story = endingStory(reason, score);
+      const tarot = tarotForEnding(story, reason);
+      const endingId = `${story.title}-${reason}`;
+      const firstSeenEnding = !state.archive.endings.some(item => item.id === endingId);
+      archiveEnding(story, reason, score, tarot);
+      state.playerStats.endingsSeen = state.archive.endings.length;
+      state.playerStats.totalEndingsUnlocked = state.archive.endings.length;
+      state.playerStats.totalEventsUnlocked = state.archive.events.length;
+      state.playerStats.totalQuestsUnlocked = state.archive.quests.length;
+      persistPlayerStats();
+      const newlyUnlockedAchievements = checkAchievements();
+      els.endTarotWrap.innerHTML = tarotCardHtml(tarot, { flipped: true, id: endingId });
+      bindTarotInteractions(els.endTarotWrap);
+      const unlockLine = hardUnlockedNow
+        ? `<br><span class="server-note">중간 난이도 50장 클리어로 어려움 모드가 해금되었습니다.</span>`
+        : "";
+      const questTone = state.completedQuests.length || state.failedQuests.length
+        ? `<br><span class="server-note">퀘스트 성공 ${state.completedQuests.length}개, 실패 ${state.failedQuests.length}개가 이번 장부에 기록되었습니다.</span>`
+        : "";
+      els.endSummary.innerHTML = `
+        <strong>${reason}</strong><br>
+        ${tone}${unlockLine}${questTone}
+        <div class="ending-story">
+          <strong>${story.title}</strong>
+          ${story.body}
+        </div>
+      `;
+      renderEndAchievements(newlyUnlockedAchievements);
+      renderStatGraph();
+      els.submitSection.hidden = !isInfiniteMode() || state.tutorialRun;
+      els.submitScore.disabled = false;
+      els.leaderboardStatus.textContent = canUseServerRecords()
+        ? "기록 등록을 누르면 공개 순위표에 저장됩니다."
+        : "로컬 파일에서는 등록할 수 없습니다. 서버 버전에서 실행하세요.";
+      els.endModal.classList.add("open");
+      if (firstSeenEnding) {
+        showTarotReveal(tarot, endingId);
+      }
+    }
+
+    function resetGame(showStory = false, options = {}) {
+      const tutorialMode = Boolean(options.tutorial || (state.tutorialRun && !showStory));
+      state.tutorialRun = tutorialMode;
+      if (!tutorialMode) state.tutorialRunTracked = false;
+      state.runStartedTracked = false;
+      const start = currentDifficulty().start;
+      state.stats = { cash: start, trust: start, city: start, control: start };
+      state.seed = Date.now();
+      state.deck = createRunDeck();
+      state.turn = 0;
+      state.doubleChoices = [];
+      state.doubleDeckIndex = 0;
+      state.doubleSelected = 0;
+      state.activeSetEffect = null;
+      state.gameoverShield = 0;
+      state.statShields = {};
+      state.log = [];
+      state.logSequence = 0;
+      state.latestLogId = null;
+      state.activeQuests = [];
+      state.completedQuests = [];
+      state.failedQuests = [];
+      state.statHistory = [];
+      state.last = "첫 사건을 기다리는 중입니다.";
+      state.ended = false;
+      state.dangerCount = 0;
+      state.dangerRecoveryCount = 0;
+      state.inDanger = false;
+      state.score = 0;
+      state.bonusCount = 0;
+      state.statStars = { cash: 0, trust: 0, city: 0, control: 0 };
+      state.graphFilter = "all";
+      state.finalResult = null;
+      state.submitted = false;
+      state.manualEnded = false;
+      state.starPulseKeys = [];
+      state.storyArc = createStoryArc();
+      setupDoubleRoad();
+      recordStatHistory("시작");
+      els.endModal.classList.remove("open");
+      els.statGraph.innerHTML = "";
+      els.endAchievements.innerHTML = "";
+      els.submitSection.hidden = true;
+      els.mobileLogDrawer.classList.remove("open");
+      els.storyModal.classList.toggle("open", showStory);
+      els.playCard.style.transform = "";
+      els.playCard.classList.remove("dragging", "left-lean", "right-lean", "preview-lock", "commit-ready");
+      resetKeyboardControl();
+      renderDifficultyOptions();
+      renderModeOptions();
+      render();
+    }
+
+    function setPeek(moved) {
+      const left = clamp(moved / 70, 0, 1);
+      const right = clamp(-moved / 70, 0, 1);
+      els.cardWrap.style.setProperty("--leftPeek", left.toFixed(2));
+      els.cardWrap.style.setProperty("--rightPeek", right.toFixed(2));
+    }
+
+    function resetPeek() {
+      els.cardWrap.style.setProperty("--leftPeek", "0");
+      els.cardWrap.style.setProperty("--rightPeek", "0");
+      els.playCard.style.transform = "";
+    }
+
+    function isModalOpen() {
+      return els.storyModal.classList.contains("open")
+        || els.endModal.classList.contains("open")
+        || els.patchModal.classList.contains("open")
+        || els.leaderboardModal.classList.contains("open")
+        || els.tutorialModal.classList.contains("open")
+        || els.settingsModal.classList.contains("open")
+        || els.archiveModal.classList.contains("open")
+        || els.achievementsModal.classList.contains("open")
+        || els.tarotRevealLayer.classList.contains("open");
+    }
+
+    function resetKeyboardControl() {
+      keyControl.left = false;
+      keyControl.right = false;
+      keyControl.lastPressed = null;
+      keyControl.releaseBurst = [];
+      clearTimeout(keyControl.releaseTimer);
+      keyControl.releaseTimer = null;
+      els.playCard.classList.remove("left-lean", "right-lean", "preview-lock", "commit-ready");
+      resetPeek();
+    }
+
+    function activeKeyboardDirection() {
+      if (keyControl.left && keyControl.right) return keyControl.lastPressed;
+      if (keyControl.left) return "left";
+      if (keyControl.right) return "right";
+      return null;
+    }
+
+    function applyKeyboardLean(direction) {
+      if (!direction) {
+        resetKeyboardControl();
+        return;
+      }
+      const moved = direction === "left" ? -158 : 158;
+      const rotate = direction === "left" ? -13.5 : 13.5;
+      els.playCard.style.transform = `translateX(${moved}px) rotate(${rotate}deg)`;
+      els.playCard.classList.toggle("left-lean", direction === "left");
+      els.playCard.classList.toggle("right-lean", direction === "right");
+      els.playCard.classList.add("preview-lock", "commit-ready");
+      setPeek(moved);
+    }
+
+    function commitKeyboardDirection(direction) {
+      resetKeyboardControl();
+      if (state.ended || isModalOpen()) return;
+      choose(direction === "left" ? "right" : "left");
+    }
+
+    function recordKeyRelease(direction) {
+      const now = performance.now();
+      keyControl.releaseBurst = keyControl.releaseBurst
+        .filter(item => now - item.time <= 120)
+        .concat({ direction, time: now });
+    }
+
+    function scheduleKeyboardCommit(direction) {
+      clearTimeout(keyControl.releaseTimer);
+      keyControl.releaseTimer = setTimeout(() => {
+        const now = performance.now();
+        const recent = keyControl.releaseBurst.filter(item => now - item.time <= 120);
+        const releasedDirections = new Set(recent.map(item => item.direction));
+        keyControl.releaseBurst = [];
+        if (releasedDirections.size > 1) {
+          resetKeyboardControl();
+          return;
+        }
+        commitKeyboardDirection(direction);
+      }, 90);
+    }
+
+    function toggleInvincibleMode() {
+      state.invincible = !state.invincible;
+      state.last = state.invincible
+        ? "낡은 장부 표지 안쪽에 작은 인감이 찍혔습니다."
+        : "장부 표지 안쪽의 인감이 조용히 닫혔습니다.";
+      render();
+      checkAchievements();
+    }
+
+    function isTextInputTarget(target) {
+      if (!target) return false;
+      const tag = target.tagName;
+      return tag === "INPUT" || tag === "TEXTAREA" || target.isContentEditable;
+    }
+
+    function clearSecretSuffixFromInput(target, suffix) {
+      if (!isTextInputTarget(target) || typeof target.value !== "string") return;
+      const pattern = new RegExp(`${suffix.slice(0, -1)}$`, "i");
+      target.value = target.value.replace(pattern, "");
+      target.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+
+    function handleSecretSequence(event) {
+      if (event.repeat || event.key.length !== 1) return false;
+      const char = event.key.toUpperCase();
+      if (!/^[A-Z]$/.test(char)) return false;
+
+      keyControl.secretBuffer = `${keyControl.secretBuffer}${char}`.slice(-12);
+      if (keyControl.secretBuffer.endsWith("MUTEK")) {
+        event.preventDefault();
+        clearSecretSuffixFromInput(event.target, "MUTEK");
+        keyControl.secretBuffer = "";
+        toggleInvincibleMode();
+        return true;
+      }
+      if (keyControl.secretBuffer.endsWith("ENDRUN") && state.invincible && !state.ended && !isModalOpen()) {
+        event.preventDefault();
+        clearSecretSuffixFromInput(event.target, "ENDRUN");
+        keyControl.secretBuffer = "";
+        endGame("숨겨진 운용권으로 장부를 닫았습니다.", { manual: true });
+        return true;
+      }
+      return false;
+    }
+
+    function handleSecretKeys(event) {
+      if (handleSecretSequence(event)) return true;
+      if (!event.ctrlKey || !event.shiftKey) return false;
+      if (event.code === "KeyU") {
+        event.preventDefault();
+        toggleInvincibleMode();
+        return true;
+      }
+      if (event.code === "KeyE" && state.invincible && !state.ended && !isModalOpen()) {
+        event.preventDefault();
+        endGame("숨겨진 운용권으로 장부를 닫았습니다.", { manual: true });
+        return true;
+      }
+      return false;
+    }
+
+    function currentArchivePreviewCard() {
+      if (!els.archiveModal.classList.contains("open")) return null;
+      return els.archiveDetail.querySelector("[data-archive-play-card]");
+    }
+
+    function applyArchiveKeyboardPreview(direction) {
+      const card = currentArchivePreviewCard();
+      if (!card) return false;
+      const wrap = card.closest("[data-archive-card-wrap]");
+      const moved = direction === "left" ? -132 : 132;
+      const left = direction === "right" ? 1 : 0;
+      const right = direction === "left" ? 1 : 0;
+      wrap?.style.setProperty("--leftPeek", left.toFixed(2));
+      wrap?.style.setProperty("--rightPeek", right.toFixed(2));
+      card.style.transform = `translateX(${moved}px) rotate(${moved / 10}deg)`;
+      return true;
+    }
+
+    function resetArchiveKeyboardPreview() {
+      const card = currentArchivePreviewCard();
+      if (!card) return false;
+      const wrap = card.closest("[data-archive-card-wrap]");
+      card.style.transform = "";
+      wrap?.style.setProperty("--leftPeek", "0.74");
+      wrap?.style.setProperty("--rightPeek", "0.74");
+      return true;
+    }
+
+    function handleArrowKeyDown(event) {
+      if (handleSecretKeys(event)) return;
+      if (event.key === "Escape") {
+        event.preventDefault();
+        if (els.settingsModal.classList.contains("open")) {
+          els.settingsModal.classList.remove("open");
+        } else if (!els.storyModal.classList.contains("open") && !els.endModal.classList.contains("open") && !els.archiveModal.classList.contains("open") && !els.achievementsModal.classList.contains("open") && !els.patchModal.classList.contains("open") && !els.leaderboardModal.classList.contains("open") && !els.tarotRevealLayer.classList.contains("open")) {
+          state.settingsOpened = true;
+          applySettings();
+          els.settingsModal.classList.add("open");
+          checkAchievements();
+        }
+        return;
+      }
+      if (isDoubleMode() && !isModalOpen() && !isTextInputTarget(event.target) && (event.key === "1" || event.key === "2")) {
+        const index = Number(event.key) - 1;
+        if (state.doubleChoices[index]) {
+          event.preventDefault();
+          state.doubleSelected = index;
+          render();
+        }
+        return;
+      }
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      if (els.archiveModal.classList.contains("open")) {
+        applyArchiveKeyboardPreview(event.key === "ArrowLeft" ? "left" : "right");
+        return;
+      }
+      if (state.ended || isModalOpen()) return;
+      if (state.tutorialCoachOpen) {
+        const step = activeTutorialSteps()[state.tutorialIndex];
+        const allowed = ["keyboard", "choice"].includes(step?.practice);
+        if (!allowed) {
+          renderTutorialCoach();
+          return;
+        }
+      }
+      clearTimeout(keyControl.releaseTimer);
+      keyControl.releaseTimer = null;
+      const direction = event.key === "ArrowLeft" ? "left" : "right";
+      els.keyboardHints?.querySelector(`[data-key-hint="${direction}"]`)?.classList.add("active");
+      keyControl[direction] = true;
+      keyControl.lastPressed = direction;
+      completeTutorialCoachPractice("keyboard");
+      applyKeyboardLean(activeKeyboardDirection());
+    }
+
+    function handleArrowKeyUp(event) {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      els.keyboardHints?.querySelectorAll(".keyboard-key").forEach(key => key.classList.remove("active"));
+      if (els.archiveModal.classList.contains("open")) {
+        resetArchiveKeyboardPreview();
+        return;
+      }
+      const direction = event.key === "ArrowLeft" ? "left" : "right";
+      recordKeyRelease(direction);
+      keyControl[direction] = false;
+      if (state.ended || isModalOpen()) {
+        resetKeyboardControl();
+        return;
+      }
+      const activeDirection = activeKeyboardDirection();
+      if (activeDirection) {
+        keyControl.lastPressed = activeDirection;
+        applyKeyboardLean(activeDirection);
+        return;
+      }
+      scheduleKeyboardCommit(direction);
+    }
+
+    function startDrag(event) {
+      if (state.ended || isModalOpen()) return;
+      if (state.settings.fastMode) return;
+      if (state.tutorialCoachOpen) {
+        const step = activeTutorialSteps()[state.tutorialIndex];
+        const allowed = ["drag", "choice"].includes(step?.practice);
+        if (!allowed) {
+          renderTutorialCoach();
+          return;
+        }
+      }
+      event.preventDefault();
+      resetKeyboardControl();
+      els.playCard.setPointerCapture?.(event.pointerId);
+      els.playCard.classList.add("dragging");
+      const startX = event.clientX;
+      const previewThreshold = 70;
+      const commitThreshold = 145;
+      let moved = 0;
+      let vibrated = false;
+      const move = moveEvent => {
+        moved = moveEvent.clientX - startX;
+        const direction = Math.sign(moved) || 1;
+        const distance = Math.abs(moved);
+        const visualDistance = Math.min(distance, previewThreshold) * 2.25;
+        const visualMove = direction * visualDistance;
+        const rotate = direction * (Math.min(distance, previewThreshold) / 6.2);
+        els.playCard.style.transform = `translateX(${visualMove}px) rotate(${rotate}deg)`;
+        els.playCard.classList.toggle("left-lean", moved < -32);
+        els.playCard.classList.toggle("right-lean", moved > 32);
+        els.playCard.classList.toggle("preview-lock", distance >= previewThreshold);
+        els.playCard.classList.toggle("commit-ready", distance >= commitThreshold);
+        if (!vibrated && distance >= commitThreshold && state.settings.vibration && isMobileViewport() && "vibrate" in navigator) {
+          navigator.vibrate(18);
+          vibrated = true;
+        }
+        if (distance >= commitThreshold) completeTutorialCoachPractice("drag");
+        setPeek(moved);
+      };
+      const up = () => {
+        window.removeEventListener("pointermove", move);
+        window.removeEventListener("pointerup", up);
+        els.playCard.style.transform = "";
+        els.playCard.classList.remove("dragging");
+        els.playCard.classList.remove("left-lean", "right-lean", "preview-lock", "commit-ready");
+        resetPeek();
+        if (moved < -commitThreshold) {
+          choose("right");
+          return;
+        }
+        if (moved > commitThreshold) {
+          choose("left");
+          return;
+        }
+      };
+      window.addEventListener("pointermove", move);
+      window.addEventListener("pointerup", up);
+    }
+
+    function fastModeDirectionFromEvent(event) {
+      const rect = els.cardStage.getBoundingClientRect();
+      return event.clientX < rect.left + rect.width / 2 ? "left" : "right";
+    }
+
+    function previewFastMode(event) {
+      if (!state.settings.fastMode || state.ended || isModalOpen()) return;
+      const direction = fastModeDirectionFromEvent(event);
+      const moved = direction === "left" ? -158 : 158;
+      const rotate = direction === "left" ? -13.5 : 13.5;
+      els.playCard.style.transform = `translateX(${moved}px) rotate(${rotate}deg)`;
+      els.playCard.classList.toggle("left-lean", direction === "left");
+      els.playCard.classList.toggle("right-lean", direction === "right");
+      els.playCard.classList.add("preview-lock", "commit-ready");
+      setPeek(moved);
+    }
+
+    function commitFastMode(event) {
+      if (!state.settings.fastMode || state.ended || isModalOpen()) return;
+      const direction = fastModeDirectionFromEvent(event);
+      resetPeek();
+      choose(direction === "left" ? "right" : "left");
+    }
+
+    function resetFastModePreview() {
+      if (!state.settings.fastMode) return;
+      els.playCard.classList.remove("left-lean", "right-lean", "preview-lock", "commit-ready");
+      resetPeek();
+    }
+
+    function startTutorialPracticeDrag(event) {
+      const step = activeTutorialSteps()[state.tutorialIndex];
+      if (step.practice !== "drag") return;
+      event.preventDefault();
+      els.tutorialPracticeCard.setPointerCapture?.(event.pointerId);
+      const startX = event.clientX;
+      let moved = 0;
+      const move = moveEvent => {
+        moved = moveEvent.clientX - startX;
+        const capped = Math.max(-96, Math.min(96, moved));
+        els.tutorialPracticeCard.style.transform = `translateX(${capped}px) rotate(${capped / 9}deg)`;
+      };
+      const up = () => {
+        window.removeEventListener("pointermove", move);
+        window.removeEventListener("pointerup", up);
+        els.tutorialPracticeCard.style.transform = "";
+        if (Math.abs(moved) > 34) completeTutorialPractice();
+      };
+      window.addEventListener("pointermove", move);
+      window.addEventListener("pointerup", up);
+    }
+
+    els.playCard.addEventListener("pointerdown", startDrag);
+    els.cardStage.addEventListener("mousemove", previewFastMode);
+    els.cardStage.addEventListener("mouseleave", resetFastModePreview);
+    els.cardStage.addEventListener("click", commitFastMode);
+    els.tutorialPracticeCard.addEventListener("pointerdown", startTutorialPracticeDrag);
+    els.tutorialPracticeCard.addEventListener("click", () => {
+      const step = activeTutorialSteps()[state.tutorialIndex];
+      if (step.practice === "tarot") completeTutorialPractice();
+    });
+    els.tutorialMiniStats.addEventListener("click", event => {
+      if (!event.target.closest("[data-tutorial-stat]")) return;
+      if (activeTutorialSteps()[state.tutorialIndex].practice === "stat") completeTutorialPractice();
+    });
+    els.meters.addEventListener("click", () => completeTutorialCoachPractice("stat"));
+    els.logList.addEventListener("click", () => completeTutorialCoachPractice("log"));
+    els.tutorialPracticeLeft.addEventListener("click", completeTutorialPractice);
+    els.tutorialPracticeRight.addEventListener("click", completeTutorialPractice);
+    els.newGameTop.addEventListener("click", () => resetGame(true));
+    els.openTutorialTop.addEventListener("click", () => openTutorial(0));
+    els.openTutorialStory.addEventListener("click", () => openTutorial(0));
+    els.openArchiveTop.addEventListener("click", () => {
+      completeTutorialCoachPractice("tarot");
+      openArchive();
+    });
+    els.openArchiveStory.addEventListener("click", () => {
+      completeTutorialCoachPractice("tarot");
+      openArchive();
+    });
+    els.openAchievementsTop.addEventListener("click", () => openAchievements());
+    els.openAchievementsStory.addEventListener("click", () => openAchievements());
+    els.openSettingsTop.addEventListener("click", () => {
+      state.settingsOpened = true;
+      applySettings();
+      els.settingsModal.classList.add("open");
+      checkAchievements();
+    });
+    els.openSettingsStory.addEventListener("click", () => {
+      state.settingsOpened = true;
+      applySettings();
+      els.settingsModal.classList.add("open");
+      checkAchievements();
+    });
+    els.quickLeft.addEventListener("click", () => choose("left"));
+    els.quickRight.addEventListener("click", () => choose("right"));
+    els.doubleRoadPanel.addEventListener("click", event => {
+      const button = event.target.closest("[data-double-index]");
+      if (!button) return;
+      state.doubleSelected = Number(button.dataset.doubleIndex);
+      render();
+    });
+    els.mobileLogToggle.addEventListener("click", () => {
+      els.mobileLogDrawer.classList.toggle("open");
+      completeTutorialCoachPractice("log");
+    });
+    els.mobileLogHandle.addEventListener("click", () => {
+      els.mobileLogDrawer.classList.toggle("open");
+      completeTutorialCoachPractice("log");
+    });
+    els.difficultyOptions.addEventListener("click", event => {
+      const button = event.target.closest("[data-difficulty]");
+      if (!button) return;
+      if (button.dataset.difficulty === "hard" && !state.hardUnlocked) {
+        els.difficultyHint.textContent = "어려움은 중간 난이도 50장 도전을 클리어하면 열립니다.";
+        return;
+      }
+      state.difficulty = button.dataset.difficulty;
+      resetGame(true);
+    });
+    els.modeOptions.addEventListener("click", event => {
+      const button = event.target.closest("[data-mode]");
+      if (!button) return;
+      state.mode = button.dataset.mode;
+      resetGame(true);
+    });
+    els.infiniteToggle.addEventListener("click", () => {
+      state.infiniteEnabled = !state.infiniteEnabled;
+      resetGame(true);
+    });
+    els.playerName.addEventListener("input", () => {
+      state.playerName = cleanPlayerName(els.playerName.value);
+      els.playerNameHint.textContent = "무한 모드 기록에 표시될 이름입니다. 2~12자로 입력하세요.";
+    });
+    els.startStory.addEventListener("click", () => {
+      if (isInfiniteMode()) {
+        const name = cleanPlayerName(els.playerName.value);
+        if (name.length < 2) {
+          els.playerNameHint.textContent = "무한 모드는 기록 이름을 2자 이상 입력해야 시작할 수 있습니다.";
+          els.playerName.focus();
+          return;
+        }
+        state.playerName = name;
+        els.playerName.value = name;
+      }
+      if (!state.runStartedTracked) {
+        state.runStartedTracked = true;
+        state.runStartedAt = Date.now();
+        updatePlayerStats({ gamesPlayed: 1, doubleRoadRuns: isDoubleMode() ? 1 : 0 });
+      }
+      els.storyModal.classList.remove("open");
+      updateBodyState();
+      completeTutorialCoachPractice("start");
+    });
+    els.closeEnd.addEventListener("click", () => els.endModal.classList.remove("open"));
+    els.closePatchNotes.addEventListener("click", () => els.patchModal.classList.remove("open"));
+    els.closeLeaderboardModal.addEventListener("click", () => els.leaderboardModal.classList.remove("open"));
+    els.closeTutorial.addEventListener("click", () => closeTutorialModal());
+    els.skipTutorial.addEventListener("click", skipTutorialToStory);
+    els.prevTutorial.addEventListener("click", () => {
+      state.tutorialIndex -= 1;
+      renderTutorial();
+    });
+    els.nextTutorial.addEventListener("click", () => {
+      if (state.tutorialIndex >= activeTutorialSteps().length - 1) {
+        closeTutorialModal();
+        return;
+      }
+      state.tutorialIndex += 1;
+      renderTutorial();
+    });
+    els.tutorialCoachSkip.addEventListener("click", skipTutorialToStory);
+    els.tutorialCoachPrev.addEventListener("click", () => {
+      state.tutorialIndex -= 1;
+      renderTutorialCoach();
+    });
+    els.tutorialCoachNext.addEventListener("click", () => {
+      if (state.tutorialIndex >= activeTutorialSteps().length - 1) {
+        closeTutorialModal();
+        return;
+      }
+      state.tutorialIndex += 1;
+      renderTutorialCoach();
+    });
+    els.closeSettings.addEventListener("click", () => els.settingsModal.classList.remove("open"));
+    els.darkModeToggle.addEventListener("click", () => {
+      state.settings.darkMode = !state.settings.darkMode;
+      persistSettings();
+      applySettings();
+      checkAchievements();
+    });
+    els.fastModeToggle.addEventListener("click", () => {
+      if (state.tutorialCoachOpen) {
+        state.settings.fastMode = false;
+        persistSettings();
+        applySettings();
+        return;
+      }
+      state.settings.fastMode = !state.settings.fastMode;
+      persistSettings();
+      applySettings();
+      checkAchievements();
+    });
+    els.vibrationToggle?.addEventListener("click", () => {
+      state.settings.vibration = !state.settings.vibration;
+      persistSettings();
+      applySettings();
+    });
+    els.closeArchive.addEventListener("click", () => els.archiveModal.classList.remove("open"));
+    els.closeAchievements.addEventListener("click", () => els.achievementsModal.classList.remove("open"));
+    els.achievementTabs.addEventListener("click", event => {
+      const button = event.target.closest("[data-achievement-tab]");
+      if (!button) return;
+      state.achievementTab = button.dataset.achievementTab;
+      renderAchievements();
+    });
+    els.archiveStats.addEventListener("click", event => {
+      const button = event.target.closest("[data-archive-stat-tab]");
+      if (!button) return;
+      state.archiveTab = button.dataset.archiveStatTab;
+      renderArchive();
+    });
+    els.archiveTabs.addEventListener("click", event => {
+      const button = event.target.closest("[data-archive-tab]");
+      if (!button) return;
+      state.archiveTab = button.dataset.archiveTab;
+      renderArchive();
+    });
+    els.archiveFilters.addEventListener("click", event => {
+      const button = event.target.closest("[data-archive-filter]");
+      if (!button) return;
+      state.archiveFilter = button.dataset.archiveFilter;
+      renderArchive();
+    });
+    els.archiveList.addEventListener("click", event => {
+      const row = event.target.closest("[data-archive-index]");
+      if (!row) return;
+      const item = (state.archiveListView || [])[Number(row.dataset.archiveIndex)];
+      renderArchiveDetail(item);
+      if (isMobileViewport()) {
+        els.archiveDetail.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      }
+    });
+    els.restartEnd.addEventListener("click", () => resetGame(true));
+    els.statGraph.addEventListener("click", event => {
+      const button = event.target.closest("[data-graph-filter]");
+      if (!button) return;
+      state.graphFilter = button.dataset.graphFilter;
+      renderStatGraph();
+      checkAchievements();
+    });
+    els.openPatchNotesStory.addEventListener("click", () => {
+      renderPatchNotes();
+      els.patchModal.classList.add("open");
+    });
+    els.openPatchNotesTop.addEventListener("click", () => {
+      renderPatchNotes();
+      els.patchModal.classList.add("open");
+    });
+    els.openLeaderboardTop.addEventListener("click", () => {
+      renderLeaderboardTabs();
+      loadLeaderboard();
+      els.leaderboardModal.classList.add("open");
+    });
+    els.submitScore.addEventListener("click", submitLeaderboardRecord);
+    els.refreshLeaderboard.addEventListener("click", loadLeaderboard);
+    els.startRefreshLeaderboard.addEventListener("click", loadLeaderboard);
+    els.leaderboardTabs.addEventListener("click", event => {
+      const button = event.target.closest("[data-leaderboard-difficulty]");
+      if (!button) return;
+      state.leaderboardDifficulty = button.dataset.leaderboardDifficulty;
+      renderLeaderboardTabs();
+      loadLeaderboard();
+    });
+    els.startLeaderboardTabs.addEventListener("click", event => {
+      const button = event.target.closest("[data-start-leaderboard-difficulty]");
+      if (!button) return;
+      state.leaderboardDifficulty = button.dataset.startLeaderboardDifficulty;
+      renderLeaderboardTabs();
+      loadLeaderboard();
+    });
+    els.modalLeaderboardTabs.addEventListener("click", event => {
+      const button = event.target.closest("[data-modal-leaderboard-difficulty]");
+      if (!button) return;
+      state.leaderboardDifficulty = button.dataset.modalLeaderboardDifficulty;
+      renderLeaderboardTabs();
+      loadLeaderboard();
+    });
+    window.addEventListener("keydown", handleArrowKeyDown);
+    window.addEventListener("keyup", handleArrowKeyUp);
+
+    resetGame(true);
+    renderLeaderboardTabs();
+    renderVersionFooter();
+    applySettings();
+    loadLeaderboard();
+    if (!readTutorialSeen()) {
+      openTutorial(0);
+    }
+    console.assert(buildDeck().length === TOTAL_EVENT_POOL, `card pool must contain ${TOTAL_EVENT_POOL} events`);
+    console.assert(buildQuestLibrary().length === QUEST_LIBRARY_SIZE, `quest library must contain ${QUEST_LIBRARY_SIZE} quests`);
+    console.assert(SET_EFFECTS.length === SET_EFFECT_ARCHIVE_TOTAL, `set effect library must contain ${SET_EFFECT_ARCHIVE_TOTAL} effects`);
+    console.assert(ACHIEVEMENTS.length === 150, "achievement library must contain 150 achievements");
+    console.assert(isInfiniteMode() || state.deck.length === runTargetCount(), "run deck length must match selected mode");
+  </script>
+</body>
+</html>
