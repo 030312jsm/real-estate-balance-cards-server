@@ -43,6 +43,18 @@
         linear-gradient(180deg, #fbfcfa, var(--bg));
     }
 
+    body.dark-mode {
+      --bg: #0f1517;
+      --ink: #eef6f2;
+      --muted: #a7b9b5;
+      --panel: #172124;
+      --line: #425155;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.32);
+      background:
+        linear-gradient(120deg, rgba(30, 92, 85, 0.42), rgba(94, 70, 28, 0.24)),
+        linear-gradient(180deg, #0b1012, #11191b);
+    }
+
     button {
       border: 0;
       cursor: pointer;
@@ -159,6 +171,13 @@
       white-space: nowrap;
     }
 
+    .text-button.compact {
+      min-height: 36px;
+      padding: 0 10px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
     .icon-button {
       width: 40px;
       padding: 0;
@@ -168,6 +187,110 @@
       color: white;
       background: #1f6f5a;
       border-color: #1f6f5a;
+    }
+
+    body.dark-mode .topbar,
+    body.dark-mode .panel,
+    body.dark-mode .modal,
+    body.dark-mode .version-footer,
+    body.dark-mode .pill,
+    body.dark-mode .text-button,
+    body.dark-mode .icon-button,
+    body.dark-mode .meter,
+    body.dark-mode .season-item,
+    body.dark-mode .small-card,
+    body.dark-mode .last-result,
+    body.dark-mode .quest-board,
+    body.dark-mode .log-copy,
+    body.dark-mode .mobile-score-item,
+    body.dark-mode .stat-graph,
+    body.dark-mode .summary,
+    body.dark-mode .score-card {
+      background: rgba(23, 29, 34, 0.94);
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    body.dark-mode .quick-choice,
+    body.dark-mode .start-summary,
+    body.dark-mode .start-extra,
+    body.dark-mode .tutorial-card,
+    body.dark-mode .tutorial-practice,
+    body.dark-mode .tutorial-mini-stat,
+    body.dark-mode .tutorial-practice-card,
+    body.dark-mode .setting-row,
+    body.dark-mode .archive-card,
+    body.dark-mode .archive-list,
+    body.dark-mode .archive-detail,
+    body.dark-mode .archive-row,
+    body.dark-mode .quest-row {
+      background: rgba(21, 31, 34, 0.96);
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    body.dark-mode .play-card,
+    body.dark-mode .under-choice-sheet,
+    body.dark-mode .archive-detail-card {
+      background: #192427;
+      color: var(--ink);
+      border-color: #4b5d61;
+    }
+
+    body.dark-mode .under-choice-sheet::before {
+      background:
+        linear-gradient(90deg, rgba(36, 83, 78, 0.82), transparent 34%, transparent 66%, rgba(102, 77, 35, 0.72)),
+        #192427;
+    }
+
+    body.dark-mode .panel-head {
+      background: rgba(18, 24, 28, 0.96);
+      border-color: var(--line);
+    }
+
+    body.dark-mode .text-button.primary {
+      background: #277c78;
+      border-color: #277c78;
+    }
+
+    body.dark-mode .stat-gauge {
+      background:
+        radial-gradient(circle at center, #172124 0 55%, transparent 56%),
+        conic-gradient(var(--meter-color) var(--meter-value), #314044 0);
+      box-shadow: inset 0 0 0 1px rgba(238, 246, 242, 0.1);
+    }
+
+    body.dark-mode .card-title,
+    body.dark-mode .tutorial-card h3,
+    body.dark-mode .archive-card b,
+    body.dark-mode .archive-row b,
+    body.dark-mode .setting-copy b,
+    body.dark-mode .panel-title,
+    body.dark-mode .version-footer strong,
+    body.dark-mode .stat-graph strong,
+    body.dark-mode .score-card b,
+    body.dark-mode .meter-value,
+    body.dark-mode .mobile-score-item b {
+      color: var(--ink);
+    }
+
+    body.dark-mode .story-line,
+    body.dark-mode .card-text,
+    body.dark-mode .meter-copy,
+    body.dark-mode .quick-choice span,
+    body.dark-mode .tutorial-card p,
+    body.dark-mode .tutorial-practice-card p,
+    body.dark-mode .setting-copy span,
+    body.dark-mode .archive-row span,
+    body.dark-mode .archive-card span,
+    body.dark-mode .archive-detail-card p {
+      color: var(--muted);
+    }
+
+    body.dark-mode .dilemma-line {
+      color: #ecdab9;
+      background: rgba(211, 137, 47, 0.16);
+      border-left-color: #d9a052;
     }
 
     .icon-button:hover,
@@ -228,6 +351,8 @@
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: #ffffff;
+      position: relative;
+      overflow: hidden;
     }
 
     .meter-main {
@@ -248,6 +373,35 @@
         radial-gradient(circle at center, #ffffff 0 55%, transparent 56%),
         conic-gradient(var(--meter-color) var(--meter-value), #edf1f0 0);
       box-shadow: inset 0 0 0 1px rgba(23, 32, 42, 0.08);
+      transition: background 0.55s ease, transform 0.35s ease;
+    }
+
+    .meter.star-pop .stat-gauge {
+      animation: gaugePulse 0.72s ease;
+    }
+
+    .meter.star-pop::after {
+      content: "★";
+      position: absolute;
+      left: 34px;
+      top: 28px;
+      color: #d18a1f;
+      font-size: 18px;
+      font-weight: 950;
+      animation: starFly 0.95s ease forwards;
+      pointer-events: none;
+    }
+
+    @keyframes gaugePulse {
+      0% { transform: scale(1); }
+      35% { transform: scale(1.12); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes starFly {
+      0% { opacity: 0; transform: translate(0, 0) scale(0.6) rotate(-20deg); }
+      22% { opacity: 1; }
+      100% { opacity: 0; transform: translate(110px, 36px) scale(1.18) rotate(15deg); }
     }
 
     .stat-gauge svg {
@@ -558,10 +712,45 @@
     }
 
     .play-card.quest-card {
-      border-color: #efc98d;
+      color: #fff8f1;
+      border-color: #8e6bc7;
       background:
-        linear-gradient(180deg, rgba(250, 236, 212, 0.45), rgba(255, 255, 255, 0) 34%),
-        #fff;
+        radial-gradient(circle at 18% 8%, rgba(255, 226, 150, 0.18), transparent 28%),
+        linear-gradient(145deg, #4b2c68, #2d486f 58%, #28343d),
+        #3f2d58;
+      box-shadow: 0 28px 72px rgba(62, 44, 92, 0.36);
+    }
+
+    .play-card.quest-card .card-number,
+    .play-card.quest-card .story-line,
+    .play-card.quest-card .card-text {
+      color: #f2e8ff;
+    }
+
+    .play-card.quest-card .dilemma-line {
+      color: #fff2cc;
+      background: rgba(255, 210, 116, 0.16);
+      border-left-color: #ffd27a;
+    }
+
+    .play-card.quest-card .tag {
+      color: #fff8f1;
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .play-card.quest-card .badge {
+      color: #36254f;
+      background: #ffd27a;
+      border-color: #ffd27a;
+    }
+
+    body.dark-mode .play-card.quest-card {
+      border-color: #b68de8;
+      background:
+        radial-gradient(circle at 20% 8%, rgba(255, 210, 116, 0.22), transparent 30%),
+        linear-gradient(145deg, #5b3977, #334f74 58%, #22323b),
+        #3c2c58;
     }
 
     .card-top {
@@ -641,6 +830,45 @@
       border: 1px solid var(--line);
       font-size: 11px;
       font-weight: 800;
+    }
+
+    .quick-choice-panel {
+      display: none;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    body.fast-mode .quick-choice-panel {
+      display: grid;
+    }
+
+    .quick-choice {
+      min-height: 84px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.92);
+      color: #243442;
+      padding: 10px;
+      display: grid;
+      gap: 5px;
+      text-align: left;
+      align-content: start;
+    }
+
+    .quick-choice.right {
+      text-align: right;
+      justify-items: end;
+    }
+
+    .quick-choice b {
+      font-size: 14px;
+      font-weight: 950;
+    }
+
+    .quick-choice span {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.38;
     }
 
     .last-result {
@@ -813,6 +1041,45 @@
       line-height: 1.45;
     }
 
+    .start-summary {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #f9fbfb;
+      padding: 11px;
+      color: #465666;
+      font-size: 13px;
+      line-height: 1.5;
+      display: grid;
+      gap: 6px;
+    }
+
+    .start-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .start-extra {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfdfc;
+      overflow: hidden;
+    }
+
+    .start-extra summary {
+      cursor: pointer;
+      padding: 10px 12px;
+      color: #243442;
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+    .start-extra-body {
+      padding: 0 12px 12px;
+      display: grid;
+      gap: 10px;
+    }
+
     .modal-layer {
       position: fixed;
       inset: 0;
@@ -841,6 +1108,472 @@
       padding: 14px;
       display: grid;
       gap: 12px;
+    }
+
+    .tutorial-card {
+      min-height: 220px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #f9fbfb;
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .tutorial-step-label {
+      color: #1f6f5a;
+      font-size: 12px;
+      font-weight: 950;
+    }
+
+    .tutorial-card h3 {
+      margin: 0;
+      color: #17202a;
+      font-size: 21px;
+      line-height: 1.25;
+    }
+
+    .tutorial-card p {
+      margin: 0;
+      color: #526170;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .tutorial-practice {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .tutorial-mini-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .tutorial-mini-stat {
+      min-height: 52px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      gap: 2px;
+      padding: 6px;
+      color: #243442;
+      background: #f9fbfb;
+      font-size: 10px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .tutorial-mini-stat b {
+      font-size: 16px;
+    }
+
+    .tutorial-practice-stage {
+      min-height: 178px;
+      display: grid;
+      place-items: center;
+      border-radius: var(--radius);
+      background: linear-gradient(120deg, rgba(223, 242, 239, 0.7), rgba(250, 236, 212, 0.48));
+      overflow: hidden;
+    }
+
+    .tutorial-practice-card {
+      width: min(230px, 86%);
+      min-height: 142px;
+      border: 1px solid #cad8d7;
+      border-radius: var(--radius);
+      background: #ffffff;
+      box-shadow: 0 14px 30px rgba(23, 32, 42, 0.16);
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+      touch-action: none;
+      transition: transform 0.16s ease;
+      user-select: none;
+    }
+
+    .tutorial-practice-card.done {
+      border-color: #1f6f5a;
+      box-shadow: 0 16px 34px rgba(31, 111, 90, 0.24);
+    }
+
+    .tutorial-practice-card h4 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .tutorial-practice-card p {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.45;
+      color: #526170;
+    }
+
+    .tutorial-practice-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .tutorial-status {
+      min-height: 24px;
+      color: #1f6f5a;
+      font-size: 12px;
+      font-weight: 950;
+      text-align: center;
+    }
+
+    .tutorial-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .tutorial-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: #d7dfdd;
+    }
+
+    .tutorial-dot.active {
+      background: #1f6f5a;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .settings-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .setting-row {
+      min-height: 72px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #f9fbfb;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .setting-copy {
+      display: grid;
+      gap: 3px;
+    }
+
+    .setting-copy b {
+      font-size: 14px;
+    }
+
+    .setting-copy span {
+      color: #66737f;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .switch {
+      width: 52px;
+      height: 30px;
+      border-radius: 999px;
+      border: 1px solid #cdd8d6;
+      background: #e8eeed;
+      padding: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .switch.active {
+      justify-content: flex-end;
+      background: #1f6f5a;
+      border-color: #1f6f5a;
+    }
+
+    .switch span {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(23, 32, 42, 0.18);
+    }
+
+    .archive-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .archive-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #f9fbfb;
+      padding: 10px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .archive-card span {
+      color: #66737f;
+      font-size: 11px;
+    }
+
+    .archive-card b {
+      color: #17202a;
+      font-size: 23px;
+    }
+
+    .archive-list {
+      max-height: 320px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      display: grid;
+      gap: 0;
+    }
+
+    .archive-workspace {
+      display: grid;
+      grid-template-columns: minmax(220px, 0.85fr) minmax(260px, 1fr);
+      gap: 10px;
+    }
+
+    .archive-workspace .archive-list {
+      max-height: 370px;
+    }
+
+    .archive-detail {
+      min-height: 370px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      padding: 10px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .archive-detail-card {
+      width: min(100%, 310px);
+      min-height: 350px;
+      border: 1px solid #cad8d7;
+      border-radius: var(--radius);
+      background: #fff;
+      padding: 14px;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 10px;
+      box-shadow: 0 16px 34px rgba(23, 32, 42, 0.12);
+    }
+
+    .archive-detail-card.quest-detail {
+      color: #fff8f1;
+      border-color: #8e6bc7;
+      background: linear-gradient(145deg, #4b2c68, #2d486f 58%, #28343d);
+    }
+
+    .archive-detail-card h3 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.18;
+    }
+
+    .archive-detail-card p {
+      margin: 0;
+      color: #526170;
+      font-size: 13px;
+      line-height: 1.48;
+    }
+
+    .archive-detail-card.quest-detail p {
+      color: #f2e8ff;
+    }
+
+    .tarot-card {
+      --tiltX: 0deg;
+      --tiltY: 0deg;
+      width: min(100%, 250px);
+      min-height: 360px;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .tarot-inner {
+      position: relative;
+      min-height: 360px;
+      transform-style: preserve-3d;
+      transition: transform 0.72s cubic-bezier(0.2, 0.78, 0.22, 1);
+      transform: rotateX(var(--tiltX)) rotateY(var(--tiltY));
+    }
+
+    .tarot-card.flipped .tarot-inner {
+      transform: rotateX(var(--tiltX)) rotateY(calc(180deg + var(--tiltY)));
+    }
+
+    .tarot-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      border-radius: 14px;
+      border: 1px solid #d6c09a;
+      box-shadow: 0 22px 48px rgba(23, 32, 42, 0.22);
+      overflow: hidden;
+    }
+
+    .tarot-back {
+      display: grid;
+      place-items: center;
+      color: #f3e7c8;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(255, 226, 150, 0.18), transparent 28%),
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.06) 0 2px, transparent 2px 12px),
+        linear-gradient(145deg, #263f7c, #43265f);
+    }
+
+    .tarot-back b {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,0.35);
+      font-size: 32px;
+    }
+
+    .tarot-front {
+      transform: rotateY(180deg);
+      padding: 15px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 10px;
+      color: #fff8f1;
+      background:
+        radial-gradient(circle at 50% 22%, var(--tarot-glow), transparent 30%),
+        linear-gradient(160deg, var(--tarot-a), var(--tarot-b));
+    }
+
+    .tarot-kicker {
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: 0.08em;
+      color: #ffe7aa;
+    }
+
+    .tarot-title {
+      margin: 0;
+      font-size: 25px;
+      line-height: 1.12;
+      font-weight: 950;
+    }
+
+    .tarot-symbol {
+      align-self: center;
+      justify-self: center;
+      width: 126px;
+      height: 126px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.32);
+      display: grid;
+      place-items: center;
+      color: #fff4cf;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .tarot-symbol svg {
+      width: 82px;
+      height: 82px;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    .tarot-copy {
+      margin: 0;
+      color: #f8e9ce;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .tarot-reveal-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 46;
+      display: none;
+      place-items: center;
+      background: rgba(9, 12, 15, 0.72);
+      padding: 18px;
+    }
+
+    .tarot-reveal-layer.open {
+      display: grid;
+    }
+
+    .tarot-reveal-layer .tarot-card {
+      animation: revealLift 0.6s ease forwards;
+    }
+
+    @keyframes revealLift {
+      from { opacity: 0; transform: translateY(18px) scale(0.94); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .archive-row {
+      padding: 10px;
+      border-bottom: 1px solid var(--line);
+      border-left: 0;
+      border-right: 0;
+      border-top: 0;
+      background: transparent;
+      color: inherit;
+      display: grid;
+      gap: 4px;
+      text-align: left;
+      width: 100%;
+    }
+
+    .archive-row:hover {
+      background: #f3f8f6;
+    }
+
+    body.dark-mode .archive-row:hover {
+      background: rgba(39, 124, 120, 0.14);
+    }
+
+    .archive-row:last-child {
+      border-bottom: 0;
+    }
+
+    .archive-row b {
+      color: #17202a;
+      font-size: 13px;
+    }
+
+    .archive-row span {
+      color: #66737f;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .mobile-log-toggle,
+    .mobile-log-drawer {
+      display: none;
     }
 
     .score-grid {
@@ -876,6 +1609,76 @@
       color: #465666;
       font-size: 13px;
       line-height: 1.5;
+    }
+
+    #endModal {
+      align-items: center;
+    }
+
+    #endModal .modal {
+      width: min(1180px, calc(100vw - 18px));
+      max-height: calc(100vh - 18px);
+      overflow: hidden;
+    }
+
+    #endModal .modal-body {
+      grid-template-columns: 250px minmax(0, 1fr) 300px;
+      grid-template-areas:
+        "tarot summary scores"
+        "tarot graph graph"
+        "tarot submit restart";
+      align-items: stretch;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    #endTarotWrap {
+      grid-area: tarot;
+    }
+
+    #endModal .score-grid {
+      grid-area: scores;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    #endModal .score-card {
+      min-height: 58px;
+      padding: 8px;
+      gap: 2px;
+    }
+
+    #endModal .score-card b {
+      font-size: 20px;
+    }
+
+    #endModal .summary {
+      grid-area: summary;
+      min-height: 0;
+      max-height: 178px;
+      overflow: hidden;
+      font-size: 12px;
+      line-height: 1.42;
+    }
+
+    #endModal .stat-graph {
+      grid-area: graph;
+      max-height: 250px;
+      overflow: hidden;
+    }
+
+    #endModal .stat-graph svg {
+      max-height: 135px;
+    }
+
+    #endModal .submit-section {
+      grid-area: submit;
+      align-content: center;
+    }
+
+    #endModal #restartEnd {
+      grid-area: restart;
+      align-self: center;
     }
 
     .ending-story {
@@ -1316,6 +2119,457 @@
       margin-top: 3px;
     }
 
+    body.is-playing {
+      overflow: hidden;
+    }
+
+    body.is-playing .app {
+      height: 100vh;
+      padding: 10px 0;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    body.is-playing .layout {
+      min-height: 0;
+      height: 100%;
+      align-items: stretch;
+    }
+
+    body.is-playing .panel,
+    body.is-playing .game-panel,
+    body.is-playing .card-stage {
+      min-height: 0;
+    }
+
+    body.is-playing .game-panel {
+      grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+      gap: 10px;
+    }
+
+    body.is-playing .card-wrap {
+      min-height: min(500px, calc(100vh - 230px));
+    }
+
+    body.is-playing .log-list {
+      max-height: calc(100vh - 242px);
+    }
+
+    body.dark-mode .patch-item,
+    body.dark-mode .difficulty-panel,
+    body.dark-mode .difficulty-option,
+    body.dark-mode .player-name-row input,
+    body.dark-mode .leaderboard-tab,
+    body.dark-mode .leaderboard-item,
+    body.dark-mode .graph-filter,
+    body.dark-mode .archive-card.active,
+    body.dark-mode .achievement-item,
+    body.dark-mode .achievement-tabs,
+    body.dark-mode .tutorial-coach {
+      background: #142022;
+      color: #eef6f2;
+      border-color: #435a5f;
+    }
+
+    body.dark-mode .patch-item b,
+    body.dark-mode .patch-detail-list,
+    body.dark-mode .patch-detail-list li,
+    body.dark-mode .difficulty-title,
+    body.dark-mode .difficulty-option b,
+    body.dark-mode .player-name-row label,
+    body.dark-mode .leaderboard-name,
+    body.dark-mode .leaderboard-score,
+    body.dark-mode .leaderboard-rank,
+    body.dark-mode .achievement-item b,
+    body.dark-mode .tutorial-coach h3 {
+      color: #f4fbf7;
+    }
+
+    body.dark-mode .patch-item p,
+    body.dark-mode .difficulty-option span,
+    body.dark-mode .player-name-row small,
+    body.dark-mode .leaderboard-meta,
+    body.dark-mode .achievement-item span,
+    body.dark-mode .tutorial-coach p {
+      color: #b7c9c4;
+    }
+
+    body.dark-mode .difficulty-option.active,
+    body.dark-mode .leaderboard-tab.active,
+    body.dark-mode .graph-filter.active,
+    body.dark-mode .archive-card.active {
+      background: rgba(39, 124, 120, 0.23);
+      border-color: #45aaa2;
+      color: #bff7ec;
+      outline-color: rgba(69, 170, 162, 0.24);
+    }
+
+    body.dark-mode .difficulty-option.locked {
+      color: #91a09d;
+      background: #11191b;
+      border-color: #3a484c;
+    }
+
+    body.dark-mode .leaderboard-rank {
+      background: rgba(69, 170, 162, 0.18);
+      color: #bff7ec;
+    }
+
+    body.dark-mode .empty,
+    body.dark-mode .server-note,
+    body.dark-mode .submit-status,
+    body.dark-mode .graph-note,
+    body.dark-mode .stat-star-progress {
+      color: #b7c9c4;
+    }
+
+    body.dark-mode .under-choice.left {
+      color: #bff7ec;
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+    }
+
+    body.dark-mode .under-choice.right {
+      color: #ffe0a8;
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+    }
+
+    body.dark-mode .peek-kicker,
+    body.dark-mode .peek-text {
+      color: #d6e7e2;
+    }
+
+    body.dark-mode .delta.up {
+      color: #c9ffdf;
+      background: rgba(28, 122, 78, 0.42);
+      border-color: rgba(120, 223, 163, 0.62);
+    }
+
+    body.dark-mode .delta.down {
+      color: #ffd3dd;
+      background: rgba(153, 54, 74, 0.44);
+      border-color: rgba(239, 150, 169, 0.62);
+    }
+
+    body.dark-mode .hidden-deltas {
+      color: #dbe7e4;
+      background: #263337;
+      border-color: #526368;
+    }
+
+    body.dark-mode .mobile-log-drawer {
+      background: #131d20;
+      border-color: #435a5f;
+    }
+
+    body.dark-mode .mobile-log-handle {
+      background: #18272a;
+      color: #eef6f2;
+      border-color: #435a5f;
+    }
+
+    body.dark-mode .start-extra summary {
+      color: #eef6f2;
+    }
+
+    #archiveTabs {
+      display: none;
+    }
+
+    .archive-card {
+      text-align: left;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .archive-card.active {
+      border-color: #1f6f5a;
+      background: #edf7f4;
+      outline: 3px solid rgba(31, 111, 90, 0.12);
+    }
+
+    .archive-card:disabled {
+      cursor: default;
+      opacity: 0.64;
+    }
+
+    .archive-card-wrap {
+      --leftPeek: 0.74;
+      --rightPeek: 0.74;
+      position: relative;
+      width: min(390px, 100%);
+      min-height: 430px;
+      display: grid;
+      place-items: center;
+      perspective: 1200px;
+    }
+
+    .archive-card-wrap .under-choice-sheet {
+      width: min(360px, 94%);
+      min-height: 402px;
+    }
+
+    .archive-play-card {
+      position: relative;
+      z-index: 2;
+      width: min(360px, 94%);
+      min-height: 402px;
+      border: 1px solid #cad8d7;
+      border-radius: var(--radius);
+      background: #fff;
+      box-shadow: 0 20px 44px rgba(26, 36, 47, 0.16);
+      padding: 15px;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 12px;
+      touch-action: none;
+      user-select: none;
+      cursor: grab;
+      transition: transform 0.16s ease, border-color 0.16s ease;
+    }
+
+    .archive-play-card.dragging {
+      transition: none;
+    }
+
+    .archive-play-card.quest-detail {
+      color: #fff8f1;
+      border-color: #8e6bc7;
+      background:
+        radial-gradient(circle at 18% 8%, rgba(255, 226, 150, 0.18), transparent 28%),
+        linear-gradient(145deg, #4b2c68, #2d486f 58%, #28343d),
+        #3f2d58;
+    }
+
+    .archive-play-card.quest-detail .story-line,
+    .archive-play-card.quest-detail .card-text,
+    .archive-play-card.quest-detail p {
+      color: #f2e8ff;
+    }
+
+    .archive-play-card.quest-detail .dilemma-line {
+      color: #fff2cc;
+      background: rgba(255, 210, 116, 0.16);
+      border-left-color: #ffd27a;
+    }
+
+    body.dark-mode .archive-play-card {
+      color: #eef6f2;
+      background: #192427;
+      border-color: #4b5d61;
+    }
+
+    body.dark-mode .archive-play-card.quest-detail {
+      background:
+        radial-gradient(circle at 20% 8%, rgba(255, 210, 116, 0.2), transparent 30%),
+        linear-gradient(145deg, #5b3977, #334f74 58%, #22323b),
+        #3c2c58;
+    }
+
+    .tarot-back.has-condition {
+      padding: 18px;
+      place-items: stretch;
+      align-content: center;
+    }
+
+    .tarot-condition {
+      display: grid;
+      gap: 8px;
+      text-align: left;
+    }
+
+    .tarot-condition strong {
+      color: #ffe7aa;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+    }
+
+    .tarot-condition p {
+      margin: 0;
+      color: #f3e7c8;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .tarot-reveal-layer .tarot-card {
+      width: min(340px, 82vw);
+      min-height: 500px;
+      animation: revealLift 0.72s cubic-bezier(0.16, 0.78, 0.24, 1) forwards;
+    }
+
+    .tarot-reveal-layer .tarot-inner,
+    .tarot-reveal-layer .tarot-face {
+      min-height: 500px;
+    }
+
+    .tarot-reveal-layer .tarot-inner {
+      transition: transform 1.08s cubic-bezier(0.16, 0.72, 0.18, 1);
+    }
+
+    .tarot-reveal-layer .tarot-title {
+      font-size: 31px;
+    }
+
+    .tarot-reveal-layer .tarot-symbol {
+      width: 150px;
+      height: 150px;
+    }
+
+    .tarot-reveal-layer .tarot-symbol svg {
+      width: 96px;
+      height: 96px;
+    }
+
+    .achievement-toast-zone {
+      position: fixed;
+      top: 14px;
+      left: 50%;
+      z-index: 60;
+      display: grid;
+      gap: 8px;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .achievement-toast {
+      width: min(420px, calc(100vw - 28px));
+      border: 1px solid rgba(255, 210, 116, 0.72);
+      border-radius: var(--radius);
+      background:
+        radial-gradient(circle at 8% 20%, rgba(255, 210, 116, 0.24), transparent 28%),
+        linear-gradient(135deg, #203f47, #1c2732);
+      color: #fff6dd;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.26);
+      padding: 12px 14px;
+      display: grid;
+      gap: 3px;
+      animation: achievementDrop 3.4s ease forwards;
+    }
+
+    .achievement-toast b {
+      font-size: 13px;
+    }
+
+    .achievement-toast span {
+      font-size: 12px;
+      color: #f3e7c8;
+    }
+
+    @keyframes achievementDrop {
+      0% { opacity: 0; transform: translateY(-18px) scale(0.96); }
+      12% { opacity: 1; transform: translateY(0) scale(1); }
+      82% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-12px) scale(0.98); }
+    }
+
+    .achievement-tabs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #f9fbfb;
+      padding: 8px;
+    }
+
+    .achievement-list {
+      max-height: min(58vh, 540px);
+      overflow: auto;
+      display: grid;
+      gap: 8px;
+    }
+
+    .achievement-item {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      padding: 10px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .achievement-item.unlocked {
+      border-color: #d6b46e;
+      background: linear-gradient(135deg, rgba(250, 236, 212, 0.8), rgba(223, 242, 239, 0.72));
+    }
+
+    .achievement-item b {
+      color: #17202a;
+      font-size: 13px;
+    }
+
+    .achievement-item span {
+      color: #66737f;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    body.dark-mode .achievement-item.unlocked {
+      background: linear-gradient(135deg, rgba(115, 70, 14, 0.34), rgba(39, 124, 120, 0.22));
+      border-color: #d6b46e;
+    }
+
+    .tutorial-coach {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 42;
+      width: min(360px, calc(100vw - 24px));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 24px 54px rgba(23, 32, 42, 0.22);
+      padding: 13px;
+      display: none;
+      gap: 9px;
+    }
+
+    .tutorial-coach.open {
+      display: grid;
+    }
+
+    .tutorial-coach h3 {
+      margin: 0;
+      color: #17202a;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
+    .tutorial-coach p {
+      margin: 0;
+      color: #526170;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .tutorial-coach-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tutorial-progress {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .tutorial-highlight {
+      outline: 3px solid rgba(255, 210, 116, 0.78);
+      outline-offset: 4px;
+      box-shadow: 0 0 0 8px rgba(255, 210, 116, 0.16);
+    }
+
+    .log-item {
+      animation: logRise 0.32s ease both;
+    }
+
+    @keyframes logRise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     @media (max-width: 1120px) {
       .layout {
         grid-template-columns: minmax(280px, 0.76fr) minmax(420px, 1.1fr);
@@ -1359,13 +2613,19 @@
 
       .top-stats {
         display: grid;
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         justify-content: initial;
         width: 100%;
       }
 
       .top-stats .pill {
         display: none;
+      }
+
+      .top-stats .text-button {
+        min-width: 0;
+        padding: 0 8px;
+        font-size: 12px;
       }
 
       .pill,
@@ -1577,12 +2837,195 @@
         display: none;
       }
 
+      body.is-playing .side-right {
+        display: none;
+      }
+
+      body.is-playing .mobile-log-toggle {
+        position: fixed;
+        left: 50%;
+        bottom: 10px;
+        z-index: 27;
+        transform: translateX(-50%);
+        min-height: 42px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #1f6f5a;
+        color: #fff;
+        padding: 0 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        box-shadow: 0 14px 32px rgba(23, 32, 42, 0.22);
+        font-size: 13px;
+        font-weight: 950;
+      }
+
+      .mobile-log-drawer {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 25;
+        max-height: min(68vh, 560px);
+        border-radius: 16px 16px 0 0;
+        border: 1px solid var(--line);
+        border-bottom: 0;
+        background: #ffffff;
+        box-shadow: 0 -24px 56px rgba(23, 32, 42, 0.24);
+        transform: translateY(100%);
+        transition: transform 0.2s ease;
+        display: grid;
+        grid-template-rows: 48px minmax(0, 1fr);
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      .mobile-log-drawer.open {
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      .mobile-log-handle {
+        border: 0;
+        border-bottom: 1px solid var(--line);
+        background: #f7faf9;
+        color: #243442;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-weight: 950;
+      }
+
+      .mobile-log-handle::before {
+        content: "";
+        width: 36px;
+        height: 4px;
+        border-radius: 999px;
+        background: #cfd8d6;
+      }
+
+      .mobile-log-content {
+        min-height: 0;
+        overflow: auto;
+        padding: 10px 14px 18px;
+      }
+
+      .quick-choice-panel {
+        grid-template-columns: 1fr;
+      }
+
+      body.fast-mode .card-stage {
+        min-height: auto;
+      }
+
       .score-grid {
         grid-template-columns: 1fr;
       }
 
+      #endModal .modal {
+        width: min(100% - 8px, 680px);
+        max-height: calc(100vh - 8px);
+      }
+
+      #endModal .modal-body {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "tarot"
+          "summary"
+          "scores"
+          "graph"
+          "submit"
+          "restart";
+        gap: 7px;
+        padding: 8px;
+      }
+
+      #endModal .tarot-card {
+        width: 170px;
+        min-height: 236px;
+        justify-self: center;
+      }
+
+      #endModal .tarot-inner,
+      #endModal .tarot-face {
+        min-height: 236px;
+      }
+
+      #endModal .tarot-title {
+        font-size: 19px;
+      }
+
+      #endModal .tarot-symbol {
+        width: 82px;
+        height: 82px;
+      }
+
+      #endModal .tarot-symbol svg {
+        width: 54px;
+        height: 54px;
+      }
+
+      #endModal .summary {
+        max-height: 112px;
+        font-size: 11px;
+      }
+
+      #endModal .score-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      #endModal .score-card {
+        min-height: 48px;
+      }
+
+      #endModal .stat-graph {
+        max-height: 188px;
+      }
+
+      #endModal .stat-graph svg {
+        max-height: 95px;
+      }
+
       .difficulty-options {
         grid-template-columns: 1fr;
+      }
+
+      .story-panel,
+      .story-rules {
+        display: none;
+      }
+
+      .modal-layer {
+        padding: 8px;
+        align-items: end;
+      }
+
+      .modal {
+        max-height: calc(100vh - 16px);
+      }
+
+      .modal-body {
+        padding: 10px;
+        gap: 9px;
+      }
+
+      .archive-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .archive-workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .archive-detail {
+        min-height: 310px;
+      }
+
+      .tutorial-mini-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .leaderboard-tabs {
@@ -1600,6 +3043,46 @@
       .version-footer {
         width: min(100% - 12px, 680px);
         margin-top: 10px;
+      }
+
+      .tutorial-coach {
+        left: 8px;
+        right: 8px;
+        bottom: 64px;
+        width: auto;
+      }
+
+      .achievement-list {
+        max-height: 56vh;
+      }
+
+      .archive-card-wrap {
+        width: min(100%, 350px);
+        min-height: 390px;
+      }
+
+      .archive-card-wrap .under-choice-sheet {
+        min-height: 364px;
+        width: min(326px, 92vw);
+      }
+
+      .archive-play-card {
+        min-height: 364px;
+        width: min(318px, 86vw);
+      }
+
+      .tarot-reveal-layer .tarot-card {
+        width: min(292px, 82vw);
+        min-height: 420px;
+      }
+
+      .tarot-reveal-layer .tarot-inner,
+      .tarot-reveal-layer .tarot-face {
+        min-height: 420px;
+      }
+
+      .tarot-reveal-layer .tarot-title {
+        font-size: 24px;
       }
     }
   </style>
@@ -1624,6 +3107,22 @@
         <span class="pill" id="turnPill">1턴</span>
         <span class="pill" id="deckPill">사건풀 50</span>
         <span class="pill" id="scorePill">균형 50</span>
+        <button class="text-button compact" id="openTutorialTop" type="button">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6v12"/><path d="M6 12h12"/><path d="M5 4h14v16H5z"/></svg>
+          튜토리얼
+        </button>
+        <button class="text-button compact" id="openArchiveTop" type="button">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16"/><path d="M6 5v16h12V5"/><path d="M9 9h6"/><path d="M9 13h6"/></svg>
+          보관기록소
+        </button>
+        <button class="text-button compact" id="openAchievementsTop" type="button">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 14.7 8.7 21 9.4l-4.6 4.2 1.2 6.2L12 16.6 6.4 19.8l1.2-6.2L3 9.4l6.3-.7z"/></svg>
+          업적
+        </button>
+        <button class="text-button compact" id="openSettingsTop" type="button">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 2l.05.05a2.1 2.1 0 0 1-2.97 2.97l-.05-.05a1.8 1.8 0 0 0-2-.36 1.8 1.8 0 0 0-1.1 1.66V21a2.1 2.1 0 0 1-4.2 0v-.08a1.8 1.8 0 0 0-1.1-1.66 1.8 1.8 0 0 0-2 .36l-.05.05a2.1 2.1 0 0 1-2.97-2.97l.05-.05a1.8 1.8 0 0 0 .36-2 1.8 1.8 0 0 0-1.66-1.1H3a2.1 2.1 0 0 1 0-4.2h.08a1.8 1.8 0 0 0 1.66-1.1 1.8 1.8 0 0 0-.36-2l-.05-.05a2.1 2.1 0 0 1 2.97-2.97l.05.05a1.8 1.8 0 0 0 2 .36A1.8 1.8 0 0 0 10.45 3V3a2.1 2.1 0 0 1 4.2 0v.08a1.8 1.8 0 0 0 1.1 1.66 1.8 1.8 0 0 0 2-.36l.05-.05a2.1 2.1 0 0 1 2.97 2.97l-.05.05a1.8 1.8 0 0 0-.36 2c.28.67.93 1.1 1.66 1.1H21a2.1 2.1 0 0 1 0 4.2h-.08a1.8 1.8 0 0 0-1.66 1.1z"/></svg>
+          설정
+        </button>
         <button class="text-button primary" id="newGameTop">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>
           새 게임
@@ -1687,6 +3186,16 @@
         </div>
 
         <div class="last-result" id="lastResult">첫 사건을 기다리는 중입니다.</div>
+        <div class="quick-choice-panel" id="quickChoicePanel" aria-label="고속 선택">
+          <button class="quick-choice left" id="quickLeft" type="button">
+            <b id="quickLeftTitle">A 선택</b>
+            <span id="quickLeftText">왼쪽 선택 설명</span>
+          </button>
+          <button class="quick-choice right" id="quickRight" type="button">
+            <b id="quickRightTitle">B 선택</b>
+            <span id="quickRightText">오른쪽 선택 설명</span>
+          </button>
+        </div>
         <div class="quest-board" id="questBoard" hidden></div>
         <div class="mobile-score-strip" aria-label="플레이 요약">
           <div class="mobile-score-item"><span>점수</span><b id="mobileLiveScore">0</b></div>
@@ -1731,13 +3240,15 @@
         <h2 class="panel-title" id="storyTitle">시작 배경</h2>
       </div>
       <div class="modal-body opening-story">
-        <div class="story-panel">
-          <strong>낡은 동네의 1년짜리 운용권</strong>
-          당신은 작은 부동산 운용팀의 새 책임자입니다. 이 동네는 오래된 주거지, 비어 가는 상가, 곧 바뀔 교통망, 그리고 서로 다른 이해관계자가 뒤섞여 있습니다.
-        </div>
-        <div class="story-panel">
-          <strong>한 장의 결정이 네 방향으로 흔들립니다</strong>
-          은행은 현금흐름을 묻고, 임차인은 신뢰를 요구합니다. 주민들은 생활가치를 보고, 계약서와 인허가는 위험관리의 빈틈을 노립니다. 좋은 선택도 한쪽을 살리면 다른 한쪽을 깎습니다.
+        <div class="start-summary">
+          <strong>낡은 동네의 운용권을 맡았습니다.</strong>
+          현금흐름, 신뢰, 생활가치, 위험관리 중 하나라도 0이 되면 프로젝트가 중단됩니다. 선택은 다음 사건의 분위기와 서사 흐름에도 흔적을 남깁니다.
+          <div class="start-actions">
+            <button class="text-button compact" id="openTutorialStory" type="button">튜토리얼</button>
+            <button class="text-button compact" id="openArchiveStory" type="button">보관기록소</button>
+            <button class="text-button compact" id="openAchievementsStory" type="button">업적</button>
+            <button class="text-button compact" id="openSettingsStory" type="button">설정</button>
+          </div>
         </div>
         <div class="difficulty-panel">
           <div class="difficulty-title">
@@ -1780,39 +3291,32 @@
             <small id="playerNameHint">무한 모드 기록에 표시될 이름입니다. 2~12자로 입력하세요.</small>
           </div>
         </div>
-        <ul class="story-rules">
-          <li>카드를 좌우로 당기면 다음 종이 가장자리에서 A/B 선택지가 드러납니다.</li>
-          <li>중간까지 당기면 선택지가 보이고, 더 당긴 뒤 놓으면 결정이 실행됩니다.</li>
-          <li>매 판 400개 사건 라이브러리에서 50개만 무작위로 섞어 진행합니다.</li>
-          <li>무한 모드는 서버에 기록을 등록하면 다른 플레이어도 순위표에서 볼 수 있습니다.</li>
-          <li>4개 지표 중 하나라도 0이 되면 프로젝트는 중단됩니다.</li>
-        </ul>
-        <div class="difficulty-panel">
-          <div class="difficulty-title">
-            <span>시작 전 확인</span>
+        <details class="start-extra">
+          <summary>순위표와 패치 기록</summary>
+          <div class="start-extra-body">
             <button class="text-button" id="openPatchNotesStory" type="button">
               <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg>
               패치 기록 보기
             </button>
+            <div class="leaderboard-section">
+              <div class="panel-head">
+                <h2 class="panel-title">무한 모드 순위</h2>
+                <button class="text-button" id="startRefreshLeaderboard" type="button">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>
+                  새로고침
+                </button>
+              </div>
+              <div class="leaderboard-tabs" id="startLeaderboardTabs" role="tablist" aria-label="시작 화면 난이도별 순위">
+                <button class="leaderboard-tab active" data-start-leaderboard-difficulty="easy" type="button">쉬움</button>
+                <button class="leaderboard-tab" data-start-leaderboard-difficulty="medium" type="button">보통</button>
+                <button class="leaderboard-tab" data-start-leaderboard-difficulty="hard" type="button">어려움</button>
+              </div>
+              <div class="leaderboard-list" id="startLeaderboardList">
+                <div class="empty">서버 연결 시 공개 기록이 표시됩니다.</div>
+              </div>
+            </div>
           </div>
-          <div class="leaderboard-section">
-            <div class="panel-head">
-              <h2 class="panel-title">무한 모드 순위</h2>
-              <button class="text-button" id="startRefreshLeaderboard" type="button">
-                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>
-                새로고침
-              </button>
-            </div>
-            <div class="leaderboard-tabs" id="startLeaderboardTabs" role="tablist" aria-label="시작 화면 난이도별 순위">
-              <button class="leaderboard-tab active" data-start-leaderboard-difficulty="easy" type="button">쉬움</button>
-              <button class="leaderboard-tab" data-start-leaderboard-difficulty="medium" type="button">보통</button>
-              <button class="leaderboard-tab" data-start-leaderboard-difficulty="hard" type="button">어려움</button>
-            </div>
-            <div class="leaderboard-list" id="startLeaderboardList">
-              <div class="empty">서버 연결 시 공개 기록이 표시됩니다.</div>
-            </div>
-          </div>
-        </div>
+        </details>
         <button class="text-button primary" id="startStory">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 10 7-10 7z"/></svg>
           첫 카드 보기
@@ -1830,6 +3334,7 @@
         </button>
       </div>
       <div class="modal-body">
+        <div id="endTarotWrap"></div>
         <div class="score-grid" id="scoreGrid"></div>
         <div class="summary" id="endSummary"></div>
         <div class="stat-graph" id="statGraph"></div>
@@ -1862,11 +3367,192 @@
     </div>
   </div>
 
+  <div class="modal-layer" id="tutorialModal" role="dialog" aria-modal="true" aria-labelledby="tutorialTitle">
+    <div class="modal">
+      <div class="panel-head">
+        <h2 class="panel-title" id="tutorialTitle">튜토리얼</h2>
+        <button class="icon-button" id="closeTutorial" title="닫기" aria-label="닫기">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="tutorial-card">
+          <span class="tutorial-step-label" id="tutorialStepLabel">1 / 5</span>
+          <h3 id="tutorialStepTitle">네 지표를 지키세요</h3>
+          <p id="tutorialStepText">현금흐름, 신뢰, 생활가치, 위험관리 중 하나라도 0이 되면 프로젝트가 중단됩니다.</p>
+        </div>
+        <div class="tutorial-practice">
+          <div class="tutorial-mini-stats" id="tutorialMiniStats"></div>
+          <div class="tutorial-practice-stage">
+            <div class="tutorial-practice-card" id="tutorialPracticeCard">
+              <h4 id="tutorialPracticeTitle">실습 카드</h4>
+              <p id="tutorialPracticeText">카드를 좌우로 당겨보세요.</p>
+            </div>
+          </div>
+          <div class="tutorial-practice-actions">
+            <button class="text-button" id="tutorialPracticeLeft" type="button">왼쪽 선택</button>
+            <button class="text-button" id="tutorialPracticeRight" type="button">오른쪽 선택</button>
+          </div>
+          <div class="tutorial-status" id="tutorialStatus">아래 실습을 완료하면 다음 단계로 넘어갈 수 있습니다.</div>
+        </div>
+        <div class="tutorial-dots" id="tutorialDots"></div>
+        <div class="modal-actions">
+          <button class="text-button" id="skipTutorial" type="button">스킵</button>
+          <button class="text-button" id="prevTutorial" type="button">이전</button>
+          <button class="text-button primary" id="nextTutorial" type="button">다음</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-layer" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="modal">
+      <div class="panel-head">
+        <h2 class="panel-title" id="settingsTitle">설정</h2>
+        <button class="icon-button" id="closeSettings" title="닫기" aria-label="닫기">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="settings-grid">
+          <div class="setting-row">
+            <div class="setting-copy">
+              <b>다크모드</b>
+              <span>화면 전체를 어두운 장부 톤으로 바꿉니다.</span>
+            </div>
+            <button class="switch" id="darkModeToggle" type="button" aria-label="다크모드"><span></span></button>
+          </div>
+          <div class="setting-row">
+            <div class="setting-copy">
+              <b>고속모드</b>
+              <span>드래그 대신 좌우 선택 버튼을 눌러 빠르게 진행합니다.</span>
+            </div>
+            <button class="switch" id="fastModeToggle" type="button" aria-label="고속모드"><span></span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-layer" id="archiveModal" role="dialog" aria-modal="true" aria-labelledby="archiveTitle">
+    <div class="modal">
+      <div class="panel-head">
+        <h2 class="panel-title" id="archiveTitle">보관기록소</h2>
+        <button class="icon-button" id="closeArchive" title="닫기" aria-label="닫기">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="archive-grid" id="archiveStats"></div>
+        <div class="graph-controls" id="archiveTabs">
+          <button class="graph-filter active" data-archive-tab="events" type="button">사건</button>
+          <button class="graph-filter" data-archive-tab="quests" type="button">퀘스트</button>
+          <button class="graph-filter" data-archive-tab="endings" type="button">엔딩</button>
+        </div>
+        <div class="archive-workspace">
+          <div class="archive-list" id="archiveList"></div>
+          <div class="archive-detail" id="archiveDetail"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-layer" id="achievementsModal" role="dialog" aria-modal="true" aria-labelledby="achievementsTitle">
+    <div class="modal">
+      <div class="panel-head">
+        <h2 class="panel-title" id="achievementsTitle">업적</h2>
+        <button class="icon-button" id="closeAchievements" title="닫기" aria-label="닫기">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="achievement-tabs" id="achievementTabs">
+          <button class="graph-filter active" data-achievement-tab="normal" type="button">일반 업적</button>
+          <button class="graph-filter" data-achievement-tab="hidden" type="button">숨겨진 업적</button>
+        </div>
+        <div class="achievement-list" id="achievementList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tarot-reveal-layer" id="tarotRevealLayer" aria-label="새 엔딩 카드 공개">
+    <div id="tarotRevealCard"></div>
+  </div>
+
+  <div class="achievement-toast-zone" id="achievementToastZone" aria-live="polite"></div>
+
+  <div class="tutorial-coach" id="tutorialCoach" aria-live="polite">
+    <h3 id="tutorialCoachTitle">튜토리얼</h3>
+    <p id="tutorialCoachText">화면 위에서 바로 따라 하며 익힙니다.</p>
+    <div class="tutorial-coach-foot">
+      <span class="tutorial-progress" id="tutorialCoachProgress">1 / 6</span>
+      <div class="start-actions">
+        <button class="text-button compact" id="tutorialCoachSkip" type="button">스킵</button>
+        <button class="text-button compact" id="tutorialCoachPrev" type="button">이전</button>
+        <button class="text-button compact primary" id="tutorialCoachNext" type="button">다음</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="mobile-log-toggle" id="mobileLogToggle" type="button">
+    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg>
+    진행 기록
+  </button>
+  <div class="mobile-log-drawer" id="mobileLogDrawer" aria-label="모바일 진행 기록">
+    <button class="mobile-log-handle" id="mobileLogHandle" type="button">진행 기록</button>
+    <div class="mobile-log-content">
+      <div class="log-list" id="mobileLogList"></div>
+    </div>
+  </div>
+
   <footer class="version-footer" id="versionFooter" aria-label="버전 정보"></footer>
 
   <script>
-    const GAME_VERSION = "v0.12.7";
+    const GAME_VERSION = "v0.15.0";
     const PATCH_HISTORY = [
+      {
+        version: "v0.15.0",
+        summary: "다크모드 가독성, 보관소 인게임 카드, 업적 150개, 인게임 튜토리얼",
+        details: [
+          "다크모드에서 패치 기록, 난이도 선택, 게임 모드, 무한 모드 순위표 텍스트와 배경 대비를 다시 조정했습니다.",
+          "카드 뒤 선택지의 청록색과 회색 텍스트가 다크모드에서도 또렷하게 보이도록 선택지와 변화량 색상을 보강했습니다.",
+          "처음 보는 엔딩 타로 카드의 공개 연출을 더 크게 만들고 뒷면에서 앞면으로 부드럽게 뒤집히도록 조정했습니다.",
+          "기본 플레이 화면에서 페이지 전체 스크롤이 생기지 않도록 플레이 중 레이아웃을 화면 높이에 맞게 재정렬했습니다.",
+          "보관기록소의 사건, 퀘스트, 엔딩 숫자 카드 자체가 탭 버튼이 되도록 바꾸고 기존 작은 탭 버튼은 숨겼습니다.",
+          "보관기록소의 사건과 퀘스트 상세를 인게임 카드처럼 좌우로 밀어 A/B 선택지를 볼 수 있는 카드 스택으로 바꿨습니다.",
+          "이전 기록에서 설명이 빠진 퀘스트도 목표, 보상, 실패 조건을 자동 설명으로 복구하도록 보강했습니다.",
+          "보관기록소 엔딩 타로 카드의 뒷면에는 해당 엔딩을 본 조건을 표시하도록 했습니다.",
+          "일반 업적과 숨겨진 업적으로 나뉘는 150개 업적 시스템과 상단 달성 팝업을 추가했습니다.",
+          "튜토리얼을 별도 모달 대신 게임 화면 위 작은 코치 팝업으로 바꿨습니다.",
+          "진행 기록 항목이 추가될 때 부드럽게 올라오는 애니메이션을 추가했습니다."
+        ]
+      },
+      {
+        version: "v0.14.0",
+        summary: "실습형 튜토리얼, 엔딩 타로 카드, 보관소 상세 카드, 지표 애니메이션",
+        details: [
+          "튜토리얼을 직접 드래그하고 선택해 보는 실습형 안내로 바꿨습니다.",
+          "게임 종료 화면을 스크롤 없이 한 화면에 들어오도록 압축하고 엔딩 타로 카드를 추가했습니다.",
+          "처음 보는 엔딩은 화면이 어두워지며 타로 카드가 뒤집히는 연출을 표시합니다.",
+          "보관기록소에서 사건, 퀘스트, 엔딩 카드를 직접 열어 보고 지표 변화량과 내용을 확인할 수 있게 했습니다.",
+          "엔딩 타로 카드는 보관기록소에서도 계속 뒤집을 수 있고 마우스 위치에 따라 기울어집니다.",
+          "다크모드 색상 체계를 다시 잡고 퀘스트 카드를 보라색 특수 카드로 변경했습니다.",
+          "지표 원형 게이지에 부드러운 수치 변화와 별 획득 이동 연출을 추가했습니다."
+        ]
+      },
+      {
+        version: "v0.13.0",
+        summary: "연결 서사, 튜토리얼, 설정, 보관기록소, 모바일 기록 서랍",
+        details: [
+          "퀘스트 카드를 검은색 특수 카드로 바꿔 일반 사건과 즉시 구분되도록 했습니다.",
+          "선택 결과가 다음 사건 문장과 카드 흐름에 영향을 주는 서사 맥락 시스템을 추가했습니다.",
+          "처음 진입 시 순차 튜토리얼을 제공하고, 상단 튜토리얼 버튼으로 언제든 다시 볼 수 있게 했습니다.",
+          "시작 배경 창을 압축하고 순위표와 패치 기록은 접힌 보조 영역으로 정리했습니다.",
+          "다크모드와 좌우 클릭 고속모드를 설정에 추가하고, 모바일 하단 진행 기록 서랍을 추가했습니다.",
+          "경험한 사건, 퀘스트, 엔딩을 모아 보는 보관기록소를 추가했습니다.",
+          "퀘스트 목표 수치와 제한 턴을 현재 난이도와 지표 상태에 맞게 조정했습니다."
+        ]
+      },
       {
         version: "v0.12.7",
         summary: "엔딩 그래프 별 눈금 표시, 랜덤 퀘스트 카드 50종",
@@ -1992,6 +3678,10 @@
     const STAR_SCORE_RATE = 0.2;
     const CRISIS_RECOVERY_BONUS = 50;
     const LEADERBOARD_API = "/api/leaderboard";
+    const SETTINGS_KEY = "realEstateBalanceSettings";
+    const ARCHIVE_KEY = "realEstateBalanceArchive";
+    const TUTORIAL_KEY = "realEstateBalanceTutorialSeen";
+    const ACHIEVEMENT_KEY = "realEstateBalanceAchievements";
 
     const STAT_META = {
       cash: { label: "현금흐름", colorClass: "cash", colorVar: "var(--cash)", copy: "임대료, 이자, 수리비, 공실 충격을 버티는 힘" },
@@ -2562,6 +4252,88 @@
       state.hardUnlocked = true;
       persistHardUnlock();
       renderDifficultyOptions();
+      checkAchievements();
+    }
+
+    function readSettings() {
+      try {
+        return {
+          darkMode: false,
+          fastMode: false,
+          ...JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}")
+        };
+      } catch {
+        return { darkMode: false, fastMode: false };
+      }
+    }
+
+    function persistSettings() {
+      try {
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings));
+      } catch {
+      }
+    }
+
+    function readArchive() {
+      try {
+        return {
+          events: [],
+          quests: [],
+          endings: [],
+          ...JSON.parse(localStorage.getItem(ARCHIVE_KEY) || "{}")
+        };
+      } catch {
+        return { events: [], quests: [], endings: [] };
+      }
+    }
+
+    function persistArchive() {
+      try {
+        localStorage.setItem(ARCHIVE_KEY, JSON.stringify(state.archive));
+      } catch {
+      }
+    }
+
+    function readAchievements() {
+      try {
+        return JSON.parse(localStorage.getItem(ACHIEVEMENT_KEY) || "{}");
+      } catch {
+        return {};
+      }
+    }
+
+    function persistAchievements() {
+      try {
+        localStorage.setItem(ACHIEVEMENT_KEY, JSON.stringify(state.achievements));
+      } catch {
+      }
+    }
+
+    function readTutorialSeen() {
+      try {
+        return localStorage.getItem(TUTORIAL_KEY) === "true";
+      } catch {
+        return false;
+      }
+    }
+
+    function persistTutorialSeen() {
+      try {
+        localStorage.setItem(TUTORIAL_KEY, "true");
+      } catch {
+      }
+    }
+
+    function createStoryArc() {
+      return {
+        stage: "입문",
+        branch: "균형 운용",
+        tension: 0,
+        focus: "cash",
+        lastChoice: "첫 회의가 곧 시작됩니다.",
+        consequence: "아직 이전 결정의 여파는 없습니다.",
+        episodes: []
+      };
     }
 
     const state = {
@@ -2591,7 +4363,20 @@
       submitted: false,
       seed: Date.now(),
       invincible: false,
-      manualEnded: false
+      manualEnded: false,
+      starPulseKeys: [],
+      storyArc: createStoryArc(),
+      settings: readSettings(),
+      archive: readArchive(),
+      archiveTab: "events",
+      archiveOpened: false,
+      settingsOpened: false,
+      tarotFlipped: false,
+      achievements: readAchievements(),
+      achievementTab: "normal",
+      tutorialIndex: 0,
+      tutorialPracticeDone: {},
+      tutorialCoachOpen: false
     };
 
     const els = {
@@ -2628,8 +4413,18 @@
       cardWrap: document.querySelector(".card-wrap"),
       playCard: document.getElementById("playCard"),
       lastResult: document.getElementById("lastResult"),
+      quickLeft: document.getElementById("quickLeft"),
+      quickRight: document.getElementById("quickRight"),
+      quickLeftTitle: document.getElementById("quickLeftTitle"),
+      quickLeftText: document.getElementById("quickLeftText"),
+      quickRightTitle: document.getElementById("quickRightTitle"),
+      quickRightText: document.getElementById("quickRightText"),
       questBoard: document.getElementById("questBoard"),
       logList: document.getElementById("logList"),
+      mobileLogList: document.getElementById("mobileLogList"),
+      mobileLogToggle: document.getElementById("mobileLogToggle"),
+      mobileLogDrawer: document.getElementById("mobileLogDrawer"),
+      mobileLogHandle: document.getElementById("mobileLogHandle"),
       leaderboardList: document.getElementById("leaderboardList"),
       leaderboardTabs: document.getElementById("leaderboardTabs"),
       startLeaderboardList: document.getElementById("startLeaderboardList"),
@@ -2639,6 +4434,14 @@
       newGameTop: document.getElementById("newGameTop"),
       storyModal: document.getElementById("storyModal"),
       startStory: document.getElementById("startStory"),
+      openTutorialTop: document.getElementById("openTutorialTop"),
+      openArchiveTop: document.getElementById("openArchiveTop"),
+      openAchievementsTop: document.getElementById("openAchievementsTop"),
+      openSettingsTop: document.getElementById("openSettingsTop"),
+      openTutorialStory: document.getElementById("openTutorialStory"),
+      openArchiveStory: document.getElementById("openArchiveStory"),
+      openAchievementsStory: document.getElementById("openAchievementsStory"),
+      openSettingsStory: document.getElementById("openSettingsStory"),
       openPatchNotesStory: document.getElementById("openPatchNotesStory"),
       difficultyOptions: document.getElementById("difficultyOptions"),
       difficultyHint: document.getElementById("difficultyHint"),
@@ -2653,6 +4456,47 @@
       patchModal: document.getElementById("patchModal"),
       closePatchNotes: document.getElementById("closePatchNotes"),
       patchNotesList: document.getElementById("patchNotesList"),
+      tutorialModal: document.getElementById("tutorialModal"),
+      closeTutorial: document.getElementById("closeTutorial"),
+      skipTutorial: document.getElementById("skipTutorial"),
+      prevTutorial: document.getElementById("prevTutorial"),
+      nextTutorial: document.getElementById("nextTutorial"),
+      tutorialStepLabel: document.getElementById("tutorialStepLabel"),
+      tutorialStepTitle: document.getElementById("tutorialStepTitle"),
+      tutorialStepText: document.getElementById("tutorialStepText"),
+      tutorialMiniStats: document.getElementById("tutorialMiniStats"),
+      tutorialPracticeCard: document.getElementById("tutorialPracticeCard"),
+      tutorialPracticeTitle: document.getElementById("tutorialPracticeTitle"),
+      tutorialPracticeText: document.getElementById("tutorialPracticeText"),
+      tutorialPracticeLeft: document.getElementById("tutorialPracticeLeft"),
+      tutorialPracticeRight: document.getElementById("tutorialPracticeRight"),
+      tutorialStatus: document.getElementById("tutorialStatus"),
+      tutorialDots: document.getElementById("tutorialDots"),
+      settingsModal: document.getElementById("settingsModal"),
+      closeSettings: document.getElementById("closeSettings"),
+      darkModeToggle: document.getElementById("darkModeToggle"),
+      fastModeToggle: document.getElementById("fastModeToggle"),
+      archiveModal: document.getElementById("archiveModal"),
+      closeArchive: document.getElementById("closeArchive"),
+      archiveStats: document.getElementById("archiveStats"),
+      archiveTabs: document.getElementById("archiveTabs"),
+      archiveList: document.getElementById("archiveList"),
+      archiveDetail: document.getElementById("archiveDetail"),
+      achievementsModal: document.getElementById("achievementsModal"),
+      closeAchievements: document.getElementById("closeAchievements"),
+      achievementTabs: document.getElementById("achievementTabs"),
+      achievementList: document.getElementById("achievementList"),
+      achievementToastZone: document.getElementById("achievementToastZone"),
+      tutorialCoach: document.getElementById("tutorialCoach"),
+      tutorialCoachTitle: document.getElementById("tutorialCoachTitle"),
+      tutorialCoachText: document.getElementById("tutorialCoachText"),
+      tutorialCoachProgress: document.getElementById("tutorialCoachProgress"),
+      tutorialCoachSkip: document.getElementById("tutorialCoachSkip"),
+      tutorialCoachPrev: document.getElementById("tutorialCoachPrev"),
+      tutorialCoachNext: document.getElementById("tutorialCoachNext"),
+      endTarotWrap: document.getElementById("endTarotWrap"),
+      tarotRevealLayer: document.getElementById("tarotRevealLayer"),
+      tarotRevealCard: document.getElementById("tarotRevealCard"),
       submitSection: document.getElementById("submitSection"),
       submitScore: document.getElementById("submitScore"),
       leaderboardStatus: document.getElementById("leaderboardStatus"),
@@ -2670,6 +4514,41 @@
       releaseTimer: null,
       secretBuffer: ""
     };
+
+    const tutorialSteps = [
+      {
+        title: "네 지표를 지키세요",
+        text: "아래 미니 지표 중 하나를 눌러보세요. 실제 게임에서는 네 지표 중 하나라도 0이 되면 프로젝트가 중단됩니다.",
+        practice: "stat"
+      },
+      {
+        title: "카드는 방향으로 결정합니다",
+        text: "실습 카드를 좌우로 끌어보세요. 실제 게임에서는 끝까지 당긴 뒤 놓으면 결정이 실행됩니다.",
+        practice: "drag"
+      },
+      {
+        title: "퀘스트는 보라색 카드입니다",
+        text: "왼쪽 또는 오른쪽 선택 버튼을 눌러 퀘스트를 수락하거나 거절하는 감각을 익히세요.",
+        practice: "quest"
+      },
+      {
+        title: "서사는 선택을 기억합니다",
+        text: "아래 선택 버튼을 눌러보세요. 선택한 방향이 다음 카드 문장과 장 이름에 흔적으로 남습니다.",
+        practice: "choice"
+      },
+      {
+        title: "엔딩 카드는 뒤집힙니다",
+        text: "실습 카드를 눌러 뒤집어보세요. 실제 엔딩도 처음 보면 타로 카드처럼 공개됩니다.",
+        practice: "tarot"
+      }
+    ];
+
+    tutorialSteps.unshift({
+      title: "시작 조건을 먼저 고르세요",
+      text: "난이도와 게임 모드는 시작 배경에서 고릅니다. 무한 모드는 이름을 입력해야 공개 기록을 남길 수 있습니다.",
+      practice: "start",
+      target: "#storyModal .difficulty-panel"
+    });
 
     function clamp(value, min = 0, max = 100) {
       return Math.max(min, Math.min(max, value));
@@ -2694,6 +4573,111 @@
     }
 
     const STAT_KEYS = ["cash", "trust", "city", "control"];
+
+    function buildAchievementLibrary() {
+      const achievements = [];
+      const add = item => achievements.push({
+        type: "normal",
+        hidden: false,
+        ...item
+      });
+
+      [1, 2, 3, 5, 7, 10, 12, 15, 18, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 120, 150, 180, 200].forEach(turn => {
+        add({
+          id: `turn-${turn}`,
+          title: `${turn}턴 생존`,
+          description: `한 판에서 ${turn}턴 이상 버팁니다.`,
+          check: () => state.turn >= turn,
+          progress: () => `${Math.min(state.turn, turn)} / ${turn}`
+        });
+      });
+
+      [25, 50, 75, 100, 125, 150, 175, 200, 240, 280, 320, 360, 420, 480, 540, 600, 700, 800, 900, 1000, 1200, 1400, 1700, 2000, 2500].forEach(score => {
+        add({
+          id: `score-${score}`,
+          title: `${score}점 장부`,
+          description: `최종 또는 현재 점수 ${score}점을 달성합니다.`,
+          check: () => Math.max(state.score, state.finalResult?.score || 0) >= score,
+          progress: () => `${Math.min(Math.max(state.score, state.finalResult?.score || 0), score)} / ${score}`
+        });
+      });
+
+      Object.entries(statNames).forEach(([key, label]) => {
+        Array.from({ length: 10 }, (_, index) => index + 1).forEach(level => {
+          add({
+            id: `star-${key}-${level}`,
+            title: `${label} 별 ${level}개`,
+            description: `${label} 지표가 100을 넘어 별 ${level}개를 얻습니다.`,
+            check: () => (state.statStars[key] || 0) >= level,
+            progress: () => `${Math.min(state.statStars[key] || 0, level)} / ${level}`
+          });
+        });
+      });
+
+      Array.from({ length: 15 }, (_, index) => index + 1).forEach(count => {
+        add({
+          id: `quest-success-${count}`,
+          title: `퀘스트 성공 ${count}회`,
+          description: `수락한 퀘스트를 ${count}회 성공합니다.`,
+          check: () => state.completedQuests.length >= count,
+          progress: () => `${Math.min(state.completedQuests.length, count)} / ${count}`
+        });
+      });
+
+      Array.from({ length: 10 }, (_, index) => index + 1).forEach(count => {
+        add({
+          id: `crisis-recovery-${count}`,
+          title: `위기 극복 ${count}회`,
+          description: `위기 구간에서 빠져나와 회복 보너스를 ${count}회 받습니다.`,
+          check: () => state.dangerRecoveryCount >= count,
+          progress: () => `${Math.min(state.dangerRecoveryCount, count)} / ${count}`
+        });
+      });
+
+      Array.from({ length: 10 }, (_, index) => index + 1).forEach(count => {
+        add({
+          id: `ending-seen-${count}`,
+          title: `엔딩 수집 ${count}장`,
+          description: `서로 다른 엔딩 타로 카드를 ${count}장 보관기록소에 남깁니다.`,
+          check: () => state.archive.endings.length >= count,
+          progress: () => `${Math.min(state.archive.endings.length, count)} / ${count}`
+        });
+      });
+
+      [
+        ["hidden-invincible", "보이지 않는 완충장치", "숨겨진 보호 기능을 발견합니다.", () => state.invincible],
+        ["hidden-manual-end", "스스로 닫은 장부", "보호 상태에서 직접 게임을 종료합니다.", () => state.manualEnded],
+        ["hidden-hard", "어려움 문을 열다", "어려움 난이도를 해금합니다.", () => state.hardUnlocked],
+        ["hidden-dark", "야간 운용자", "다크모드를 켭니다.", () => state.settings.darkMode],
+        ["hidden-fast", "빠른 결재선", "고속모드를 켭니다.", () => state.settings.fastMode],
+        ["hidden-dark-fast", "야간 속전속결", "다크모드와 고속모드를 동시에 켭니다.", () => state.settings.darkMode && state.settings.fastMode],
+        ["hidden-archive-event-50", "사건 파일 50권", "보관기록소에 사건 50개를 남깁니다.", () => state.archive.events.length >= 50],
+        ["hidden-archive-quest-20", "퀘스트 장부 20권", "보관기록소에 퀘스트 20개를 남깁니다.", () => state.archive.quests.length >= 20],
+        ["hidden-archive-ending-5", "타로 진열대", "엔딩 타로 카드 5장을 보관합니다.", () => state.archive.endings.length >= 5],
+        ["hidden-all-stats-star", "네 지표의 별자리", "4대 지표 모두 별을 1개 이상 얻습니다.", () => STAT_KEYS.every(key => (state.statStars[key] || 0) >= 1)],
+        ["hidden-low-safe", "바닥선의 감각", "한 지표가 10점 이하로 내려간 뒤에도 살아남습니다.", () => !state.ended && lowestStat() <= 10],
+        ["hidden-long-infinite", "끝없는 동네 운영", "무한 모드에서 100턴 이상 버팁니다.", () => isInfiniteMode() && state.turn >= 100],
+        ["hidden-quest-risk", "위험한 약속", "실패 위험이 있는 퀘스트를 5개 이상 성공합니다.", () => state.completedQuests.length >= 5 && state.failedQuests.length === 0],
+        ["hidden-quest-fail", "실패도 장부다", "퀘스트 실패를 경험합니다.", () => state.failedQuests.length > 0],
+        ["hidden-crisis-3", "세 번의 회복", "한 판에서 위기 극복을 3회 달성합니다.", () => state.dangerRecoveryCount >= 3],
+        ["hidden-score-777", "777 장부", "점수 777점 이상을 달성합니다.", () => Math.max(state.score, state.finalResult?.score || 0) >= 777],
+        ["hidden-score-2026", "2026 운영권", "점수 2026점 이상을 달성합니다.", () => Math.max(state.score, state.finalResult?.score || 0) >= 2026],
+        ["hidden-graph-filter", "한 지표만 보는 눈", "엔딩 그래프에서 특정 지표만 확인합니다.", () => state.graphFilter !== "all"],
+        ["hidden-tutorial", "튜토리얼 졸업", "코치 튜토리얼을 끝까지 봅니다.", () => readTutorialSeen()],
+        ["hidden-archive-open", "기록을 여는 손", "보관기록소를 열어봅니다.", () => state.archiveOpened],
+        ["hidden-settings-open", "설정의 문", "설정 화면을 열어봅니다.", () => state.settingsOpened],
+        ["hidden-tarot-flip", "카드를 뒤집는 사람", "보관기록소에서 엔딩 타로 카드를 뒤집습니다.", () => state.tarotFlipped],
+        ["hidden-perfect-clear", "흔들림 없는 완주", "50장 클리어 시 최저 지표 40 이상을 유지합니다.", () => state.finalResult && state.turn >= state.deck.length && state.finalResult.low >= 40],
+        ["hidden-star-10", "별 열 개의 보고서", "한 판에서 별을 10개 이상 획득합니다.", () => state.bonusCount >= 10],
+        ["hidden-all-archive", "보관소 관리자", "사건, 퀘스트, 엔딩 기록을 모두 1개 이상 남깁니다.", () => state.archive.events.length && state.archive.quests.length && state.archive.endings.length]
+      ].forEach(([id, title, description, check]) => {
+        add({ id, title, description, check, type: "hidden", hidden: true, progress: () => "숨겨진 조건" });
+      });
+
+      return achievements;
+    }
+
+    const ACHIEVEMENTS = buildAchievementLibrary();
 
     function emptyDelta() {
       return { cash: 0, trust: 0, city: 0, control: 0 };
@@ -2823,8 +4807,28 @@
       return labels[type] || labels.none;
     }
 
-    function questRewardLabel(quest) {
-      return `${statNames[quest.rewardStat]} +${quest.rewardAmount}`;
+    function questRewardLabel(quest, terms = quest) {
+      return `${statNames[quest.rewardStat]} +${terms.rewardAmount ?? quest.rewardAmount}`;
+    }
+
+    function playableQuestTerms(quest) {
+      const current = state?.stats?.[quest.targetStat] ?? currentDifficulty().start;
+      const difficulty = state?.difficulty || "medium";
+      const config = {
+        easy: { perTurn: 5, extraLimit: 2, minLift: 8, rewardBoost: 2 },
+        medium: { perTurn: 4, extraLimit: 2, minLift: 7, rewardBoost: 4 },
+        hard: { perTurn: 4, extraLimit: 3, minLift: 6, rewardBoost: 6 }
+      }[difficulty] || { perTurn: 4, extraLimit: 2, minLift: 7, rewardBoost: 4 };
+      const limit = quest.limit + config.extraLimit;
+      const reachable = current + limit * config.perTurn;
+      const targetValue = current >= quest.targetValue
+        ? clamp(current + config.minLift, 45, 95)
+        : clamp(Math.min(quest.targetValue, reachable), Math.min(55, current + config.minLift), 95);
+      return {
+        targetValue: Math.round(targetValue),
+        limit,
+        rewardAmount: quest.rewardAmount + config.rewardBoost
+      };
     }
 
     function buildQuestLibrary() {
@@ -2945,6 +4949,7 @@
     }
 
     function questCardFromDefinition(quest, slotIndex) {
+      const terms = playableQuestTerms(quest);
       return {
         id: `offer-${quest.id}-${slotIndex}`,
         isQuestOffer: true,
@@ -2958,8 +4963,8 @@
         mood: "목표",
         title: quest.title,
         text: quest.story,
-        dilemma: `수락하면 ${quest.limit}턴 안에 ${statNames[quest.targetStat]} ${quest.targetValue} 이상을 달성해야 한다. 성공 보상은 ${questRewardLabel(quest)}, 실패 위험은 ${questFailureLabel(quest.failureType)}이다.`,
-        tags: ["퀘스트", statNames[quest.targetStat], `${quest.limit}턴`, questFailureLabel(quest.failureType)],
+        dilemma: `수락하면 ${terms.limit}턴 안에 ${statNames[quest.targetStat]} ${terms.targetValue} 이상을 달성해야 한다. 성공 보상은 ${questRewardLabel(quest, terms)}, 실패 위험은 ${questFailureLabel(quest.failureType)}이다.`,
+        tags: ["퀘스트", statNames[quest.targetStat], `${terms.limit}턴`, questFailureLabel(quest.failureType)],
         left: {
           label: "수락",
           text: quest.acceptText,
@@ -3021,6 +5026,405 @@
 
     function currentCard() {
       return state.deck[state.turn] || state.deck[state.deck.length - 1];
+    }
+
+    function uniqueArchivePush(type, item) {
+      const list = state.archive[type] || [];
+      const index = list.findIndex(existing => existing.id === item.id);
+      const nextItem = { ...item, seenAt: new Date().toISOString() };
+      if (index >= 0) {
+        list[index] = { ...list[index], ...nextItem, count: (list[index].count || 1) + 1 };
+      } else {
+        list.unshift({ ...nextItem, count: 1 });
+      }
+      state.archive[type] = list.slice(0, 500);
+      persistArchive();
+    }
+
+    function archiveCard(card) {
+      if (!card) return;
+      if (card.isQuestOffer) {
+        uniqueArchivePush("quests", {
+          id: card.quest.id,
+          title: card.title,
+          meta: `${statNames[card.quest.targetStat]} 목표 · ${questFailureLabel(card.quest.failureType)}`,
+          text: card.text,
+          dilemma: card.dilemma,
+          tags: card.tags || [],
+          left: card.left,
+          right: card.right,
+          targetStat: card.quest.targetStat,
+          targetValue: card.quest.targetValue,
+          rewardStat: card.quest.rewardStat,
+          rewardAmount: card.quest.rewardAmount,
+          failureType: card.quest.failureType
+        });
+        return;
+      }
+      uniqueArchivePush("events", {
+        id: card.id,
+        title: card.title,
+        meta: `${card.chapter} · #${String(card.number).padStart(3, "0")}`,
+        text: card.text,
+        dilemma: card.dilemma,
+        tags: card.tags || [],
+        left: card.left,
+        right: card.right
+      });
+    }
+
+    function archiveEnding(story, reason, score, tarot) {
+      uniqueArchivePush("endings", {
+        id: `${story.title}-${reason}`,
+        title: story.title,
+        meta: `${reason} · ${score}점 · ${state.turn}턴`,
+        text: story.body,
+        condition: endingConditionText(story, reason, score),
+        tarot
+      });
+    }
+
+    function tarotSymbolSvg(type) {
+      const symbols = {
+        tower: `<path d="M9 21h6"/><path d="M10 21 8 8h8l-2 13"/><path d="m8 8 4-5 4 5"/><path d="M9 13h6"/><path d="M11 17h2"/>`,
+        star: `<path d="m12 3 2.2 6.3h6.5l-5.2 3.9 2 6.4-5.5-3.8-5.5 3.8 2-6.4-5.2-3.9h6.5z"/>`,
+        temperance: `<path d="M8 5c2 2 6 2 8 0"/><path d="M8 19c2-2 6-2 8 0"/><path d="M7 8h10"/><path d="M7 16h10"/><path d="M12 8v8"/>`,
+        chariot: `<path d="M6 10h12l-1.4 7H7.4z"/><path d="M8 10 6 6h12l-2 4"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/>`,
+        justice: `<path d="M12 4v17"/><path d="M5 8h14"/><path d="m7 8-3 6h6z"/><path d="m17 8-3 6h6z"/><path d="M8 21h8"/>`,
+        hermit: `<path d="M12 4v6"/><path d="M9 10h6l-1 11h-4z"/><path d="M15 8l3-2v6l-3-2"/><path d="M9 8 6 6v6l3-2"/>`,
+        wheel: `<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 4v16M4 12h16M6.5 6.5l11 11M17.5 6.5l-11 11"/>`,
+        world: `<circle cx="12" cy="12" r="8"/><path d="M8 12c2-4 6-4 8 0-2 4-6 4-8 0z"/><path d="M12 4c-2 3-2 13 0 16M12 4c2 3 2 13 0 16"/>`
+      };
+      return `<svg viewBox="0 0 24 24" aria-hidden="true">${symbols[type] || symbols.world}</svg>`;
+    }
+
+    function tarotForEnding(story, reason) {
+      const lowKey = Object.entries(state.stats).sort((a, b) => a[1] - b[1])[0]?.[0] || "cash";
+      const strongKey = Object.entries(state.stats).sort((a, b) => b[1] - a[1])[0]?.[0] || "trust";
+      const failed = reason.includes("바닥") || reason.includes("중단");
+      const manual = state.manualEnded;
+      const cleared = !failed && state.turn >= state.deck.length;
+      const map = {
+        cash: ["chariot", "전차", "현금흐름을 다시 움직인 추진력"],
+        trust: ["justice", "정의", "관계와 약속을 저울에 올린 판"],
+        city: ["star", "별", "생활권의 작은 빛을 남긴 선택"],
+        control: ["temperance", "절제", "위험을 섞고 가라앉힌 균형"]
+      };
+      let selected = map[strongKey] || map.trust;
+      if (failed) selected = lowKey === "control" ? ["tower", "탑", "통제되지 않은 균열이 무너진 순간"] : ["tower", "탑", "낮은 지표가 장부를 흔든 순간"];
+      if (manual) selected = ["hermit", "은둔자", "스스로 장부를 닫고 다음 길을 고른 기록"];
+      if (cleared && averageStat() >= 62) selected = ["world", "세계", "네 지표가 하나의 완성된 장부로 묶인 결말"];
+      if (state.dangerRecoveryCount >= 3) selected = ["wheel", "운명의 수레바퀴", "위기를 여러 번 지나며 흐름을 되돌린 결말"];
+      return {
+        type: selected[0],
+        name: `${selected[1]} · ${story.title.replace(/^엔딩:\s*/, "")}`,
+        copy: selected[2],
+        endingTitle: story.title,
+        colors: tarotColors(selected[0])
+      };
+    }
+
+    function tarotColors(type) {
+      const palette = {
+        tower: ["#5c2532", "#1c2530", "rgba(255, 124, 96, 0.28)"],
+        star: ["#244f75", "#263f7c", "rgba(177, 213, 255, 0.3)"],
+        temperance: ["#277c78", "#4c5f3a", "rgba(223, 242, 239, 0.28)"],
+        chariot: ["#294f58", "#6b4b25", "rgba(255, 210, 116, 0.24)"],
+        justice: ["#385ca8", "#334149", "rgba(228, 235, 251, 0.26)"],
+        hermit: ["#3e4b4e", "#745c35", "rgba(250, 236, 212, 0.24)"],
+        wheel: ["#73460e", "#2f6f68", "rgba(255, 210, 116, 0.28)"],
+        world: ["#1f6f5a", "#385ca8", "rgba(223, 242, 239, 0.3)"]
+      };
+      return palette[type] || palette.world;
+    }
+
+    function endingConditionText(itemOrStory, reason = "", score = 0) {
+      if (itemOrStory?.condition) return itemOrStory.condition;
+      const title = itemOrStory?.title || itemOrStory?.endingTitle || "엔딩";
+      const scoreText = score ? `최종 점수 ${score}점` : "해당 판의 최종 장부";
+      const reasonText = reason || itemOrStory?.meta || "게임 종료 조건";
+      return `${title}을 본 조건: ${reasonText}. ${scoreText}, 생존 ${state.turn}턴, 별 ${state.bonusCount}개, 위기 극복 ${state.dangerRecoveryCount}회 기준으로 공개되었습니다.`;
+    }
+
+    function tarotCardHtml(tarot, options = {}) {
+      const colors = tarot.colors || tarotColors(tarot.type);
+      const flipped = options.flipped ? "flipped" : "";
+      const id = options.id ? ` data-tarot-id="${escapeText(options.id)}"` : "";
+      const condition = options.condition || tarot.condition || "";
+      const backClass = condition ? "tarot-face tarot-back has-condition" : "tarot-face tarot-back";
+      const backContent = condition
+        ? `<div class="tarot-condition"><strong>ENDING CONDITION</strong><p>${escapeText(condition)}</p></div>`
+        : `<b>?</b>`;
+      return `
+        <div class="tarot-card ${flipped}"${id} style="--tarot-a:${colors[0]};--tarot-b:${colors[1]};--tarot-glow:${colors[2]};">
+          <div class="tarot-inner">
+            <div class="${backClass}">${backContent}</div>
+            <div class="tarot-face tarot-front">
+              <span class="tarot-kicker">ENDING TAROT</span>
+              <h3 class="tarot-title">${escapeText(tarot.name)}</h3>
+              <div class="tarot-symbol">${tarotSymbolSvg(tarot.type)}</div>
+              <p class="tarot-copy">${escapeText(tarot.copy)}<br>${escapeText(tarot.endingTitle || "")}</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function archiveDeltaBlock(item) {
+      const sides = [
+        ["A", item.left],
+        ["B", item.right]
+      ].filter(([, choice]) => choice);
+      return sides.map(([label, choice]) => `
+        <div>
+          <b>${label}. ${escapeText(choice.label)}</b>
+          <p>${escapeText(choice.text)}</p>
+          <div class="delta-row">${deltaText(choice.delta || emptyDelta()) || `<span class="delta hidden-deltas">변화 없음</span>`}</div>
+        </div>
+      `).join("");
+    }
+
+    function fallbackArchiveChoice(item, side) {
+      if (item?.[side]) return item[side];
+      if (state.archiveTab === "quests") {
+        return side === "left"
+          ? { label: "수락", text: "제한 턴 안에 목표 지표를 달성합니다.", delta: emptyDelta() }
+          : { label: "거절", text: "이번 목표는 장부에 올리지 않습니다.", delta: emptyDelta() };
+      }
+      return { label: side === "left" ? "A 선택" : "B 선택", text: "기록 당시 선택지 정보가 부족합니다.", delta: emptyDelta() };
+    }
+
+    function questArchiveDescription(item) {
+      if (item.text && item.text.trim()) return item.text;
+      const target = statNames[item.targetStat] || "목표 지표";
+      const reward = statNames[item.rewardStat] || "보상 지표";
+      const failure = questFailureLabel(item.failureType || "none");
+      return `${target} ${item.targetValue || "목표치"} 이상을 제한 턴 안에 달성하면 ${reward} +${item.rewardAmount || 0} 보상을 받습니다. 실패 조건은 ${failure}입니다.`;
+    }
+
+    function archiveChoiceBlock(label, choice) {
+      const safeChoice = choice || { label, text: "", delta: emptyDelta() };
+      return `
+        <div class="under-choice ${label === "A" ? "left" : "right"}">
+          <span class="peek-kicker">${label}</span>
+          <h3 class="peek-name">${escapeText(safeChoice.label || label)}</h3>
+          <p class="peek-text">${escapeText(safeChoice.text || "선택지 설명이 없습니다.")}</p>
+          <div class="peek-deltas">${deltaText(safeChoice.delta || emptyDelta()) || `<span class="delta hidden-deltas">변화 없음</span>`}</div>
+        </div>
+      `;
+    }
+
+    function archiveStackCardHtml(item, isQuest) {
+      const left = fallbackArchiveChoice(item, "left");
+      const right = fallbackArchiveChoice(item, "right");
+      const description = isQuest ? questArchiveDescription(item) : (item.text || "기록된 사건 설명이 없습니다.");
+      const dilemma = item.dilemma || (isQuest ? "수락하면 목표가 장부에 남고, 실패하면 위험 결과가 적용될 수 있습니다." : "기록 당시의 선택지를 다시 확인합니다.");
+      return `
+        <div class="archive-card-wrap" data-archive-card-wrap>
+          <div class="under-choice-sheet" aria-hidden="true">
+            ${archiveChoiceBlock("A", left)}
+            ${archiveChoiceBlock("B", right)}
+          </div>
+          <article class="archive-play-card ${isQuest ? "quest-detail" : ""}" data-archive-play-card>
+            <div class="card-top">
+              <span class="badge ${isQuest ? "city" : ""}">${isQuest ? "퀘스트" : "사건"}</span>
+              <span class="card-number">${escapeText(item.meta || "")}</span>
+            </div>
+            <h3 class="card-title">${escapeText(item.title || "기록 카드")}</h3>
+            <div class="card-text">
+              <p class="story-line">${escapeText(description)}</p>
+              <p class="dilemma-line">${escapeText(dilemma)}</p>
+            </div>
+            <div class="card-tags">${(item.tags || []).slice(0, 4).map(tag => `<span class="tag">${escapeText(tag)}</span>`).join("")}</div>
+          </article>
+        </div>
+      `;
+    }
+
+    function renderArchiveDetail(item) {
+      if (!item) {
+        els.archiveDetail.innerHTML = `<div class="empty">왼쪽 목록에서 카드를 선택하세요.</div>`;
+        return;
+      }
+
+      if (state.archiveTab === "endings") {
+        const tarot = item.tarot || { type: "world", name: item.title, copy: item.meta, endingTitle: item.title, colors: tarotColors("world") };
+        els.archiveDetail.innerHTML = tarotCardHtml(tarot, { flipped: true, id: item.id, condition: item.condition || endingConditionText(item) });
+        bindTarotInteractions(els.archiveDetail);
+        return;
+      }
+
+      const isQuest = state.archiveTab === "quests";
+      els.archiveDetail.innerHTML = archiveStackCardHtml(item, isQuest);
+      bindArchiveCardInteractions(els.archiveDetail);
+    }
+
+    function bindTarotInteractions(scope = document) {
+      scope.querySelectorAll(".tarot-card").forEach(card => {
+        if (card.dataset.bound === "true") return;
+        card.dataset.bound = "true";
+        card.addEventListener("click", () => {
+          card.classList.toggle("flipped");
+          state.tarotFlipped = true;
+          checkAchievements();
+        });
+        card.addEventListener("mousemove", event => {
+          const rect = card.getBoundingClientRect();
+          const x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+          const y = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+          card.style.setProperty("--tiltX", `${(-y * 7).toFixed(2)}deg`);
+          card.style.setProperty("--tiltY", `${(x * 9).toFixed(2)}deg`);
+        });
+        card.addEventListener("mouseleave", () => {
+          card.style.setProperty("--tiltX", "0deg");
+          card.style.setProperty("--tiltY", "0deg");
+        });
+      });
+    }
+
+    function bindArchiveCardInteractions(scope = document) {
+      scope.querySelectorAll("[data-archive-play-card]").forEach(card => {
+        if (card.dataset.bound === "true") return;
+        card.dataset.bound = "true";
+        card.addEventListener("pointerdown", event => {
+          event.preventDefault();
+          const wrap = card.closest("[data-archive-card-wrap]");
+          card.setPointerCapture?.(event.pointerId);
+          card.classList.add("dragging");
+          const startX = event.clientX;
+          let moved = 0;
+          const move = moveEvent => {
+            moved = moveEvent.clientX - startX;
+            const capped = clamp(moved, -132, 132);
+            const left = clamp(capped / 85, 0, 1);
+            const right = clamp(-capped / 85, 0, 1);
+            wrap?.style.setProperty("--leftPeek", left.toFixed(2));
+            wrap?.style.setProperty("--rightPeek", right.toFixed(2));
+            card.style.transform = `translateX(${capped}px) rotate(${capped / 10}deg)`;
+          };
+          const up = () => {
+            window.removeEventListener("pointermove", move);
+            window.removeEventListener("pointerup", up);
+            card.classList.remove("dragging");
+            card.style.transform = "";
+            wrap?.style.setProperty("--leftPeek", "0.74");
+            wrap?.style.setProperty("--rightPeek", "0.74");
+          };
+          window.addEventListener("pointermove", move);
+          window.addEventListener("pointerup", up);
+        });
+      });
+    }
+
+    function showTarotReveal(tarot, endingId) {
+      els.tarotRevealCard.innerHTML = tarotCardHtml(tarot, { flipped: false, id: endingId });
+      bindTarotInteractions(els.tarotRevealCard);
+      els.tarotRevealLayer.classList.add("open");
+      const card = els.tarotRevealCard.querySelector(".tarot-card");
+      requestAnimationFrame(() => {
+        setTimeout(() => card?.classList.add("flipped"), 420);
+      });
+      const close = () => {
+        els.tarotRevealLayer.classList.remove("open");
+        els.tarotRevealLayer.removeEventListener("click", close);
+      };
+      setTimeout(() => {
+        els.tarotRevealLayer.addEventListener("click", close);
+      }, 900);
+      setTimeout(close, 2800);
+    }
+
+    function strongestDelta(delta) {
+      return Object.entries(delta)
+        .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))[0] || ["cash", 0];
+    }
+
+    function updateStoryArc(card, side, delta, questMessages = []) {
+      const [key, value] = strongestDelta(delta);
+      const improved = value >= 0;
+      const branchByKey = {
+        cash: improved ? "유동성 방어선" : "현금 압박선",
+        trust: improved ? "관계 회복선" : "신뢰 균열선",
+        city: improved ? "생활권 확장선" : "골목 피로선",
+        control: improved ? "리스크 잠금선" : "통제 공백선"
+      };
+      const stageByTurn = state.turn >= 40 ? "종반" : state.turn >= 25 ? "확장" : state.turn >= 12 ? "압박" : "입문";
+      const questText = questMessages.length ? " 퀘스트 결정도 다음 회의 안건으로 묶였다." : "";
+      state.storyArc = {
+        ...state.storyArc,
+        stage: stageByTurn,
+        branch: branchByKey[key] || state.storyArc.branch,
+        focus: key,
+        tension: clamp(state.storyArc.tension + (lowestStat() <= 24 ? 2 : 1) + (value < 0 ? 1 : -1), 0, 12),
+        lastChoice: `${card.title}에서 ${card[side].label}을 선택했다.`,
+        consequence: `${statNames[key]} ${value >= 0 ? "회복" : "손실"}이 다음 사건의 해석 기준이 됐다.${questText}`,
+        episodes: [
+          {
+            turn: state.turn,
+            title: card.title,
+            choice: card[side].label,
+            focus: key,
+            result: value
+          },
+          ...state.storyArc.episodes
+        ].slice(0, 12)
+      };
+    }
+
+    function storyPrelude() {
+      if (state.turn === 0) return "";
+      const tensionText = state.storyArc.tension >= 8
+        ? "운영위원회 분위기는 날카롭다."
+        : state.storyArc.tension >= 4
+          ? "회의실에는 조심스러운 긴장감이 남아 있다."
+          : "팀은 아직 흐름을 통제하고 있다고 믿는다.";
+      return `이전 결정의 여파: ${state.storyArc.consequence} ${tensionText}`;
+    }
+
+    function narrativeCard(card) {
+      if (!card) return card;
+      if (card.isQuestOffer) {
+        const terms = playableQuestTerms(card.quest);
+        const prelude = storyPrelude();
+        return {
+          ...card,
+          chapter: `${card.chapter} · ${state.storyArc.branch}`,
+          mood: "분기 목표",
+          text: prelude ? `${prelude} ${card.text}` : card.text,
+          dilemma: `수락하면 ${terms.limit}턴 안에 ${statNames[card.quest.targetStat]} ${terms.targetValue} 이상을 달성해야 한다. 성공 보상은 ${questRewardLabel(card.quest, terms)}, 실패 위험은 ${questFailureLabel(card.quest.failureType)}이다.`,
+          tags: ["퀘스트", state.storyArc.branch, statNames[card.quest.targetStat], `${terms.limit}턴`]
+        };
+      }
+      const prelude = storyPrelude();
+      return {
+        ...card,
+        chapter: `${card.chapter} · ${state.storyArc.stage}`,
+        mood: state.storyArc.branch,
+        text: prelude ? `${prelude} ${card.text}` : card.text,
+        dilemma: `${card.dilemma} 지금 흐름은 '${state.storyArc.branch}' 쪽으로 기울고 있다.`,
+        tags: [...card.tags.slice(0, 3), state.storyArc.branch]
+      };
+    }
+
+    function steerUpcomingDeck() {
+      if (state.turn >= state.deck.length - 4) return;
+      const start = state.turn;
+      const windowSize = Math.min(8, state.deck.length - start);
+      const segment = state.deck.slice(start, start + windowSize);
+      const focusMap = {
+        cash: ["finance", "market", "harvest"],
+        trust: ["contract", "operate", "reit"],
+        city: ["city", "develop", "tech"],
+        control: ["analysis", "contract", "crisis"]
+      };
+      const preferred = focusMap[state.storyArc.focus] || [];
+      segment.sort((a, b) => {
+        if (a.isQuestOffer || b.isQuestOffer) return a.isQuestOffer ? -1 : 1;
+        const aScore = preferred.includes(a.key) ? 0 : 1;
+        const bScore = preferred.includes(b.key) ? 0 : 1;
+        return aScore - bScore;
+      });
+      state.deck.splice(start, windowSize, ...segment);
     }
 
     function averageStat() {
@@ -3107,6 +5511,7 @@
         starDetails.push(`${statNames[key]} ★${state.statStars[key]} +${bonus}점`);
       });
       state.bonusCount = totalStars();
+      if (starAwards.length) state.starPulseKeys = [...new Set(starAwards)];
 
       return { starBonus, starDetails, starsEarned: starAwards.length };
     }
@@ -3127,16 +5532,23 @@
     }
 
     function acceptQuest(quest) {
+      const terms = playableQuestTerms(quest);
+      const acceptedQuest = {
+        ...quest,
+        targetValue: terms.targetValue,
+        limit: terms.limit,
+        rewardAmount: terms.rewardAmount
+      };
       const entry = {
         instanceId: `${quest.id}-${state.turn}-${state.activeQuests.length}`,
-        quest,
-        targetStat: quest.targetStat,
-        targetValue: quest.targetValue,
+        quest: acceptedQuest,
+        targetStat: acceptedQuest.targetStat,
+        targetValue: acceptedQuest.targetValue,
         acceptedTurn: state.turn,
-        deadlineTurn: state.turn + quest.limit
+        deadlineTurn: state.turn + acceptedQuest.limit
       };
       state.activeQuests.push(entry);
-      return `퀘스트 수락: ${quest.title}. ${quest.limit}턴 안에 ${statNames[quest.targetStat]} ${quest.targetValue} 이상을 달성해야 합니다.`;
+      return `퀘스트 수락: ${quest.title}. ${acceptedQuest.limit}턴 안에 ${statNames[acceptedQuest.targetStat]} ${acceptedQuest.targetValue} 이상을 달성해야 합니다.`;
     }
 
     function removeQuestStar(preferredKey) {
@@ -3316,8 +5728,9 @@
       els.meters.innerHTML = Object.entries(STAT_META).map(([key, meta]) => {
         const value = state.stats[key];
         const danger = value <= 18;
+        const starPop = state.starPulseKeys.includes(key);
         return `
-          <div class="meter" style="--meter-color:${meta.colorVar};--meter-value:${clamp(value)}%">
+          <div class="meter ${starPop ? "star-pop" : ""}" style="--meter-color:${meta.colorVar};--meter-value:${clamp(value)}%">
             <div class="meter-main">
               <div class="stat-gauge">${statIcon(key)}</div>
               <div class="meter-body">
@@ -3335,7 +5748,8 @@
     }
 
     function renderCard() {
-      const card = currentCard();
+      const rawCard = currentCard();
+      const card = narrativeCard(rawCard);
       if (!card) return;
       els.chapterName.textContent = card.chapter;
       els.cardIndex.textContent = isInfiniteMode()
@@ -3362,19 +5776,26 @@
       els.rightPeekTitle.textContent = card.right.label;
       els.rightPeekText.textContent = card.right.text;
       els.rightPeekDeltas.innerHTML = config.showPreviewDeltas ? deltaText(rightDelta) : hiddenDeltaHint();
+      els.quickLeftTitle.textContent = card.left.label;
+      els.quickLeftText.textContent = card.left.text;
+      els.quickRightTitle.textContent = card.right.label;
+      els.quickRightText.textContent = card.right.text;
     }
 
     function renderLogs() {
       if (state.log.length === 0) {
         els.logList.innerHTML = `<div class="empty">아직 기록 없음</div>`;
+        els.mobileLogList.innerHTML = `<div class="empty">아직 기록 없음</div>`;
         return;
       }
-      els.logList.innerHTML = [...state.log].reverse().map(item => `
+      const html = [...state.log].reverse().map(item => `
         <div class="log-item">
           <span class="log-turn">${item.turn}턴</span>
           <span class="log-copy">${item.text}</span>
         </div>
       `).join("");
+      els.logList.innerHTML = html;
+      els.mobileLogList.innerHTML = html;
     }
 
     function renderMeta() {
@@ -3436,8 +5857,14 @@
       renderLogs();
       renderMeta();
       renderQuestBoard();
+      applySettings();
       els.playCard.setAttribute("aria-disabled", state.ended ? "true" : "false");
       updateBodyState();
+      if (state.starPulseKeys.length) {
+        setTimeout(() => {
+          state.starPulseKeys = [];
+        }, 950);
+      }
     }
 
     function renderDifficultyOptions() {
@@ -3464,6 +5891,249 @@
       els.modeHint.textContent = isInfiniteMode()
         ? "무한 모드: 이름을 입력하고 공개 기록에 도전합니다."
         : "50장 도전: 매 판 50개 사건을 해결합니다.";
+    }
+
+    function applySettings() {
+      document.body.classList.toggle("dark-mode", Boolean(state.settings.darkMode));
+      document.body.classList.toggle("fast-mode", Boolean(state.settings.fastMode));
+      els.darkModeToggle.classList.toggle("active", Boolean(state.settings.darkMode));
+      els.fastModeToggle.classList.toggle("active", Boolean(state.settings.fastMode));
+    }
+
+    function unlockedAchievement(id) {
+      return Boolean(state.achievements[id]);
+    }
+
+    function showAchievementToast(achievement) {
+      const toast = document.createElement("div");
+      toast.className = "achievement-toast";
+      toast.innerHTML = `
+        <b>업적 달성: ${escapeText(achievement.title)}</b>
+        <span>${escapeText(achievement.description)}</span>
+      `;
+      els.achievementToastZone.appendChild(toast);
+      setTimeout(() => toast.remove(), 3600);
+    }
+
+    function checkAchievements() {
+      const newlyUnlocked = [];
+      ACHIEVEMENTS.forEach(achievement => {
+        if (unlockedAchievement(achievement.id)) return;
+        if (!achievement.check()) return;
+        state.achievements[achievement.id] = {
+          unlockedAt: new Date().toISOString(),
+          hidden: achievement.hidden
+        };
+        newlyUnlocked.push(achievement);
+      });
+      if (!newlyUnlocked.length) return;
+      persistAchievements();
+      newlyUnlocked.slice(0, 3).forEach(showAchievementToast);
+      if (els.achievementsModal.classList.contains("open")) renderAchievements();
+    }
+
+    function achievementCounts() {
+      const normal = ACHIEVEMENTS.filter(item => item.type === "normal");
+      const hidden = ACHIEVEMENTS.filter(item => item.type === "hidden");
+      return {
+        normal: normal.filter(item => unlockedAchievement(item.id)).length,
+        normalTotal: normal.length,
+        hidden: hidden.filter(item => unlockedAchievement(item.id)).length,
+        hiddenTotal: hidden.length
+      };
+    }
+
+    function renderAchievements() {
+      const counts = achievementCounts();
+      els.achievementTabs.querySelectorAll("[data-achievement-tab]").forEach(button => {
+        button.classList.toggle("active", button.dataset.achievementTab === state.achievementTab);
+        button.textContent = button.dataset.achievementTab === "normal"
+          ? `일반 업적 ${counts.normal}/${counts.normalTotal}`
+          : `숨겨진 업적 ${counts.hidden}/${counts.hiddenTotal}`;
+      });
+
+      const visible = ACHIEVEMENTS.filter(achievement => {
+        if (achievement.type !== state.achievementTab) return false;
+        if (achievement.hidden && !unlockedAchievement(achievement.id)) return false;
+        return true;
+      });
+
+      if (!visible.length) {
+        els.achievementList.innerHTML = `<div class="empty">아직 공개된 숨겨진 업적이 없습니다. 플레이 중 특수한 조건을 발견하면 이곳에 나타납니다.</div>`;
+        return;
+      }
+
+      els.achievementList.innerHTML = visible.map(achievement => {
+        const unlocked = unlockedAchievement(achievement.id);
+        const progress = unlocked ? "완료" : achievement.progress();
+        return `
+          <div class="achievement-item ${unlocked ? "unlocked" : ""}">
+            <b>${escapeText(achievement.title)}</b>
+            <span>${escapeText(achievement.description)}</span>
+            <span>${escapeText(progress)}</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function openAchievements(tab = state.achievementTab) {
+      state.achievementTab = tab;
+      checkAchievements();
+      renderAchievements();
+      els.achievementsModal.classList.add("open");
+    }
+
+    function renderTutorial() {
+      const index = clamp(state.tutorialIndex, 0, tutorialSteps.length - 1);
+      state.tutorialIndex = index;
+      const step = tutorialSteps[index];
+      const done = Boolean(state.tutorialPracticeDone[index]);
+      els.tutorialStepLabel.textContent = `${index + 1} / ${tutorialSteps.length}`;
+      els.tutorialStepTitle.textContent = step.title;
+      els.tutorialStepText.textContent = step.text;
+      els.prevTutorial.disabled = index === 0;
+      els.nextTutorial.disabled = !done;
+      els.nextTutorial.textContent = index === tutorialSteps.length - 1 ? "완료" : "다음";
+      els.tutorialDots.innerHTML = tutorialSteps.map((_, dotIndex) => `
+        <span class="tutorial-dot ${dotIndex === index ? "active" : ""}"></span>
+      `).join("");
+      renderTutorialPractice(step, done);
+    }
+
+    function renderTutorialPractice(step, done) {
+      const miniValues = step.practice === "stat"
+        ? [62, 48, 36, 71]
+        : step.practice === "quest"
+          ? [55, 54, 52, 46]
+          : [58, 58, 58, 58];
+      els.tutorialMiniStats.innerHTML = STAT_KEYS.map((key, index) => `
+        <button class="tutorial-mini-stat" data-tutorial-stat="${key}" type="button">
+          <span>${statNames[key]}</span>
+          <b>${miniValues[index]}</b>
+        </button>
+      `).join("");
+      const titleMap = {
+        stat: "지표를 눌러보기",
+        drag: "카드를 좌우로 당겨보기",
+        quest: "퀘스트 선택 연습",
+        choice: "서사 선택 연습",
+        tarot: "엔딩 카드 뒤집기"
+      };
+      const textMap = {
+        stat: "아무 지표나 하나 눌러보세요.",
+        drag: "이 카드를 좌우로 끌었다 놓아보세요.",
+        quest: "수락 또는 거절을 눌러보세요.",
+        choice: "왼쪽 또는 오른쪽 선택을 눌러보세요.",
+        tarot: "카드를 눌러 앞면을 확인하세요."
+      };
+      els.tutorialPracticeTitle.textContent = titleMap[step.practice] || "실습";
+      els.tutorialPracticeText.textContent = textMap[step.practice] || "";
+      els.tutorialPracticeCard.className = `tutorial-practice-card ${done ? "done" : ""} ${step.practice === "tarot" ? "tutorial-tarot-card" : ""}`;
+      els.tutorialStatus.textContent = done ? "완료했습니다. 다음 단계로 넘어가세요." : "아래 실습을 완료하면 다음 단계로 넘어갈 수 있습니다.";
+      els.tutorialPracticeLeft.textContent = step.practice === "quest" ? "수락" : "왼쪽 선택";
+      els.tutorialPracticeRight.textContent = step.practice === "quest" ? "거절" : "오른쪽 선택";
+      const actionEnabled = step.practice === "quest" || step.practice === "choice";
+      els.tutorialPracticeLeft.disabled = !actionEnabled;
+      els.tutorialPracticeRight.disabled = !actionEnabled;
+    }
+
+    function completeTutorialPractice() {
+      state.tutorialPracticeDone[state.tutorialIndex] = true;
+      renderTutorial();
+    }
+
+    function clearTutorialHighlight() {
+      document.querySelectorAll(".tutorial-highlight").forEach(node => node.classList.remove("tutorial-highlight"));
+    }
+
+    function tutorialTargetFor(step) {
+      const targetMap = {
+        stat: "#meters",
+        drag: ".card-wrap",
+        quest: "#questBoard",
+        choice: "#lastResult",
+        tarot: "#openArchiveTop"
+      };
+      return document.querySelector(step.target || targetMap[step.practice] || ".game-panel");
+    }
+
+    function renderTutorialCoach() {
+      const index = clamp(state.tutorialIndex, 0, tutorialSteps.length - 1);
+      state.tutorialIndex = index;
+      const step = tutorialSteps[index];
+      clearTutorialHighlight();
+      const target = tutorialTargetFor(step);
+      target?.classList.add("tutorial-highlight");
+      els.tutorialCoachTitle.textContent = step.title;
+      els.tutorialCoachText.textContent = step.text;
+      els.tutorialCoachProgress.textContent = `${index + 1} / ${tutorialSteps.length}`;
+      els.tutorialCoachPrev.disabled = index === 0;
+      els.tutorialCoachNext.textContent = index === tutorialSteps.length - 1 ? "완료" : "다음";
+    }
+
+    function openTutorial(startAt = 0) {
+      state.tutorialIndex = startAt;
+      state.tutorialCoachOpen = true;
+      els.tutorialModal.classList.remove("open");
+      els.tutorialCoach.classList.add("open");
+      renderTutorialCoach();
+    }
+
+    function closeTutorialModal(markSeen = true) {
+      if (markSeen) persistTutorialSeen();
+      state.tutorialCoachOpen = false;
+      els.tutorialCoach.classList.remove("open");
+      els.tutorialModal.classList.remove("open");
+      clearTutorialHighlight();
+      checkAchievements();
+    }
+
+    function renderArchive() {
+      const counts = {
+        events: state.archive.events.length,
+        quests: state.archive.quests.length,
+        endings: state.archive.endings.length
+      };
+      els.archiveStats.innerHTML = [
+        ["events", "경험한 사건", counts.events],
+        ["quests", "만난 퀘스트", counts.quests],
+        ["endings", "확인한 엔딩", counts.endings]
+      ].map(([tab, label, value]) => `
+        <button class="archive-card ${state.archiveTab === tab ? "active" : ""}" data-archive-stat-tab="${tab}" type="button" ${value ? "" : "disabled"}>
+          <span>${label}</span>
+          <b>${value}</b>
+        </button>
+      `).join("");
+
+      els.archiveTabs.querySelectorAll("[data-archive-tab]").forEach(button => {
+        button.classList.toggle("active", button.dataset.archiveTab === state.archiveTab);
+      });
+
+      const list = state.archive[state.archiveTab] || [];
+      if (!list.length) {
+        els.archiveList.innerHTML = `<div class="empty">아직 기록이 없습니다. 플레이하면 자동으로 채워집니다.</div>`;
+        renderArchiveDetail(null);
+        return;
+      }
+
+      els.archiveList.innerHTML = list.slice(0, 80).map((item, index) => `
+        <button class="archive-row" data-archive-index="${index}" type="button">
+          <b>${escapeText(item.title)}</b>
+          <span>${escapeText(item.meta || "")} · 경험 ${item.count || 1}회</span>
+        </button>
+      `).join("");
+      renderArchiveDetail(list[0]);
+    }
+
+    function openArchive(tab = state.archiveTab) {
+      state.archiveOpened = true;
+      state.archiveTab = tab;
+      if (!(state.archive[state.archiveTab] || []).length) {
+        state.archiveTab = ["events", "quests", "endings"].find(key => (state.archive[key] || []).length) || state.archiveTab;
+      }
+      renderArchive();
+      els.archiveModal.classList.add("open");
+      checkAchievements();
     }
 
     function renderVersionFooter() {
@@ -3705,6 +6375,7 @@
     function choose(side) {
       if (state.ended) return;
       const card = currentCard();
+      archiveCard(card);
       const choice = card[side];
       const combined = effectiveChoiceDelta(card, side);
       const scoreGain = applyDeltaWithScore(combined);
@@ -3732,6 +6403,8 @@
 
       const questResult = resolveQuestProgress();
       questMessages.push(...questResult.messages);
+      updateStoryArc(card, side, combined, questMessages);
+      steerUpcomingDeck();
       const invincibleLine = state.invincible ? protectInvincibleFailure() : "";
       const dangerResult = resolveDangerState();
       const recoveryLine = dangerResult.recovered
@@ -3777,6 +6450,7 @@
         return;
       }
 
+      checkAchievements();
       render();
     }
 
@@ -4038,6 +6712,12 @@
             ? "중반 진입 전후에 압박이 커졌습니다. 빠른 현금화, 민원 회피, 실사 생략처럼 즉시 이득이 큰 선택의 후폭풍을 살펴야 합니다."
             : "초반부터 균형이 급격히 무너졌습니다. 첫 10턴에서는 수익보다 네 지표의 바닥선을 만드는 선택이 중요합니다.";
       const story = endingStory(reason, score);
+      const tarot = tarotForEnding(story, reason);
+      const endingId = `${story.title}-${reason}`;
+      const firstSeenEnding = !state.archive.endings.some(item => item.id === endingId);
+      archiveEnding(story, reason, score, tarot);
+      els.endTarotWrap.innerHTML = tarotCardHtml(tarot, { flipped: true, id: endingId });
+      bindTarotInteractions(els.endTarotWrap);
       const unlockLine = hardUnlockedNow
         ? `<br><span class="server-note">중간 난이도 50장 클리어로 어려움 모드가 해금되었습니다.</span>`
         : "";
@@ -4059,6 +6739,10 @@
         ? "기록 등록을 누르면 공개 순위표에 저장됩니다."
         : "로컬 파일에서는 등록할 수 없습니다. 서버 버전에서 실행하세요.";
       els.endModal.classList.add("open");
+      if (firstSeenEnding) {
+        showTarotReveal(tarot, endingId);
+      }
+      checkAchievements();
     }
 
     function resetGame(showStory = false) {
@@ -4084,10 +6768,13 @@
       state.finalResult = null;
       state.submitted = false;
       state.manualEnded = false;
+      state.starPulseKeys = [];
+      state.storyArc = createStoryArc();
       recordStatHistory("시작");
       els.endModal.classList.remove("open");
       els.statGraph.innerHTML = "";
       els.submitSection.hidden = true;
+      els.mobileLogDrawer.classList.remove("open");
       els.storyModal.classList.toggle("open", showStory);
       els.playCard.style.transform = "";
       els.playCard.classList.remove("dragging", "left-lean", "right-lean", "preview-lock", "commit-ready");
@@ -4113,7 +6800,12 @@
     function isModalOpen() {
       return els.storyModal.classList.contains("open")
         || els.endModal.classList.contains("open")
-        || els.patchModal.classList.contains("open");
+        || els.patchModal.classList.contains("open")
+        || els.tutorialModal.classList.contains("open")
+        || els.settingsModal.classList.contains("open")
+        || els.archiveModal.classList.contains("open")
+        || els.achievementsModal.classList.contains("open")
+        || els.tarotRevealLayer.classList.contains("open");
     }
 
     function resetKeyboardControl() {
@@ -4182,6 +6874,7 @@
         ? "낡은 장부 표지 안쪽에 작은 인감이 찍혔습니다."
         : "장부 표지 안쪽의 인감이 조용히 닫혔습니다.";
       render();
+      checkAchievements();
     }
 
     function isTextInputTarget(target) {
@@ -4312,8 +7005,63 @@
       window.addEventListener("pointerup", up);
     }
 
+    function startTutorialPracticeDrag(event) {
+      const step = tutorialSteps[state.tutorialIndex];
+      if (step.practice !== "drag") return;
+      event.preventDefault();
+      els.tutorialPracticeCard.setPointerCapture?.(event.pointerId);
+      const startX = event.clientX;
+      let moved = 0;
+      const move = moveEvent => {
+        moved = moveEvent.clientX - startX;
+        const capped = Math.max(-96, Math.min(96, moved));
+        els.tutorialPracticeCard.style.transform = `translateX(${capped}px) rotate(${capped / 9}deg)`;
+      };
+      const up = () => {
+        window.removeEventListener("pointermove", move);
+        window.removeEventListener("pointerup", up);
+        els.tutorialPracticeCard.style.transform = "";
+        if (Math.abs(moved) > 34) completeTutorialPractice();
+      };
+      window.addEventListener("pointermove", move);
+      window.addEventListener("pointerup", up);
+    }
+
     els.playCard.addEventListener("pointerdown", startDrag);
+    els.tutorialPracticeCard.addEventListener("pointerdown", startTutorialPracticeDrag);
+    els.tutorialPracticeCard.addEventListener("click", () => {
+      const step = tutorialSteps[state.tutorialIndex];
+      if (step.practice === "tarot") completeTutorialPractice();
+    });
+    els.tutorialMiniStats.addEventListener("click", event => {
+      if (!event.target.closest("[data-tutorial-stat]")) return;
+      if (tutorialSteps[state.tutorialIndex].practice === "stat") completeTutorialPractice();
+    });
+    els.tutorialPracticeLeft.addEventListener("click", completeTutorialPractice);
+    els.tutorialPracticeRight.addEventListener("click", completeTutorialPractice);
     els.newGameTop.addEventListener("click", () => resetGame(true));
+    els.openTutorialTop.addEventListener("click", () => openTutorial(0));
+    els.openTutorialStory.addEventListener("click", () => openTutorial(0));
+    els.openArchiveTop.addEventListener("click", () => openArchive());
+    els.openArchiveStory.addEventListener("click", () => openArchive());
+    els.openAchievementsTop.addEventListener("click", () => openAchievements());
+    els.openAchievementsStory.addEventListener("click", () => openAchievements());
+    els.openSettingsTop.addEventListener("click", () => {
+      state.settingsOpened = true;
+      applySettings();
+      els.settingsModal.classList.add("open");
+      checkAchievements();
+    });
+    els.openSettingsStory.addEventListener("click", () => {
+      state.settingsOpened = true;
+      applySettings();
+      els.settingsModal.classList.add("open");
+      checkAchievements();
+    });
+    els.quickLeft.addEventListener("click", () => choose("left"));
+    els.quickRight.addEventListener("click", () => choose("right"));
+    els.mobileLogToggle.addEventListener("click", () => els.mobileLogDrawer.classList.toggle("open"));
+    els.mobileLogHandle.addEventListener("click", () => els.mobileLogDrawer.classList.toggle("open"));
     els.difficultyOptions.addEventListener("click", event => {
       const button = event.target.closest("[data-difficulty]");
       if (!button) return;
@@ -4350,12 +7098,79 @@
     });
     els.closeEnd.addEventListener("click", () => els.endModal.classList.remove("open"));
     els.closePatchNotes.addEventListener("click", () => els.patchModal.classList.remove("open"));
+    els.closeTutorial.addEventListener("click", () => closeTutorialModal());
+    els.skipTutorial.addEventListener("click", () => closeTutorialModal());
+    els.prevTutorial.addEventListener("click", () => {
+      state.tutorialIndex -= 1;
+      renderTutorial();
+    });
+    els.nextTutorial.addEventListener("click", () => {
+      if (state.tutorialIndex >= tutorialSteps.length - 1) {
+        closeTutorialModal();
+        return;
+      }
+      state.tutorialIndex += 1;
+      renderTutorial();
+    });
+    els.tutorialCoachSkip.addEventListener("click", () => closeTutorialModal());
+    els.tutorialCoachPrev.addEventListener("click", () => {
+      state.tutorialIndex -= 1;
+      renderTutorialCoach();
+    });
+    els.tutorialCoachNext.addEventListener("click", () => {
+      if (state.tutorialIndex >= tutorialSteps.length - 1) {
+        closeTutorialModal();
+        return;
+      }
+      state.tutorialIndex += 1;
+      renderTutorialCoach();
+    });
+    els.closeSettings.addEventListener("click", () => els.settingsModal.classList.remove("open"));
+    els.darkModeToggle.addEventListener("click", () => {
+      state.settings.darkMode = !state.settings.darkMode;
+      persistSettings();
+      applySettings();
+      checkAchievements();
+    });
+    els.fastModeToggle.addEventListener("click", () => {
+      state.settings.fastMode = !state.settings.fastMode;
+      persistSettings();
+      applySettings();
+      checkAchievements();
+    });
+    els.closeArchive.addEventListener("click", () => els.archiveModal.classList.remove("open"));
+    els.closeAchievements.addEventListener("click", () => els.achievementsModal.classList.remove("open"));
+    els.achievementTabs.addEventListener("click", event => {
+      const button = event.target.closest("[data-achievement-tab]");
+      if (!button) return;
+      state.achievementTab = button.dataset.achievementTab;
+      renderAchievements();
+    });
+    els.archiveStats.addEventListener("click", event => {
+      const button = event.target.closest("[data-archive-stat-tab]");
+      if (!button) return;
+      state.archiveTab = button.dataset.archiveStatTab;
+      renderArchive();
+    });
+    els.archiveTabs.addEventListener("click", event => {
+      const button = event.target.closest("[data-archive-tab]");
+      if (!button) return;
+      state.archiveTab = button.dataset.archiveTab;
+      renderArchive();
+    });
+    els.archiveList.addEventListener("click", event => {
+      const row = event.target.closest("[data-archive-index]");
+      if (!row) return;
+      const item = (state.archive[state.archiveTab] || [])[Number(row.dataset.archiveIndex)];
+      renderArchiveDetail(item);
+    });
     els.restartEnd.addEventListener("click", () => resetGame(true));
     els.statGraph.addEventListener("click", event => {
       const button = event.target.closest("[data-graph-filter]");
       if (!button) return;
       state.graphFilter = button.dataset.graphFilter;
       renderStatGraph();
+      checkAchievements();
     });
     els.openPatchNotesStory.addEventListener("click", () => {
       renderPatchNotes();
@@ -4384,9 +7199,14 @@
     resetGame(true);
     renderLeaderboardTabs();
     renderVersionFooter();
+    applySettings();
     loadLeaderboard();
+    if (!readTutorialSeen()) {
+      openTutorial(0);
+    }
     console.assert(buildDeck().length === TOTAL_EVENT_POOL, `card pool must contain ${TOTAL_EVENT_POOL} events`);
     console.assert(buildQuestLibrary().length === QUEST_LIBRARY_SIZE, `quest library must contain ${QUEST_LIBRARY_SIZE} quests`);
+    console.assert(ACHIEVEMENTS.length === 150, "achievement library must contain 150 achievements");
     console.assert(state.mode === "infinite" || state.deck.length === RUN_EVENT_COUNT, `run deck must contain ${RUN_EVENT_COUNT} events`);
   </script>
 </body>
