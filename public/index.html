@@ -574,6 +574,42 @@
       perspective: 1200px;
     }
 
+    .keyboard-hints {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(4px, 3vw, 28px);
+      pointer-events: none;
+    }
+
+    .keyboard-hints.show {
+      display: flex;
+    }
+
+    .keyboard-key {
+      width: 54px;
+      height: 54px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.92);
+      color: #1f6f5a;
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      font-weight: 950;
+      box-shadow: 0 14px 34px rgba(26, 36, 47, 0.18);
+      transition: transform 0.14s ease, background 0.14s ease, color 0.14s ease;
+    }
+
+    .keyboard-key.active {
+      transform: scale(0.9);
+      background: #1f6f5a;
+      color: #ffffff;
+    }
+
     .stack-shadow,
     .stack-shadow::before {
       position: absolute;
@@ -698,6 +734,40 @@
       cursor: grab;
       will-change: transform;
       overflow: hidden;
+    }
+
+    #playCard > :not(.card-illustration) {
+      position: relative;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .card-illustration {
+      position: absolute;
+      right: 12px;
+      bottom: 46px;
+      width: 150px;
+      height: 150px;
+      color: #1f6f5a;
+      opacity: 0.075;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .card-illustration svg {
+      width: 100%;
+      height: 100%;
+      stroke: currentColor;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    .play-card.quest-card .card-illustration,
+    .archive-play-card.quest-detail .card-illustration {
+      color: #8e6bc7;
+      opacity: 0.13;
     }
 
     .play-card:active {
@@ -899,6 +969,83 @@
       line-height: 1.38;
     }
 
+    .double-road-panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.84);
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .double-road-panel[hidden] {
+      display: none;
+    }
+
+    .double-road-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: #243442;
+      font-size: 12px;
+      font-weight: 950;
+    }
+
+    .double-road-effect {
+      color: #1f6f5a;
+      font-size: 11px;
+      font-weight: 900;
+      text-align: right;
+    }
+
+    .double-road-cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .double-road-card {
+      min-height: 84px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      color: #243442;
+      padding: 9px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 5px;
+      text-align: left;
+      overflow: hidden;
+      transition: border-color 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .double-road-card.active {
+      border-color: #1f6f5a;
+      box-shadow: 0 12px 28px rgba(31, 111, 90, 0.16);
+      transform: translateY(-1px);
+    }
+
+    .double-road-card b {
+      color: #17202a;
+      font-size: 13px;
+      line-height: 1.26;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .double-road-card span,
+    .double-road-card small {
+      color: #66737f;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .double-road-card small {
+      font-weight: 900;
+    }
+
     .last-result {
       min-height: 54px;
       padding: 10px 13px;
@@ -919,6 +1066,8 @@
       padding: 10px 12px;
       display: grid;
       gap: 8px;
+      max-height: 172px;
+      overflow: auto;
     }
 
     .quest-board[hidden] {
@@ -1030,7 +1179,7 @@
       background: transparent;
       position: relative;
       counter-increment: logStep;
-      animation: logRise 0.32s ease both;
+      animation: none;
     }
 
     .log-item::after {
@@ -1042,7 +1191,8 @@
       width: 2px;
       background: #dbe5e3;
       transform-origin: top;
-      animation: logLineGrow 0.42s ease both;
+      transform: scaleY(1);
+      animation: none;
     }
 
     .log-item::before {
@@ -1076,6 +1226,20 @@
       font-size: 11px;
       line-height: 1.34;
       overflow: hidden;
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+
+    .log-item.new-log {
+      animation: logRise 0.32s ease both;
+    }
+
+    .log-item.new-log::after {
+      animation: logLineGrow 0.42s ease both;
+    }
+
+    .log-item.new-log .log-copy {
       opacity: 0;
       transform: translateX(-12px);
       animation: logTextIn 0.36s ease 0.08s forwards;
@@ -1115,6 +1279,11 @@
       flex-wrap: wrap;
     }
 
+    .start-actions[hidden],
+    .start-extra[hidden] {
+      display: none;
+    }
+
     .start-extra {
       border: 1px solid var(--line);
       border-radius: var(--radius);
@@ -1146,12 +1315,34 @@
       z-index: 30;
     }
 
+    .topbar {
+      position: relative;
+    }
+
+    body.is-story-open .topbar {
+      z-index: 34;
+    }
+
+    #storyModal {
+      pointer-events: none;
+      padding-top: 96px;
+      align-items: start;
+    }
+
+    #storyModal .modal {
+      pointer-events: auto;
+    }
+
     .modal-layer.open {
       display: grid;
     }
 
+    .modal-layer:not(#storyModal) {
+      z-index: 38;
+    }
+
     .modal {
-      width: min(760px, 100%);
+      width: min(900px, 100%);
       max-height: calc(100vh - 32px);
       overflow: auto;
       border-radius: var(--radius);
@@ -1327,6 +1518,10 @@
       align-items: center;
     }
 
+    .mobile-only-setting {
+      display: none;
+    }
+
     .setting-copy {
       display: grid;
       gap: 3px;
@@ -1368,9 +1563,33 @@
       box-shadow: 0 2px 5px rgba(23, 32, 42, 0.18);
     }
 
+    .mode-title {
+      display: grid;
+      grid-template-columns: auto auto minmax(0, 1fr);
+      align-items: center;
+    }
+
+    .mode-toggle {
+      min-height: 32px;
+      padding: 0 11px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #ffffff;
+      color: #344454;
+      font-size: 12px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .mode-toggle.active {
+      border-color: #1f6f5a;
+      background: #1f6f5a;
+      color: #ffffff;
+    }
+
     .archive-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 8px;
     }
 
@@ -1407,14 +1626,25 @@
       display: grid;
       grid-template-columns: minmax(220px, 0.85fr) minmax(260px, 1fr);
       gap: 10px;
+      min-height: 430px;
+      overflow: hidden;
     }
 
     .archive-workspace .archive-list {
-      max-height: 370px;
+      min-height: 430px;
+      max-height: 430px;
+    }
+
+    .archive-workspace.stats-mode {
+      grid-template-columns: 1fr;
+    }
+
+    .archive-workspace.stats-mode .archive-list {
+      display: none;
     }
 
     .archive-detail {
-      min-height: 370px;
+      min-height: 430px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: #ffffff;
@@ -1422,6 +1652,7 @@
       display: grid;
       place-items: center;
       overflow: hidden;
+      overflow-y: auto;
     }
 
     .archive-detail-card {
@@ -1560,6 +1791,12 @@
       fill: none;
     }
 
+    .tarot-card.icon-only .tarot-kicker,
+    .tarot-card.icon-only .tarot-title,
+    .tarot-card.icon-only .tarot-copy {
+      visibility: hidden;
+    }
+
     .tarot-copy {
       margin: 0;
       color: #f8e9ce;
@@ -1683,7 +1920,7 @@
     #endModal .modal {
       width: min(1180px, calc(100vw - 18px));
       max-height: calc(100vh - 18px);
-      overflow: hidden;
+      overflow: auto;
     }
 
     #endModal .modal-body {
@@ -1721,8 +1958,8 @@
     #endModal .summary {
       grid-area: summary;
       min-height: 0;
-      max-height: 138px;
-      overflow: hidden;
+      max-height: none;
+      overflow: visible;
       font-size: 12px;
       line-height: 1.42;
     }
@@ -1822,6 +2059,20 @@
       font-weight: 900;
     }
 
+    .difficulty-title.mode-title {
+      display: grid;
+      grid-template-columns: auto auto minmax(0, 1fr);
+      align-items: center;
+    }
+
+    .difficulty-title.mode-title #modeHint {
+      min-width: 0;
+      text-align: right;
+      color: #66737f;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
     .difficulty-options {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1909,6 +2160,10 @@
       margin-top: 18px;
       padding-top: 16px;
       border-top: 1px solid var(--line);
+    }
+
+    .side-right > .leaderboard-section {
+      display: none;
     }
 
     .leaderboard-list {
@@ -2150,7 +2405,8 @@
       font-size: 12px;
       line-height: 1.4;
       min-height: 0;
-      overflow: hidden;
+      overflow: auto;
+      align-content: center;
     }
 
     .ending-achievements b {
@@ -2162,6 +2418,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
+      align-items: center;
     }
 
     .ending-achievement-chips span {
@@ -2261,7 +2518,7 @@
     }
 
     body.is-playing .app {
-      height: 100vh;
+      height: 100dvh;
       padding: 10px 0;
       display: grid;
       grid-template-rows: auto minmax(0, 1fr);
@@ -2285,16 +2542,38 @@
     }
 
     body.is-playing .card-wrap {
-      min-height: min(500px, calc(100vh - 230px));
+      min-height: min(500px, calc(100dvh - 230px));
+    }
+
+    body.is-playing .topbar {
+      padding: 10px 12px;
+    }
+
+    body.is-playing .layout {
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    body.is-playing .meters {
+      gap: 8px;
+      padding: 10px;
+    }
+
+    body.is-playing .meter {
+      padding: 8px;
     }
 
     body.is-playing .log-list {
-      max-height: calc(100vh - 242px);
+      max-height: calc(100dvh - 242px);
     }
 
     body.dark-mode .patch-item,
     body.dark-mode .difficulty-panel,
     body.dark-mode .difficulty-option,
+    body.dark-mode .mode-toggle,
+    body.dark-mode .double-road-panel,
+    body.dark-mode .double-road-card,
+    body.dark-mode .keyboard-key,
     body.dark-mode .player-name-row input,
     body.dark-mode .leaderboard-tab,
     body.dark-mode .leaderboard-item,
@@ -2313,6 +2592,8 @@
     body.dark-mode .patch-detail-list li,
     body.dark-mode .difficulty-title,
     body.dark-mode .difficulty-option b,
+    body.dark-mode .double-road-head,
+    body.dark-mode .double-road-card b,
     body.dark-mode .player-name-row label,
     body.dark-mode .leaderboard-name,
     body.dark-mode .leaderboard-score,
@@ -2324,6 +2605,8 @@
 
     body.dark-mode .patch-item p,
     body.dark-mode .difficulty-option span,
+    body.dark-mode .double-road-card span,
+    body.dark-mode .double-road-card small,
     body.dark-mode .player-name-row small,
     body.dark-mode .leaderboard-meta,
     body.dark-mode .achievement-item span,
@@ -2332,6 +2615,8 @@
     }
 
     body.dark-mode .difficulty-option.active,
+    body.dark-mode .double-road-card.active,
+    body.dark-mode .mode-toggle.active,
     body.dark-mode .leaderboard-tab.active,
     body.dark-mode .graph-filter.active,
     body.dark-mode .archive-card.active {
@@ -2424,6 +2709,14 @@
       outline: 3px solid rgba(31, 111, 90, 0.12);
     }
 
+    .archive-card.stats-card {
+      align-content: center;
+    }
+
+    .archive-card.stats-card span {
+      display: none;
+    }
+
     .archive-card:disabled {
       cursor: default;
       opacity: 0.64;
@@ -2438,6 +2731,7 @@
       display: grid;
       place-items: center;
       perspective: 1200px;
+      overflow: visible;
     }
 
     .archive-card-wrap .under-choice-sheet {
@@ -2462,6 +2756,13 @@
       user-select: none;
       cursor: grab;
       transition: transform 0.16s ease, border-color 0.16s ease;
+      overflow: hidden;
+    }
+
+    .archive-play-card > :not(.card-illustration) {
+      position: relative;
+      z-index: 1;
+      pointer-events: none;
     }
 
     .archive-play-card.dragging {
@@ -2720,6 +3021,11 @@
       stroke: #172124;
     }
 
+    body.dark-mode .card-illustration {
+      color: #f0d9a7;
+      opacity: 0.1;
+    }
+
     .tutorial-coach {
       position: fixed;
       right: 18px;
@@ -2777,13 +3083,28 @@
       font-weight: 900;
     }
 
+    .tutorial-scrim {
+      position: fixed;
+      inset: 0;
+      z-index: 42;
+      display: none;
+      background: rgba(10, 16, 18, 0.62);
+      pointer-events: none;
+    }
+
+    .tutorial-scrim.open {
+      display: block;
+    }
+
     .tutorial-highlight {
+      position: relative;
+      z-index: 44 !important;
       outline: 3px solid rgba(255, 210, 116, 0.78);
       outline-offset: 4px;
       box-shadow: 0 0 0 8px rgba(255, 210, 116, 0.16);
     }
 
-    .log-item {
+    .log-item.new-log {
       animation: logRise 0.32s ease both;
     }
 
@@ -2999,20 +3320,24 @@
         gap: 8px;
       }
 
+      body.is-playing .game-panel {
+        grid-template-rows: auto auto auto auto auto auto;
+      }
+
       .card-stage {
         grid-template-columns: 1fr;
-        min-height: 336px;
+        min-height: 300px;
         overflow: hidden;
       }
 
       .card-wrap {
         width: min(100%, 350px);
-        min-height: 336px;
+        min-height: 300px;
         justify-self: center;
       }
 
       .under-choice-sheet {
-        min-height: 306px;
+        min-height: 270px;
         width: min(326px, 88vw);
         transform: translate(-50%, -50%) rotate(-2deg);
       }
@@ -3042,26 +3367,26 @@
       }
 
       .play-card {
-        min-height: 306px;
+        min-height: 270px;
         width: min(318px, 86vw);
         padding: 13px;
         gap: 9px;
       }
 
       .card-title {
-        font-size: 20px;
+        font-size: 19px;
       }
 
       .card-text {
         font-size: 13px;
         line-height: 1.46;
         gap: 7px;
-        max-height: 150px;
+        max-height: 116px;
         overflow: hidden;
       }
 
       .dilemma-line {
-        max-height: 74px;
+        max-height: 58px;
       }
 
       .story-line {
@@ -3072,7 +3397,7 @@
       }
 
       .dilemma-line {
-        max-height: 72px;
+        max-height: 58px;
         padding: 8px;
         font-size: 11px;
         line-height: 1.38;
@@ -3085,6 +3410,35 @@
       .quest-board {
         padding: 8px;
         gap: 6px;
+        max-height: 104px;
+      }
+
+      .double-road-panel {
+        padding: 8px;
+        gap: 6px;
+      }
+
+      .double-road-head {
+        font-size: 11px;
+      }
+
+      .double-road-cards {
+        gap: 6px;
+      }
+
+      .double-road-card {
+        min-height: 66px;
+        padding: 7px;
+      }
+
+      .double-road-card b {
+        font-size: 11px;
+      }
+
+      .double-road-card span,
+      .double-road-card small,
+      .double-road-effect {
+        font-size: 10px;
       }
 
       .quest-row {
@@ -3099,7 +3453,8 @@
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 6px;
-        min-height: 48px;
+        min-height: 44px;
+        margin-top: 22px;
       }
 
       .mobile-score-strip .mobile-score-item:nth-child(3),
@@ -3109,7 +3464,7 @@
       }
 
       .mobile-score-item {
-        min-height: 48px;
+        min-height: 44px;
         border: 1px solid var(--line);
         border-radius: var(--radius);
         background: #ffffffd8;
@@ -3129,7 +3484,7 @@
         line-height: 1.1;
       }
 
-      body.is-playing .leaderboard-section,
+      body.is-playing .side-right .leaderboard-section,
       body.is-playing .version-footer {
         display: none;
       }
@@ -3140,10 +3495,12 @@
 
       body.is-playing .mobile-log-toggle {
         position: fixed;
-        left: 50%;
-        bottom: 64px;
+        left: auto;
+        right: 18px;
+        top: 344px;
+        bottom: auto;
         z-index: 27;
-        transform: translateX(-50%);
+        transform: none;
         min-height: 42px;
         border: 1px solid var(--line);
         border-radius: 999px;
@@ -3267,7 +3624,7 @@
       }
 
       #endModal .summary {
-        max-height: 96px;
+        max-height: none;
         font-size: 11px;
       }
 
@@ -3288,12 +3645,21 @@
       }
 
       .ending-achievements {
-        max-height: 86px;
+        max-height: none;
         font-size: 11px;
       }
 
       .difficulty-options {
         grid-template-columns: 1fr;
+      }
+
+      .difficulty-title.mode-title {
+        grid-template-columns: 1fr auto;
+      }
+
+      .difficulty-title.mode-title #modeHint {
+        grid-column: 1 / -1;
+        text-align: left;
       }
 
       .story-panel,
@@ -3315,16 +3681,33 @@
         gap: 9px;
       }
 
+      .mobile-only-setting {
+        display: grid;
+      }
+
       .archive-grid {
         grid-template-columns: 1fr;
       }
 
       .archive-workspace {
         grid-template-columns: 1fr;
+        min-height: 0;
       }
 
       .archive-detail {
         min-height: 310px;
+        order: 1;
+        max-height: 45vh;
+      }
+
+      .archive-workspace.stats-mode .archive-detail {
+        max-height: 58vh;
+      }
+
+      .archive-workspace .archive-list {
+        order: 2;
+        min-height: 190px;
+        max-height: 32vh;
       }
 
       .tutorial-mini-stats {
@@ -3351,8 +3734,22 @@
       .tutorial-coach {
         left: 8px;
         right: 8px;
-        bottom: 64px;
+        top: 8px;
+        bottom: auto;
         width: auto;
+        max-height: 126px;
+        overflow: auto;
+        padding: 10px;
+        z-index: 45;
+      }
+
+      .tutorial-coach h3 {
+        font-size: 14px;
+      }
+
+      .tutorial-coach p {
+        font-size: 11px;
+        line-height: 1.38;
       }
 
       .achievement-list {
@@ -3483,6 +3880,10 @@
                 <div class="peek-deltas" id="rightPeekDeltas"></div>
               </div>
             </div>
+            <div class="keyboard-hints" id="keyboardHints" aria-hidden="true">
+              <span class="keyboard-key left" data-key-hint="left">←</span>
+              <span class="keyboard-key right" data-key-hint="right">→</span>
+            </div>
             <article class="play-card" id="playCard">
               <div class="card-top">
                 <span class="badge" id="cardBadge">시장</span>
@@ -3494,6 +3895,7 @@
             </article>
           </div>
         </div>
+        <div class="double-road-panel" id="doubleRoadPanel" hidden></div>
 
         <div class="last-result" id="lastResult">첫 사건을 기다리는 중입니다.</div>
         <div class="quick-choice-panel" id="quickChoicePanel" aria-label="고속 선택">
@@ -3553,7 +3955,7 @@
         <div class="start-summary">
           <strong>낡은 동네의 운용권을 맡았습니다.</strong>
           현금흐름, 신뢰, 생활가치, 위험관리 중 하나라도 0이 되면 프로젝트가 중단됩니다. 선택은 다음 사건의 분위기와 서사 흐름에도 흔적을 남깁니다.
-          <div class="start-actions">
+          <div class="start-actions start-tools" hidden>
             <button class="text-button compact" id="openTutorialStory" type="button">튜토리얼</button>
             <button class="text-button compact" id="openArchiveStory" type="button">기록보관소</button>
             <button class="text-button compact" id="openAchievementsStory" type="button">업적</button>
@@ -3581,8 +3983,11 @@
           </div>
         </div>
         <div class="difficulty-panel">
-          <div class="difficulty-title">
+          <div class="difficulty-title mode-title">
             <span>게임 모드</span>
+            <button class="mode-toggle" id="infiniteToggle" type="button" aria-pressed="false">
+              <span>무한 OFF</span>
+            </button>
             <span id="modeHint">50장 도전: 매 판 50개 사건을 해결합니다.</span>
           </div>
           <div class="difficulty-options mode-options" id="modeOptions">
@@ -3590,9 +3995,9 @@
               <b>50장 도전</b>
               <span>400개 사건 중 50개를 뽑아 엔딩까지 갑니다.</span>
             </button>
-            <button class="difficulty-option" data-mode="infinite" type="button">
-              <b>무한 모드</b>
-              <span>400개 사건이 계속 이어지고, 종료 후 공개 기록을 등록합니다.</span>
+            <button class="difficulty-option" data-mode="double" type="button">
+              <b>더블로드</b>
+              <span>두 장을 동시에 보고 한 장씩 선택합니다. 세트가 맞으면 보너스가 발동합니다.</span>
             </button>
           </div>
           <div class="player-name-row" id="playerNameRow" hidden>
@@ -3601,7 +4006,7 @@
             <small id="playerNameHint">무한 모드 기록에 표시될 이름입니다. 2~12자로 입력하세요.</small>
           </div>
         </div>
-        <details class="start-extra">
+        <details class="start-extra" hidden>
           <summary>순위표와 패치 기록</summary>
           <div class="start-extra-body">
             <button class="text-button" id="openPatchNotesStory" type="button">
@@ -3763,6 +4168,13 @@
             </div>
             <button class="switch" id="fastModeToggle" type="button" aria-label="고속모드"><span></span></button>
           </div>
+          <div class="setting-row mobile-only-setting">
+            <div class="setting-copy">
+              <b>모바일 진동</b>
+              <span>카드를 넘기기 직전까지 당기면 짧게 진동합니다.</span>
+            </div>
+            <button class="switch" id="vibrationToggle" type="button" aria-label="모바일 진동"><span></span></button>
+          </div>
         </div>
       </div>
     </div>
@@ -3782,6 +4194,7 @@
           <button class="graph-filter active" data-archive-tab="events" type="button">사건</button>
           <button class="graph-filter" data-archive-tab="quests" type="button">퀘스트</button>
           <button class="graph-filter" data-archive-tab="endings" type="button">엔딩</button>
+          <button class="graph-filter" data-archive-tab="setEffects" type="button">세트 효과</button>
           <button class="graph-filter" data-archive-tab="stats" type="button">통계</button>
         </div>
         <div class="graph-controls" id="archiveFilters">
@@ -3821,6 +4234,7 @@
 
   <div class="achievement-toast-zone" id="achievementToastZone" aria-live="polite"></div>
 
+  <div class="tutorial-scrim" id="tutorialScrim" aria-hidden="true"></div>
   <div class="tutorial-coach" id="tutorialCoach" aria-live="polite">
     <h3 id="tutorialCoachTitle">튜토리얼</h3>
     <p id="tutorialCoachText">화면 위에서 바로 따라 하며 익힙니다.</p>
@@ -3848,8 +4262,39 @@
   <footer class="version-footer" id="versionFooter" aria-label="버전 정보"></footer>
 
   <script>
-    const GAME_VERSION = "v0.18.0";
+    const GAME_VERSION = "v0.20.0";
     const PATCH_HISTORY = [
+      {
+        version: "v0.20.0",
+        summary: "더블로드 모드, 세트 효과, 퀘스트 간격 재조정, 기록보관소 통계/스크롤 정리",
+        details: [
+          "게임 모드를 50장 도전과 더블로드로 나누고, 무한 모드는 별도 ON/OFF 토글로 바꿨습니다.",
+          "더블로드에서는 두 장을 동시에 보고 1, 2키로 카드를 선택한 뒤 방향키나 드래그로 한 장씩 사용할 수 있습니다.",
+          "더블로드 세트 효과 30종을 추가했습니다. 조합이 맞으면 부정 효과를 제거하고 긍정 효과와 보호 효과만 적용합니다.",
+          "더블로드에서 퀘스트 카드를 세트 효과와 함께 선택하면 퀘스트가 즉시 성공 처리됩니다.",
+          "기록보관소에 세트 효과 탭을 추가하고, 해금/미해금 필터와 총 개수 표시를 적용했습니다.",
+          "퀘스트는 최소 10턴 이후에 처음 등장하고, 한 번 등장한 뒤 다시 10턴 이상 지나야 다음 퀘스트가 나오도록 배치했습니다.",
+          "일반 50장 도전과 더블로드 100장 도전에서는 별 획득/손실형 퀘스트가 나오지 않도록 제한했습니다.",
+          "기록보관소의 사건/퀘스트 카드를 좌우로 확인할 때 생기던 가로 스크롤 흔들림을 없앴습니다.",
+          "통계 탭은 별도 해금/미해금 필터 없이 같은 작업영역 안에서 누적 점수, 플레이 시간, 세트 해금 수를 보여줍니다.",
+          "튜토리얼 중에는 고속모드를 끄고, 강조 영역 외에는 어둡게 처리하며, 스킵 시 새 게임 창으로 돌아오게 했습니다.",
+          "ESC로 설정 창을 열고 닫을 수 있게 했습니다."
+        ]
+      },
+      {
+        version: "v0.19.0",
+        summary: "기록보관소 엔딩 조건 정리, 최신 진행기록 고정, 모바일 레이아웃과 진동 피드백 개선",
+        details: [
+          "기록보관소의 미해금 엔딩은 타로 문양만 확인할 수 있게 하고, 뒷면에는 플레이 당시 점수나 턴 기록이 아니라 엔딩 조건만 표시하도록 정리했습니다.",
+          "진행 기록은 최신 기록이 항상 위에 보이도록 자동 정렬하고, 새로 추가된 항목에만 선과 텍스트 애니메이션이 적용되도록 바꿨습니다.",
+          "무한 모드 순위표는 메인 화면에서 제거하고 상단 순위 버튼을 눌렀을 때만 볼 수 있게 정리했습니다.",
+          "퀘스트는 최소 10턴 이후부터 등장하도록 배치하고 등장 수를 줄여 사건 흐름이 끊기지 않게 조정했습니다.",
+          "모바일에서 카드, 퀘스트, 점수 칸, 튜토리얼 팝업이 서로 겹치지 않도록 배치를 다시 잡았습니다.",
+          "모바일 설정에 카드 넘김 직전 진동 옵션을 추가했습니다.",
+          "사건과 퀘스트 카드에는 내용과 연결되는 은은한 배경 일러스트를 추가했습니다.",
+          "기록보관소 통계에는 누적 최종 점수, 최장 생존, 해금 수, 누적 별 같은 장기 플레이 지표를 추가했습니다."
+        ]
+      },
       {
         version: "v0.18.0",
         summary: "고정형 플레이 튜토리얼, 병합 진행기록, 기록보관소 필터/통계, 업적 게이지 개선",
@@ -4059,9 +4504,12 @@
     ];
     const TOTAL_EVENT_POOL = 400;
     const RUN_EVENT_COUNT = 50;
+    const DOUBLE_RUN_COUNT = 100;
     const QUEST_LIBRARY_SIZE = 50;
-    const NORMAL_QUEST_COUNT = 8;
-    const INFINITE_QUEST_COUNT = 12;
+    const NORMAL_QUEST_COUNT = 5;
+    const DOUBLE_QUEST_COUNT = 8;
+    const INFINITE_QUEST_COUNT = 8;
+    const SET_EFFECT_ARCHIVE_TOTAL = 30;
     const STAT_STAR_RESET = 20;
     const STAR_SCORE_RATE = 0.2;
     const CRISIS_RECOVERY_BONUS = 50;
@@ -4623,6 +5071,39 @@
       }
     };
 
+    const SET_EFFECTS = [
+      { id: "set-market-finance", title: "금리 방어선", pair: ["market", "finance"], type: "shieldStat", stat: "cash", turns: 5, floor: 30, copy: "현금흐름이 5턴 동안 30점 아래로 내려가지 않습니다." },
+      { id: "set-market-analysis", title: "가격 검증", pair: ["market", "analysis"], type: "doubleStat", stat: "control", copy: "이번 선택의 위험관리 상승량이 2배가 됩니다." },
+      { id: "set-market-deal", title: "매수 타이밍", pair: ["market", "deal"], type: "bonusScore", amount: 80, copy: "선택 즉시 80점을 추가로 얻습니다." },
+      { id: "set-market-harvest", title: "회수 타이밍", pair: ["market", "harvest"], type: "doubleStat", stat: "cash", copy: "이번 선택의 현금흐름 상승량이 2배가 됩니다." },
+      { id: "set-analysis-contract", title: "실사 잠금", pair: ["analysis", "contract"], type: "shieldStat", stat: "control", turns: 6, floor: 30, copy: "위험관리가 6턴 동안 30점 아래로 내려가지 않습니다." },
+      { id: "set-analysis-finance", title: "DSCR 방패", pair: ["analysis", "finance"], type: "gameoverShield", turns: 1, copy: "다음 1회 게임오버를 막고 지표를 1점에서 버티게 합니다." },
+      { id: "set-analysis-reit", title: "투명 보고", pair: ["analysis", "reit"], type: "doubleStat", stat: "trust", copy: "이번 선택의 신뢰 상승량이 2배가 됩니다." },
+      { id: "set-analysis-tech", title: "데이터 루프", pair: ["analysis", "tech"], type: "allPositiveBoost", amount: 2, copy: "이번 선택의 모든 긍정 지표에 +2를 더합니다." },
+      { id: "set-deal-contract", title: "계약 우선권", pair: ["deal", "contract"], type: "gameoverShield", turns: 1, copy: "다음 1회 중단 위험을 방어합니다." },
+      { id: "set-deal-finance", title: "자금 확약", pair: ["deal", "finance"], type: "doubleStat", stat: "cash", copy: "이번 선택의 현금흐름 상승량이 2배가 됩니다." },
+      { id: "set-deal-operate", title: "현장 설득", pair: ["deal", "operate"], type: "doubleStat", stat: "trust", copy: "이번 선택의 신뢰 상승량이 2배가 됩니다." },
+      { id: "set-deal-develop", title: "선점 개발권", pair: ["deal", "develop"], type: "bonusScore", amount: 90, copy: "선택 즉시 90점을 추가로 얻습니다." },
+      { id: "set-contract-finance", title: "담보 특약", pair: ["contract", "finance"], type: "shieldStat", stat: "cash", turns: 4, floor: 32, copy: "현금흐름이 4턴 동안 32점 아래로 내려가지 않습니다." },
+      { id: "set-contract-operate", title: "운영 승계", pair: ["contract", "operate"], type: "shieldStat", stat: "trust", turns: 5, floor: 30, copy: "신뢰가 5턴 동안 30점 아래로 내려가지 않습니다." },
+      { id: "set-contract-harvest", title: "매각 클로징", pair: ["contract", "harvest"], type: "bonusScore", amount: 100, copy: "선택 즉시 100점을 추가로 얻습니다." },
+      { id: "set-contract-tech", title: "권리 자동화", pair: ["contract", "tech"], type: "doubleStat", stat: "control", copy: "이번 선택의 위험관리 상승량이 2배가 됩니다." },
+      { id: "set-finance-reit", title: "배당 안정", pair: ["finance", "reit"], type: "doubleStat", stat: "cash", copy: "이번 선택의 현금흐름 상승량이 2배가 됩니다." },
+      { id: "set-finance-develop", title: "PF 완충", pair: ["finance", "develop"], type: "shieldStat", stat: "cash", turns: 6, floor: 30, copy: "현금흐름이 6턴 동안 30점 아래로 내려가지 않습니다." },
+      { id: "set-finance-operate", title: "운영 예비비", pair: ["finance", "operate"], type: "allPositiveBoost", amount: 1, copy: "이번 선택의 모든 긍정 지표에 +1을 더합니다." },
+      { id: "set-finance-harvest", title: "리파이낸싱 회수", pair: ["finance", "harvest"], type: "bonusScore", amount: 120, copy: "선택 즉시 120점을 추가로 얻습니다." },
+      { id: "set-reit-operate", title: "배당 신뢰", pair: ["reit", "operate"], type: "doubleStat", stat: "trust", copy: "이번 선택의 신뢰 상승량이 2배가 됩니다." },
+      { id: "set-reit-harvest", title: "상장 회수", pair: ["reit", "harvest"], type: "bonusScore", amount: 110, copy: "선택 즉시 110점을 추가로 얻습니다." },
+      { id: "set-reit-tech", title: "공개 대시보드", pair: ["reit", "tech"], type: "allPositiveBoost", amount: 2, copy: "이번 선택의 모든 긍정 지표에 +2를 더합니다." },
+      { id: "set-develop-operate", title: "생활권 증명", pair: ["develop", "operate"], type: "doubleStat", stat: "city", copy: "이번 선택의 생활가치 상승량이 2배가 됩니다." },
+      { id: "set-develop-harvest", title: "완공 프리미엄", pair: ["develop", "harvest"], type: "bonusScore", amount: 140, copy: "선택 즉시 140점을 추가로 얻습니다." },
+      { id: "set-develop-tech", title: "스마트 인허가", pair: ["develop", "tech"], type: "shieldStat", stat: "control", turns: 5, floor: 32, copy: "위험관리가 5턴 동안 32점 아래로 내려가지 않습니다." },
+      { id: "set-operate-harvest", title: "운영 스토리", pair: ["operate", "harvest"], type: "doubleStat", stat: "city", copy: "이번 선택의 생활가치 상승량이 2배가 됩니다." },
+      { id: "set-operate-tech", title: "민원 자동화", pair: ["operate", "tech"], type: "shieldStat", stat: "trust", turns: 4, floor: 34, copy: "신뢰가 4턴 동안 34점 아래로 내려가지 않습니다." },
+      { id: "set-harvest-tech", title: "디지털 매각실", pair: ["harvest", "tech"], type: "bonusScore", amount: 130, copy: "선택 즉시 130점을 추가로 얻습니다." },
+      { id: "set-develop-reit", title: "공모 개발권", pair: ["develop", "reit"], type: "gameoverShield", turns: 2, copy: "다음 2회 중단 위험을 방어합니다." }
+    ];
+
     function readHardUnlock() {
       try {
         return localStorage.getItem("realEstateBalanceHardUnlocked") === "true";
@@ -4650,10 +5131,11 @@
         return {
           darkMode: false,
           fastMode: false,
+          vibration: true,
           ...JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}")
         };
       } catch {
-        return { darkMode: false, fastMode: false };
+        return { darkMode: false, fastMode: false, vibration: true };
       }
     }
 
@@ -4670,10 +5152,11 @@
           events: [],
           quests: [],
           endings: [],
+          setEffects: [],
           ...JSON.parse(localStorage.getItem(ARCHIVE_KEY) || "{}")
         };
       } catch {
-        return { events: [], quests: [], endings: [] };
+        return { events: [], quests: [], endings: [], setEffects: [] };
       }
     }
 
@@ -4707,14 +5190,26 @@
         leftChoices: 0,
         rightChoices: 0,
         totalScoreGained: 0,
+        totalBaseScore: 0,
+        totalFinalScore: 0,
         totalSurvivedTurns: 0,
+        bestTurn: 0,
         bestScore: 0,
+        totalStarsEarned: 0,
+        totalEndingsUnlocked: 0,
+        totalEventsUnlocked: 0,
+        totalQuestsUnlocked: 0,
         crisisRecoveries: 0,
         questsAccepted: 0,
         questsCompleted: 0,
         questsFailed: 0,
         endingsSeen: 0,
-        archiveOpens: 0
+        archiveOpens: 0,
+        totalPlayMs: 0,
+        doubleRoadRuns: 0,
+        doubleRoadChoices: 0,
+        setEffectsDiscovered: 0,
+        setEffectsTriggered: 0
       };
     }
 
@@ -4781,15 +5276,24 @@
       stats: { cash: 48, trust: 48, city: 48, control: 48 },
       difficulty: "medium",
       mode: "normal",
+      infiniteEnabled: false,
       playerName: "",
       hardUnlocked: readHardUnlock(),
       leaderboardDifficulty: "easy",
       deck: [],
       turn: 0,
       log: [],
+      logSequence: 0,
+      latestLogId: null,
       activeQuests: [],
       completedQuests: [],
       failedQuests: [],
+      doubleChoices: [],
+      doubleDeckIndex: 0,
+      doubleSelected: 0,
+      activeSetEffect: null,
+      gameoverShield: 0,
+      statShields: {},
       statHistory: [],
       last: "첫 사건을 기다리는 중입니다.",
       ended: false,
@@ -4821,6 +5325,8 @@
       tutorialRun: false,
       tutorialRunTracked: false,
       runStartedTracked: false,
+      runStartedAt: 0,
+      tutorialSavedFastMode: null,
       tutorialIndex: 0,
       tutorialPracticeDone: {},
       tutorialCoachOpen: false
@@ -4867,6 +5373,8 @@
       quickLeftText: document.getElementById("quickLeftText"),
       quickRightTitle: document.getElementById("quickRightTitle"),
       quickRightText: document.getElementById("quickRightText"),
+      doubleRoadPanel: document.getElementById("doubleRoadPanel"),
+      keyboardHints: document.getElementById("keyboardHints"),
       questBoard: document.getElementById("questBoard"),
       logList: document.getElementById("logList"),
       mobileLogList: document.getElementById("mobileLogList"),
@@ -4896,6 +5404,7 @@
       difficultyOptions: document.getElementById("difficultyOptions"),
       difficultyHint: document.getElementById("difficultyHint"),
       modeOptions: document.getElementById("modeOptions"),
+      infiniteToggle: document.getElementById("infiniteToggle"),
       modeHint: document.getElementById("modeHint"),
       playerNameRow: document.getElementById("playerNameRow"),
       playerName: document.getElementById("playerName"),
@@ -4930,6 +5439,7 @@
       closeSettings: document.getElementById("closeSettings"),
       darkModeToggle: document.getElementById("darkModeToggle"),
       fastModeToggle: document.getElementById("fastModeToggle"),
+      vibrationToggle: document.getElementById("vibrationToggle"),
       archiveModal: document.getElementById("archiveModal"),
       closeArchive: document.getElementById("closeArchive"),
       archiveStats: document.getElementById("archiveStats"),
@@ -4942,6 +5452,7 @@
       achievementTabs: document.getElementById("achievementTabs"),
       achievementList: document.getElementById("achievementList"),
       achievementToastZone: document.getElementById("achievementToastZone"),
+      tutorialScrim: document.getElementById("tutorialScrim"),
       tutorialCoach: document.getElementById("tutorialCoach"),
       tutorialCoachTitle: document.getElementById("tutorialCoachTitle"),
       tutorialCoachText: document.getElementById("tutorialCoachText"),
@@ -5045,6 +5556,12 @@
         target: ".card-wrap"
       }
     );
+
+    function activeTutorialSteps() {
+      return isMobileViewport()
+        ? tutorialSteps.filter(step => step.practice !== "keyboard")
+        : tutorialSteps;
+    }
 
     function clamp(value, min = 0, max = 100) {
       return Math.max(min, Math.min(max, value));
@@ -5424,6 +5941,7 @@
 
           quests.push({
             id: `quest-${index + 1}`,
+            number: index + 1,
             title: `${theme.name}: ${route.name}`,
             story: `${theme.scene} ${route.name}을 넘기면 다음 협상에서 강한 조건을 얻을 수 있다.`,
             targetStat,
@@ -5490,22 +6008,43 @@
 
     function injectQuestCards(deck, questCount) {
       const copy = [...deck];
-      const quests = shuffleWithSeed(buildQuestLibrary(), state.seed + questCount * 97 + copy.length)
+      const availableQuests = buildQuestLibrary()
+        .filter(quest => isInfiniteMode() || quest.failureType !== "star");
+      const quests = shuffleWithSeed(availableQuests, state.seed + questCount * 97 + copy.length)
         .slice(0, questCount);
       const rand = seededRandom(state.seed + questCount * 131 + 17);
+      let lastPosition = 0;
       quests.forEach((quest, index) => {
-        const band = Math.max(3, Math.floor(copy.length / Math.max(1, quests.length)));
-        const low = Math.min(copy.length, 3 + index * band);
+        const band = Math.max(6, Math.floor(copy.length / Math.max(1, quests.length)));
+        const lowBase = index === 0 ? 10 : lastPosition + 10;
+        const low = Math.min(copy.length, lowBase);
         const high = Math.min(copy.length, low + band);
         const span = Math.max(1, high - low + 1);
         const position = Math.min(copy.length, low + Math.floor(rand() * span));
         copy.splice(position, 0, questCardFromDefinition(quest, index));
+        lastPosition = position;
       });
       return copy;
     }
 
     function isInfiniteMode() {
-      return state.mode === "infinite";
+      return Boolean(state.infiniteEnabled);
+    }
+
+    function isDoubleMode() {
+      return state.mode === "double";
+    }
+
+    function runTargetCount() {
+      if (isInfiniteMode()) return Infinity;
+      return isDoubleMode() ? DOUBLE_RUN_COUNT : RUN_EVENT_COUNT;
+    }
+
+    function modeLabel() {
+      if (isDoubleMode() && isInfiniteMode()) return "더블로드 무한";
+      if (isDoubleMode()) return "더블로드 100장";
+      if (isInfiniteMode()) return "무한 모드";
+      return "50장 도전";
     }
 
     function createTutorialDeck() {
@@ -5533,10 +6072,14 @@
           badge: "입력",
           badgeClass: "city",
           mood: "연습",
-          title: "방향키로 결정을 고정하기",
-          text: "회의가 길어지자 빠른 판단이 필요해졌다. 이번에는 키보드 좌우 방향키로 카드를 기울여 선택한다.",
-          dilemma: "방향키를 누르면 카드가 크게 기울고, 마지막에 뗀 방향의 선택이 적용된다.",
-          tags: ["튜토리얼", "방향키", "선택"],
+          title: isMobileViewport() ? "터치로 결정을 고정하기" : "방향키로 결정을 고정하기",
+          text: isMobileViewport()
+            ? "회의가 길어지자 빠른 판단이 필요해졌다. 이번에는 카드를 손가락으로 충분히 당겨 선택한다."
+            : "회의가 길어지자 빠른 판단이 필요해졌다. 이번에는 키보드 좌우 방향키로 카드를 기울여 선택한다.",
+          dilemma: isMobileViewport()
+            ? "카드를 끝까지 당긴 뒤 놓으면 마지막으로 기울어진 방향의 선택이 적용된다."
+            : "방향키를 누르면 카드가 크게 기울고, 마지막에 뗀 방향의 선택이 적용된다.",
+          tags: ["튜토리얼", isMobileViewport() ? "터치" : "방향키", "선택"],
           left: { label: "절차 단축", text: "승인 절차를 줄여 속도를 얻는다.", delta: { cash: 4, trust: -2, city: 1, control: -3 } },
           right: { label: "검토 강화", text: "검토를 늘려 장기 위험을 낮춘다.", delta: { cash: -2, trust: 2, city: 0, control: 6 } }
         },
@@ -5577,6 +6120,10 @@
       if (state.tutorialRun) return createTutorialDeck();
       const deck = shuffle(buildDeck());
       if (isInfiniteMode()) return injectQuestCards(deck, INFINITE_QUEST_COUNT);
+      if (isDoubleMode()) {
+        return injectQuestCards(deck.slice(0, DOUBLE_RUN_COUNT - DOUBLE_QUEST_COUNT), DOUBLE_QUEST_COUNT)
+          .slice(0, DOUBLE_RUN_COUNT);
+      }
       return injectQuestCards(deck.slice(0, RUN_EVENT_COUNT - NORMAL_QUEST_COUNT), NORMAL_QUEST_COUNT)
         .slice(0, RUN_EVENT_COUNT);
     }
@@ -5586,7 +6133,48 @@
       state.deck.push(...injectQuestCards(shuffle(buildDeck()), INFINITE_QUEST_COUNT));
     }
 
+    function refillDoubleRoadChoices() {
+      if (!isDoubleMode()) {
+        state.doubleChoices = [];
+        state.doubleDeckIndex = 0;
+        state.doubleSelected = 0;
+        return;
+      }
+      while (state.doubleChoices.length < 2) {
+        if (state.doubleDeckIndex >= state.deck.length) {
+          if (isInfiniteMode()) {
+            extendInfiniteDeck();
+          } else {
+            break;
+          }
+        }
+        const nextCard = state.deck[state.doubleDeckIndex];
+        if (!nextCard) break;
+        state.doubleChoices.push(nextCard);
+        state.doubleDeckIndex += 1;
+      }
+      state.doubleSelected = clamp(state.doubleSelected, 0, Math.max(0, state.doubleChoices.length - 1));
+    }
+
+    function setupDoubleRoad() {
+      state.doubleChoices = [];
+      state.doubleDeckIndex = 0;
+      state.doubleSelected = 0;
+      state.activeSetEffect = null;
+      refillDoubleRoadChoices();
+    }
+
+    function advanceDoubleRoadAfterChoice() {
+      if (!isDoubleMode()) return;
+      state.doubleChoices.splice(state.doubleSelected, 1);
+      refillDoubleRoadChoices();
+    }
+
     function currentCard() {
+      if (isDoubleMode()) {
+        refillDoubleRoadChoices();
+        return state.doubleChoices[state.doubleSelected] || state.doubleChoices[0] || state.deck[state.deck.length - 1];
+      }
       return state.deck[state.turn] || state.deck[state.deck.length - 1];
     }
 
@@ -5608,8 +6196,9 @@
       if (card.isQuestOffer) {
         uniqueArchivePush("quests", {
           id: card.quest.id,
+          key: "quest",
           title: card.title,
-          meta: `${statNames[card.quest.targetStat]} 목표 · ${questFailureLabel(card.quest.failureType)}`,
+          meta: `#Q${String(card.quest.number || 0).padStart(3, "0")} · ${statNames[card.quest.targetStat]} 목표 · ${questFailureLabel(card.quest.failureType)}`,
           text: card.text,
           dilemma: card.dilemma,
           tags: card.tags || [],
@@ -5619,12 +6208,14 @@
           targetValue: card.quest.targetValue,
           rewardStat: card.quest.rewardStat,
           rewardAmount: card.quest.rewardAmount,
+          number: card.quest.number,
           failureType: card.quest.failureType
         });
         return;
       }
       uniqueArchivePush("events", {
         id: card.id,
+        key: card.key,
         title: card.title,
         meta: `${card.chapter} · #${String(card.number).padStart(3, "0")}`,
         text: card.text,
@@ -5639,11 +6230,82 @@
       uniqueArchivePush("endings", {
         id: `${story.title}-${reason}`,
         title: story.title,
-        meta: `${reason} · ${score}점 · ${state.turn}턴`,
+        meta: endingConditionText(story, reason),
         text: story.body,
-        condition: endingConditionText(story, reason, score),
+        condition: endingConditionText(story, reason),
         tarot
       });
+    }
+
+    function currentSetEffect() {
+      if (!isDoubleMode() || state.doubleChoices.length < 2) return null;
+      const keys = state.doubleChoices.map(card => card?.key).filter(Boolean);
+      return SET_EFFECTS.find(effect => effect.pair.every(key => keys.includes(key))) || null;
+    }
+
+    function archiveSetEffect(effect) {
+      if (!effect) return;
+      const before = state.archive.setEffects?.length || 0;
+      uniqueArchivePush("setEffects", {
+        id: effect.id,
+        title: effect.title,
+        meta: effect.pair.map(key => setEffectKeyLabel(key)).join(" + "),
+        text: effect.copy,
+        tags: ["더블로드", "세트효과"],
+        type: effect.type
+      });
+      const after = state.archive.setEffects?.length || 0;
+      state.playerStats.setEffectsDiscovered = Math.max(state.playerStats.setEffectsDiscovered || 0, after);
+      updatePlayerStats({ setEffectsTriggered: 1 });
+      if (after > before) persistPlayerStats();
+    }
+
+    function setEffectKeyLabel(key) {
+      return chapterPacks.find(pack => pack.key === key)?.name || key;
+    }
+
+    function positiveOnlyDelta(delta) {
+      const next = emptyDelta();
+      STAT_KEYS.forEach(key => {
+        next[key] = Math.max(0, delta[key] || 0);
+      });
+      return next;
+    }
+
+    function applySetEffectDelta(delta, effect) {
+      if (!effect) return { delta, messages: [] };
+      const next = positiveOnlyDelta(delta);
+      const messages = [`세트 효과 발동: ${effect.title}. 부정 효과를 제외하고 긍정 효과만 적용합니다.`];
+
+      if (effect.type === "doubleStat" && effect.stat) {
+        next[effect.stat] = Math.max(next[effect.stat] || 0, (next[effect.stat] || 0) * 2);
+        messages.push(`${statNames[effect.stat]} 상승량이 2배가 됩니다.`);
+      }
+
+      if (effect.type === "allPositiveBoost") {
+        STAT_KEYS.forEach(key => {
+          if ((next[key] || 0) > 0) next[key] += effect.amount || 1;
+        });
+        messages.push(`모든 긍정 지표에 +${effect.amount || 1}가 더해집니다.`);
+      }
+
+      if (effect.type === "shieldStat" && effect.stat) {
+        state.statShields[effect.stat] = Math.max(state.statShields[effect.stat] || 0, state.turn + (effect.turns || 4));
+        messages.push(`${statNames[effect.stat]}은 ${effect.floor || 30}점 아래로 내려가지 않습니다.`);
+      }
+
+      if (effect.type === "gameoverShield") {
+        state.gameoverShield += effect.turns || 1;
+        messages.push(`중단 위험 방어권 ${effect.turns || 1}회가 추가됩니다.`);
+      }
+
+      if (effect.type === "bonusScore") {
+        state.score += effect.amount || 0;
+        updatePlayerStats({ totalScoreGained: effect.amount || 0 });
+        messages.push(`추가 점수 +${effect.amount || 0}점을 얻습니다.`);
+      }
+
+      return { delta: next, messages };
     }
 
     function hashText(value) {
@@ -5723,27 +6385,60 @@
       return palette[type] || palette.world;
     }
 
-    function endingConditionText(itemOrStory, reason = "", score = 0) {
-      if (itemOrStory?.condition) return itemOrStory.condition;
-      const title = itemOrStory?.title || itemOrStory?.endingTitle || "엔딩";
-      const reasonText = reason || itemOrStory?.meta || "게임 종료 조건";
-      const statLine = STAT_KEYS
-        .map(key => `${statNames[key]} ${Math.round(state.stats[key])}+별${state.statStars[key] || 0}`)
-        .join(", ");
-      return `${title}을 본 조건: ${reasonText}. 모드 ${isInfiniteMode() ? "무한" : "50장"}, 난이도 ${currentDifficulty().label}, 생존 ${state.turn}턴, 최저 지표 ${Math.round(lowestStat())}, 평균 ${averageStat()}, 보유 별 ${state.bonusCount}개, 위기 극복 ${state.dangerRecoveryCount}회, 퀘스트 성공 ${state.completedQuests.length}개/실패 ${state.failedQuests.length}개. 지표 상태: ${statLine}.`;
+    function endingConditionText(itemOrStory, reason = "") {
+      const title = itemOrStory?.title || itemOrStory?.endingTitle || "";
+      const reasonText = `${reason || itemOrStory?.meta || ""} ${title}`.toLowerCase();
+      if (title.includes("첫 장부의 균형") || reasonText.includes("튜토리얼")) {
+        return "튜토리얼 고정 런의 마지막 카드를 처리하면 등장합니다.";
+      }
+      if (reasonText.includes("무한") || reasonText.includes("수동 종료") || reasonText.includes("보호")) {
+        return "무한 모드에서 직접 종료하거나 보호 상태에서 장부를 닫으면 등장합니다.";
+      }
+      if (reasonText.includes("퀘스트") && (reasonText.includes("실패") || reasonText.includes("중단"))) {
+        return "게임오버형 퀘스트를 수락한 뒤 제한 턴 안에 목표 지표를 달성하지 못하면 등장합니다.";
+      }
+      if (title.includes("현금") || title.includes("유동성") || reasonText.includes("현금흐름")) {
+        return "현금흐름이 0 이하로 내려가거나, 자금 압박 선택을 누적해 운영비를 감당하지 못하면 등장합니다.";
+      }
+      if (title.includes("신뢰") || title.includes("파트너") || reasonText.includes("신뢰")) {
+        return "신뢰가 0 이하로 내려가거나, 임차인·투자자·지역사회 설명을 반복해서 놓치면 등장합니다.";
+      }
+      if (title.includes("골목") || title.includes("생활") || title.includes("민원") || reasonText.includes("생활가치")) {
+        return "생활가치가 0 이하로 내려가거나, 주민 편의와 상권 활력보다 단기 수익을 계속 우선하면 등장합니다.";
+      }
+      if (title.includes("도장") || title.includes("실사") || title.includes("종결") || reasonText.includes("위험관리")) {
+        return "위험관리가 0 이하로 내려가거나, 실사·권리·인허가 리스크를 충분히 잠그지 못하면 등장합니다.";
+      }
+      if (reasonText.includes("바닥") || reasonText.includes("0 이하") || reasonText.includes("중단")) {
+        return "현금흐름, 신뢰, 생활가치, 위험관리 중 하나가 0 이하로 내려가면 등장합니다.";
+      }
+      if (title.includes("가치업") || title.includes("합의") || title.includes("초대장") || title.includes("조용한 우승")) {
+        return "일반 또는 더블로드 도전에서 모든 사건을 통과하고 평균 균형과 최저 지표를 안정권에 남기면 등장합니다.";
+      }
+      if (title.includes("회복") || title.includes("반격") || title.includes("손실")) {
+        return "일반 또는 더블로드 도전에서 위기 구간을 여러 번 회복하며 마지막 사건까지 통과하면 등장합니다.";
+      }
+      if (title.includes("별") || title.includes("운용권")) {
+        return "무한 모드에서 지표를 100 이상까지 끌어올려 별을 여러 개 획득하면 등장합니다.";
+      }
+      if (title.includes("위기를 통과")) {
+        return "무한 모드에서 여러 차례 위기를 극복하고 장기 생존하면 등장합니다.";
+      }
+      return "해당 엔딩 계열의 균형, 위기, 퀘스트, 생존 조건을 만족하면 등장합니다.";
     }
 
     function tarotCardHtml(tarot, options = {}) {
       const colors = tarot.colors || tarotColors(tarot.type);
       const flipped = options.flipped ? "flipped" : "";
+      const iconOnly = options.iconOnly ? "icon-only" : "";
       const id = options.id ? ` data-tarot-id="${escapeText(options.id)}"` : "";
       const condition = options.condition || tarot.condition || "";
       const backClass = condition ? "tarot-face tarot-back has-condition" : "tarot-face tarot-back";
       const backContent = condition
-        ? `<div class="tarot-condition"><strong>ENDING CONDITION</strong><p>${escapeText(condition)}</p></div>`
+        ? `<div class="tarot-condition"><strong>엔딩 조건</strong><p>${escapeText(condition)}</p></div>`
         : `<b>?</b>`;
       return `
-        <div class="tarot-card ${flipped}"${id} style="--tarot-a:${colors[0]};--tarot-b:${colors[1]};--tarot-glow:${colors[2]};">
+        <div class="tarot-card ${flipped} ${iconOnly}"${id} style="--tarot-a:${colors[0]};--tarot-b:${colors[1]};--tarot-glow:${colors[2]};">
           <div class="tarot-inner">
             <div class="${backClass}">${backContent}</div>
             <div class="tarot-face tarot-front">
@@ -5813,6 +6508,7 @@
             ${archiveChoiceBlock("B", right)}
           </div>
           <article class="archive-play-card ${isQuest ? "quest-detail" : ""}" data-archive-play-card>
+            ${cardIllustrationSvg(isQuest ? "quest" : (item.key || "default"), `${item.title || ""} ${description}`)}
             <div class="card-top">
               <span class="badge ${isQuest ? "city" : ""}">${isQuest ? "퀘스트" : "사건"}</span>
               <span class="card-number">${escapeText(item.meta || "")}</span>
@@ -5835,15 +6531,28 @@
       }
 
       if (item.locked) {
+        if (state.archiveTab === "setEffects") {
+          els.archiveDetail.innerHTML = `
+            <div class="archive-detail-card set-effect-detail">
+              <span class="badge">SET</span>
+              <h3>???</h3>
+              <p>조합: ${escapeText(item.meta || "미해금 조합")}</p>
+              <p>더블로드에서 이 조합의 두 카드가 동시에 등장하면 세트 효과가 공개됩니다.</p>
+              <div class="card-tags"><span class="tag">미해금</span></div>
+            </div>
+          `;
+          return;
+        }
         if (state.archiveTab === "endings") {
+          const type = item.tarotType || "hermit";
           const tarot = {
-            type: "hermit",
+            type,
             name: "???",
             copy: "아직 발견되지 않은 엔딩입니다.",
             endingTitle: "???",
-            colors: tarotColors("hermit")
+            colors: tarotColors(type)
           };
-          els.archiveDetail.innerHTML = tarotCardHtml(tarot, { flipped: true, id: item.id, condition: "아직 해금되지 않아 조건이 공개되지 않았습니다." });
+          els.archiveDetail.innerHTML = tarotCardHtml(tarot, { flipped: true, id: item.id, iconOnly: true, condition: "조건은 해금 후 공개됩니다." });
           bindTarotInteractions(els.archiveDetail);
           return;
         }
@@ -5860,14 +6569,28 @@
 
       if (state.archiveTab === "endings") {
         const tarot = item.tarot || { type: "world", name: item.title, copy: item.meta, endingTitle: item.title, colors: tarotColors("world") };
-        els.archiveDetail.innerHTML = tarotCardHtml(tarot, { flipped: true, id: item.id, condition: item.condition || endingConditionText(item) });
+        els.archiveDetail.innerHTML = tarotCardHtml(tarot, { flipped: true, id: item.id, condition: endingConditionText(item, item.meta) });
         bindTarotInteractions(els.archiveDetail);
+        return;
+      }
+
+      if (state.archiveTab === "setEffects") {
+        els.archiveDetail.innerHTML = `
+          <div class="archive-detail-card set-effect-detail">
+            <span class="badge">SET</span>
+            <h3>${escapeText(item.title || "세트 효과")}</h3>
+            <p>조합: ${escapeText(item.meta || "")}</p>
+            <p>${escapeText(item.text || item.copy || "더블로드에서 발동한 세트 효과입니다.")}</p>
+            <div class="card-tags">${(item.tags || ["더블로드"]).slice(0, 4).map(tag => `<span class="tag">${escapeText(tag)}</span>`).join("")}</div>
+          </div>
+        `;
         return;
       }
 
       const isQuest = state.archiveTab === "quests";
       els.archiveDetail.innerHTML = archiveStackCardHtml(item, isQuest);
       bindArchiveCardInteractions(els.archiveDetail);
+      els.archiveDetail.scrollTop = 0;
     }
 
     function bindTarotInteractions(scope = document) {
@@ -6019,7 +6742,8 @@
 
     function steerUpcomingDeck() {
       if (state.turn >= state.deck.length - 4) return;
-      const start = state.turn;
+      const start = isDoubleMode() ? state.doubleDeckIndex : state.turn;
+      if (start >= state.deck.length - 4) return;
       const windowSize = Math.min(8, state.deck.length - start);
       const segment = state.deck.slice(start, start + windowSize);
       const focusMap = {
@@ -6100,6 +6824,16 @@
           return;
         }
         const raw = state.stats[key] + value;
+        const shieldUntil = state.statShields[key] || 0;
+        if (value < 0 && shieldUntil >= state.turn) {
+          const effect = SET_EFFECTS.find(item => item.type === "shieldStat" && item.stat === key);
+          const floor = effect?.floor || 30;
+          if (raw < floor) {
+            state.stats[key] = Math.max(state.stats[key], floor);
+            protectedKeys.push(key);
+            return;
+          }
+        }
         if (isInfiniteMode() && raw >= 100) {
           starAwards.push(key);
           state.stats[key] = STAT_STAR_RESET;
@@ -6161,6 +6895,24 @@
       state.activeQuests.push(entry);
       updatePlayerStats({ questsAccepted: 1 });
       return `퀘스트 수락: ${quest.title}. ${acceptedQuest.limit}턴 안에 ${statNames[acceptedQuest.targetStat]} ${acceptedQuest.targetValue} 이상을 달성해야 합니다.`;
+    }
+
+    function completeQuestInstantly(quest) {
+      const terms = playableQuestTerms(quest);
+      const acceptedQuest = {
+        ...quest,
+        targetValue: terms.targetValue,
+        limit: terms.limit,
+        rewardAmount: terms.rewardAmount
+      };
+      updatePlayerStats({ questsAccepted: 1 });
+      return applyQuestReward({
+        quest: acceptedQuest,
+        targetStat: acceptedQuest.targetStat,
+        targetValue: acceptedQuest.targetValue,
+        acceptedTurn: state.turn,
+        deadlineTurn: state.turn
+      }).replace("퀘스트 성공", "더블로드 즉시 성공");
     }
 
     function removeQuestStar(preferredKey) {
@@ -6341,6 +7093,59 @@
       return icons[key] || icons.cash;
     }
 
+    function inferIllustrationKey(seed = "", fallback = "default") {
+      const text = String(seed || "");
+      const tests = [
+        ["finance", /금리|대출|담보|LTV|DSCR|배당|현금|자금|PF|은행/],
+        ["contract", /계약|특약|권리|등기|하자|실사|보증|종결/],
+        ["develop", /개발|인허가|공사|시공|설계|준공|분양|조감도/],
+        ["operate", /임차|민원|관리|공실|운영|소음|청소|주차/],
+        ["harvest", /매각|상속|승계|회수|세금|리파이낸싱|양도/],
+        ["tech", /데이터|앱|센서|스마트|플랫폼|AI|API|디지털/],
+        ["analysis", /NOI|캡레이트|평가|수익률|숫자|분석|가정|민감도/],
+        ["reit", /리츠|투자자|공모|운용보고|배당|수익증권/],
+        ["deal", /협상|매도자|매수|오퍼|파트너|제안|중개/],
+        ["market", /시장|상권|수요|공급|임대료|입지|경매/]
+      ];
+      return tests.find(([, pattern]) => pattern.test(text))?.[0] || fallback;
+    }
+
+    function illustrationOverlay(seed = "") {
+      const hash = Math.abs(hashText(seed));
+      const x = 4 + (hash % 10);
+      const y = 4 + ((hash >> 4) % 10);
+      const mode = hash % 5;
+      const overlays = [
+        `<path d="M${x} 20c2-4 5-7 12-${12 - y}" opacity=".55"/>`,
+        `<circle cx="${x + 2}" cy="${y + 2}" r="${1.4 + (hash % 4) * 0.2}" opacity=".62"/><path d="M4 ${18 - (hash % 5)}h16" opacity=".38"/>`,
+        `<path d="M${x} ${y}h${5 + (hash % 6)}v${4 + ((hash >> 3) % 5)}" opacity=".5"/>`,
+        `<path d="M4 ${y}q8 ${hash % 7} 16 0" opacity=".48"/><path d="M${x} 4v16" opacity=".32"/>`,
+        `<path d="M6 ${y} 12 ${4 + (hash % 5)} 18 ${y + 3}" opacity=".5"/><circle cx="${18 - (hash % 8)}" cy="${15 + (hash % 4)}" r="1.2" opacity=".58"/>`
+      ];
+      return overlays[mode];
+    }
+
+    function cardIllustrationSvg(key = "default", seed = "") {
+      const art = {
+        market: `<path d="M4 18h16"/><path d="M6 18V9l6-4 6 4v9"/><path d="M9 18v-5h6v5"/><path d="M7 11h2M15 11h2"/><path d="M5 7h14"/>`,
+        finance: `<path d="M4 18h16"/><path d="M7 18V8"/><path d="M12 18V5"/><path d="M17 18v-8"/><path d="m6 12 4-3 4 4 4-6"/><path d="M18 7h-4V3"/>`,
+        develop: `<path d="M4 20h16"/><path d="M6 20V8l5-3 5 3v12"/><path d="M16 20v-9h3v9"/><path d="M9 12h1M12 12h1M9 16h1M12 16h1"/>`,
+        contract: `<path d="M7 3h10l2 2v17H7z"/><path d="M17 3v5h5"/><path d="M10 10h8M10 14h8M10 18h5"/><path d="m4 17 3 3 5-6"/>`,
+        operate: `<path d="M5 18h14"/><path d="M7 18V6h11v12"/><path d="M10 9h1M14 9h1M10 13h1M14 13h1"/><path d="M4 10c2-3 4-3 6 0"/><path d="M14 7c2-2 4-2 6 0"/>`,
+        harvest: `<path d="M5 19h14"/><path d="M8 19V9"/><path d="M14 19V6"/><path d="M18 19v-7"/><path d="M8 9c-3 0-4-2-4-4 3 0 4 2 4 4z"/><path d="M14 6c3 0 4-2 4-4-3 0-4 2-4 4z"/>`,
+        tech: `<path d="M5 6h14v12H5z"/><path d="M8 21h8"/><path d="M12 18v3"/><path d="M9 10h6M9 14h3"/><path d="m15 13 3-3"/><path d="m16 9 2 1 1 2"/>`,
+        analysis: `<path d="M4 19h16"/><path d="M7 16l3-5 3 3 4-8"/><path d="M16 6h5v5"/><circle cx="7" cy="16" r="1.4"/><circle cx="10" cy="11" r="1.4"/><circle cx="13" cy="14" r="1.4"/>`,
+        deal: `<path d="M5 12h4l2 2 3-5h5"/><path d="M4 18h16"/><path d="M7 18V8l5-3 5 3v10"/><path d="M8 13c2 2 4 2 6 0"/><path d="M15 10h4"/>`,
+        reit: `<path d="M4 20h16"/><path d="M6 20V7h7v13"/><path d="M13 20V10h6v10"/><path d="M8 10h2M8 14h2M15 13h2M15 17h2"/><path d="M5 7l4-4 4 4"/>`,
+        crisis: `<path d="M12 3 22 20H2z"/><path d="M12 8v6"/><path d="M12 17h.01"/><path d="M5 20c2-2 4-2 6 0M13 20c2-2 4-2 6 0"/>`,
+        tutorial: `<path d="M5 5h14v16H5z"/><path d="M8 9h8M8 13h6M8 17h4"/><path d="M16 3v4M8 3v4"/>`,
+        quest: `<path d="M12 3c4 0 7 2.6 7 6 0 5-7 12-7 12S5 14 5 9c0-3.4 3-6 7-6z"/><path d="M9 9a3 3 0 0 1 6 0c0 2-3 2-3 4"/><path d="M12 16h.01"/>`,
+        default: `<path d="M4 19h16"/><path d="M6 19V8l6-4 6 4v11"/><path d="M9 19v-6h6v6"/><path d="M8 10h1M15 10h1"/>`
+      };
+      const artKey = key === "quest" ? "quest" : inferIllustrationKey(seed, key);
+      return `<div class="card-illustration" aria-hidden="true"><svg viewBox="0 0 24 24">${art[artKey] || art[key] || art.default}${illustrationOverlay(seed || key)}</svg></div>`;
+    }
+
     function renderMeters() {
       els.meters.innerHTML = Object.entries(STAT_META).map(([key, meta]) => {
         const value = state.stats[key];
@@ -6377,6 +7182,9 @@
       els.cardBadge.textContent = card.badge;
       els.cardBadge.className = `badge ${card.badgeClass || ""}`;
       els.playCard.classList.toggle("quest-card", Boolean(card.isQuestOffer));
+      els.playCard.dataset.cardKey = card.isQuestOffer ? "quest" : (card.key || "default");
+      els.playCard.querySelector(".card-illustration")?.remove();
+      els.playCard.insertAdjacentHTML("afterbegin", cardIllustrationSvg(els.playCard.dataset.cardKey, `${card.title} ${card.text}`));
       els.cardNumber.textContent = `#${String(card.number).padStart(3, "0")}`;
       els.cardTitle.textContent = card.title;
       els.cardText.innerHTML = `
@@ -6397,6 +7205,37 @@
       els.quickLeftText.textContent = card.left.text;
       els.quickRightTitle.textContent = card.right.label;
       els.quickRightText.textContent = card.right.text;
+      renderDoubleRoadPanel();
+    }
+
+    function renderDoubleRoadPanel() {
+      if (!els.doubleRoadPanel) return;
+      if (!isDoubleMode() || state.tutorialRun) {
+        els.doubleRoadPanel.hidden = true;
+        els.doubleRoadPanel.innerHTML = "";
+        return;
+      }
+      refillDoubleRoadChoices();
+      const effect = currentSetEffect();
+      state.activeSetEffect = effect;
+      els.doubleRoadPanel.hidden = false;
+      const cards = state.doubleChoices.map((item, index) => {
+        const card = narrativeCard(item);
+        return `
+          <button class="double-road-card ${index === state.doubleSelected ? "active" : ""}" data-double-index="${index}" type="button">
+            <small>${index + 1}번 카드 · ${escapeText(card.badge || card.chapter || "사건")}</small>
+            <b>${escapeText(card.title || "대기 카드")}</b>
+            <span>${escapeText((card.text || "").slice(0, 58))}${(card.text || "").length > 58 ? "..." : ""}</span>
+          </button>
+        `;
+      }).join("");
+      els.doubleRoadPanel.innerHTML = `
+        <div class="double-road-head">
+          <span>더블로드 · ${isInfiniteMode() ? "무한" : "100장"} · 1/2키로 카드 선택</span>
+          <span class="double-road-effect">${effect ? `세트: ${escapeText(effect.title)}` : "세트 대기"}</span>
+        </div>
+        <div class="double-road-cards">${cards}</div>
+      `;
     }
 
     function renderLogs() {
@@ -6408,20 +7247,30 @@
       const latestFirst = [...state.log];
       const html = latestFirst.map((item, index) => {
         const title = item.title ? `<strong>${escapeText(item.title)}</strong> ` : "";
+        const isNew = item.id === state.latestLogId;
+        const order = item.order || (state.log.length - index);
         return `
-        <div class="log-item">
-          <span class="log-turn">#${index + 1}</span>
+        <div class="log-item ${isNew ? "new-log" : ""}">
+          <span class="log-turn">#${order}</span>
           <span class="log-copy"><b>${item.turn}턴</b> ${title}${escapeText(item.text)}</span>
         </div>
       `;
       }).join("");
       els.logList.innerHTML = html;
       els.mobileLogList.innerHTML = html;
+      els.logList.scrollTop = 0;
+      els.mobileLogList.scrollTop = 0;
+      if (state.latestLogId) {
+        const renderedLogId = state.latestLogId;
+        setTimeout(() => {
+          if (state.latestLogId === renderedLogId) state.latestLogId = null;
+        }, 650);
+      }
     }
 
     function renderMeta() {
       els.turnPill.textContent = `${state.turn + 1}턴`;
-      els.deckPill.textContent = isInfiniteMode() ? "무한 모드" : `사건풀 ${state.deck.length}`;
+      els.deckPill.textContent = isInfiniteMode() ? modeLabel() : `사건풀 ${state.deck.length}`;
       els.scorePill.textContent = `점수 ${state.score}`;
       els.liveScore.textContent = state.score;
       els.turnCount.textContent = state.turn;
@@ -6508,10 +7357,17 @@
       document.querySelectorAll("[data-mode]").forEach(button => {
         button.classList.toggle("active", button.dataset.mode === state.mode);
       });
+      els.infiniteToggle.classList.toggle("active", isInfiniteMode());
+      els.infiniteToggle.setAttribute("aria-pressed", isInfiniteMode() ? "true" : "false");
+      els.infiniteToggle.querySelector("span").textContent = isInfiniteMode() ? "무한 ON" : "무한 OFF";
       els.playerNameRow.hidden = !isInfiniteMode();
-      els.modeHint.textContent = isInfiniteMode()
-        ? "무한 모드: 이름을 입력하고 공개 기록에 도전합니다."
-        : "50장 도전: 매 판 50개 사건을 해결합니다.";
+      els.modeHint.textContent = isDoubleMode()
+        ? (isInfiniteMode()
+          ? "더블로드 무한: 두 장씩 보고 선택하며 공개 기록에 도전합니다."
+          : "더블로드 100장: 두 장씩 보고 한 장씩 사용하며 세트 효과를 노립니다.")
+        : (isInfiniteMode()
+          ? "무한 모드: 이름을 입력하고 공개 기록에 도전합니다."
+          : "50장 도전: 매 판 50개 사건을 해결합니다.");
     }
 
     function applySettings() {
@@ -6519,6 +7375,7 @@
       document.body.classList.toggle("fast-mode", Boolean(state.settings.fastMode));
       els.darkModeToggle.classList.toggle("active", Boolean(state.settings.darkMode));
       els.fastModeToggle.classList.toggle("active", Boolean(state.settings.fastMode));
+      els.vibrationToggle?.classList.toggle("active", Boolean(state.settings.vibration));
     }
 
     function unlockedAchievement(id) {
@@ -6730,17 +7587,18 @@
     }
 
     function renderTutorial() {
-      const index = clamp(state.tutorialIndex, 0, tutorialSteps.length - 1);
+      const steps = activeTutorialSteps();
+      const index = clamp(state.tutorialIndex, 0, steps.length - 1);
       state.tutorialIndex = index;
-      const step = tutorialSteps[index];
+      const step = steps[index];
       const done = Boolean(state.tutorialPracticeDone[index]);
-      els.tutorialStepLabel.textContent = `${index + 1} / ${tutorialSteps.length}`;
+      els.tutorialStepLabel.textContent = `${index + 1} / ${steps.length}`;
       els.tutorialStepTitle.textContent = step.title;
       els.tutorialStepText.textContent = step.text;
       els.prevTutorial.disabled = index === 0;
       els.nextTutorial.disabled = !done;
-      els.nextTutorial.textContent = index === tutorialSteps.length - 1 ? "완료" : "다음";
-      els.tutorialDots.innerHTML = tutorialSteps.map((_, dotIndex) => `
+      els.nextTutorial.textContent = index === steps.length - 1 ? "완료" : "다음";
+      els.tutorialDots.innerHTML = steps.map((_, dotIndex) => `
         <span class="tutorial-dot ${dotIndex === index ? "active" : ""}"></span>
       `).join("");
       renderTutorialPractice(step, done);
@@ -6803,16 +7661,44 @@
       return document.querySelector(step.target || targetMap[step.practice] || ".game-panel");
     }
 
+    function positionTutorialCoach(target) {
+      if (!target || !els.tutorialCoach.classList.contains("open")) return;
+      const rect = target.getBoundingClientRect();
+      const width = Math.min(360, window.innerWidth - 18);
+      const left = clamp(rect.left, 8, Math.max(8, window.innerWidth - width - 8));
+      const below = rect.bottom + 10;
+      const top = below + 132 < window.innerHeight
+        ? below
+        : Math.max(8, rect.top - 142);
+      els.tutorialCoach.style.width = `${width}px`;
+      els.tutorialCoach.style.left = `${left}px`;
+      els.tutorialCoach.style.right = "auto";
+      els.tutorialCoach.style.top = `${clamp(top, 8, Math.max(8, window.innerHeight - 150))}px`;
+      els.tutorialCoach.style.bottom = "auto";
+      if (isMobileViewport()) {
+        els.tutorialCoach.style.width = "calc(100% - 16px)";
+        els.tutorialCoach.style.left = "8px";
+        els.tutorialCoach.style.top = stepMobileTop(rect);
+      }
+    }
+
+    function stepMobileTop(rect) {
+      const lower = rect.bottom + 8;
+      if (lower < window.innerHeight - 130) return `${lower}px`;
+      return "8px";
+    }
+
     function completeTutorialCoachPractice(practice) {
       if (!state.tutorialCoachOpen) return;
-      const step = tutorialSteps[state.tutorialIndex];
+      const steps = activeTutorialSteps();
+      const step = steps[state.tutorialIndex];
       if (practice && step.practice !== practice) return;
       if (state.tutorialPracticeDone[state.tutorialIndex]) return;
       state.tutorialPracticeDone[state.tutorialIndex] = true;
       renderTutorialCoach();
       setTimeout(() => {
         if (!state.tutorialCoachOpen) return;
-        if (state.tutorialIndex >= tutorialSteps.length - 1) {
+        if (state.tutorialIndex >= steps.length - 1) {
           closeTutorialModal();
           return;
         }
@@ -6822,26 +7708,33 @@
     }
 
     function renderTutorialCoach() {
-      const index = clamp(state.tutorialIndex, 0, tutorialSteps.length - 1);
+      const steps = activeTutorialSteps();
+      const index = clamp(state.tutorialIndex, 0, steps.length - 1);
       state.tutorialIndex = index;
-      const step = tutorialSteps[index];
+      const step = steps[index];
       const done = Boolean(state.tutorialPracticeDone[index]);
       clearTutorialHighlight();
       const target = tutorialTargetFor(step);
       target?.classList.add("tutorial-highlight");
+      els.tutorialScrim.classList.add("open");
+      els.keyboardHints?.classList.toggle("show", step.practice === "keyboard");
       els.tutorialCoach.classList.toggle("done", done);
       els.tutorialCoachTitle.textContent = step.title;
       els.tutorialCoachText.textContent = done
         ? `${step.text} 완료되었습니다. 다음 단계로 자동 이동합니다.`
         : `${step.text} 표시된 영역을 직접 조작해야 다음 단계로 넘어갈 수 있습니다.`;
-      els.tutorialCoachProgress.textContent = `${index + 1} / ${tutorialSteps.length}`;
+      els.tutorialCoachProgress.textContent = `${index + 1} / ${steps.length}`;
       els.tutorialCoachPrev.disabled = index === 0;
       els.tutorialCoachNext.disabled = !done;
-      els.tutorialCoachNext.textContent = index === tutorialSteps.length - 1 ? "완료" : "다음";
+      els.tutorialCoachNext.textContent = index === steps.length - 1 ? "완료" : "다음";
+      requestAnimationFrame(() => positionTutorialCoach(target));
     }
 
     function openTutorial(startAt = 0) {
       state.tutorialRun = true;
+      state.tutorialSavedFastMode = state.settings.fastMode;
+      state.settings.fastMode = false;
+      persistSettings();
       state.tutorialRunTracked = false;
       state.runStartedTracked = false;
       resetGame(false, { tutorial: true });
@@ -6863,15 +7756,36 @@
       if (markSeen) persistTutorialSeen();
       state.tutorialCoachOpen = false;
       els.tutorialCoach.classList.remove("open");
+      els.tutorialScrim.classList.remove("open");
+      els.keyboardHints?.classList.remove("show");
+      els.tutorialCoach.style.width = "";
+      els.tutorialCoach.style.left = "";
+      els.tutorialCoach.style.right = "";
+      els.tutorialCoach.style.top = "";
+      els.tutorialCoach.style.bottom = "";
       els.tutorialModal.classList.remove("open");
       clearTutorialHighlight();
+      if (state.tutorialSavedFastMode !== null) {
+        state.settings.fastMode = state.tutorialSavedFastMode;
+        state.tutorialSavedFastMode = null;
+        persistSettings();
+        applySettings();
+      }
       checkAchievements();
+    }
+
+    function skipTutorialToStory() {
+      closeTutorialModal(false);
+      persistTutorialSeen();
+      state.tutorialRun = false;
+      resetGame(true, { tutorial: false });
     }
 
     function archiveTotalFor(tab) {
       if (tab === "events") return TOTAL_EVENT_POOL;
       if (tab === "quests") return QUEST_LIBRARY_SIZE;
       if (tab === "endings") return ENDING_ARCHIVE_TOTAL;
+      if (tab === "setEffects") return SET_EFFECT_ARCHIVE_TOTAL;
       return 0;
     }
 
@@ -6905,24 +7819,48 @@
           return {
             id: quest.id,
             title: "???",
-            meta: "미해금 퀘스트",
+            meta: `미해금 퀘스트 · #Q${String(quest.number || 0).padStart(3, "0")}`,
             text: "",
             dilemma: "",
             tags: [],
+            number: quest.number,
             locked: true
           };
         });
       }
 
       if (tab === "endings") {
-        const seen = (state.archive.endings || []).slice(0, ENDING_ARCHIVE_TOTAL).map(item => ({ ...item, locked: false }));
+        const seen = (state.archive.endings || []).slice(0, ENDING_ARCHIVE_TOTAL).map(item => ({
+          ...item,
+          meta: endingConditionText(item, item.meta),
+          condition: endingConditionText(item, item.meta),
+          locked: false
+        }));
+        const tarotTypes = ["tower", "star", "temperance", "chariot", "justice", "hermit", "wheel", "world"];
         const locked = Array.from({ length: Math.max(0, ENDING_ARCHIVE_TOTAL - seen.length) }, (_, index) => ({
           id: `locked-ending-${index + 1}`,
           title: "???",
           meta: "미해금 엔딩",
+          tarotType: tarotTypes[(seen.length + index) % tarotTypes.length],
           locked: true
         }));
         return [...seen, ...locked];
+      }
+
+      if (tab === "setEffects") {
+        const seen = new Map((state.archive.setEffects || []).map(item => [item.id, item]));
+        return SET_EFFECTS.map(effect => {
+          const unlocked = seen.get(effect.id);
+          if (unlocked) return { ...effect, ...unlocked, locked: false };
+          return {
+            id: effect.id,
+            title: "???",
+            meta: effect.pair.map(key => setEffectKeyLabel(key)).join(" + "),
+            text: "",
+            tags: ["미해금"],
+            locked: true
+          };
+        });
       }
 
       return [];
@@ -6935,31 +7873,53 @@
       return list;
     }
 
+    function formatPlayTime(ms = 0) {
+      const totalMinutes = Math.floor(Math.max(0, ms) / 60000);
+      if (totalMinutes <= 0) return "1분 미만";
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      if (hours <= 0) return `${minutes}분`;
+      return `${hours}시간 ${minutes}분`;
+    }
+
     function renderArchiveStatsPanel() {
       const stats = state.playerStats;
+      const totalChoices = Math.max(1, stats.totalClicks || 0);
       const rows = [
         ["게임한 수", stats.gamesPlayed],
+        ["더블로드 판 수", stats.doubleRoadRuns],
         ["튜토리얼 진행", stats.tutorialRuns],
         ["클릭/선택 수", stats.totalClicks],
+        ["더블로드 선택", stats.doubleRoadChoices],
         ["왼쪽 선택", stats.leftChoices],
         ["오른쪽 선택", stats.rightChoices],
         ["획득 점수", stats.totalScoreGained],
+        ["누적 기본 점수", stats.totalBaseScore],
+        ["누적 최종 점수", stats.totalFinalScore],
+        ["평균 선택 점수", Math.round((stats.totalScoreGained || 0) / totalChoices)],
         ["누적 생존 턴", stats.totalSurvivedTurns],
+        ["최장 생존 턴", stats.bestTurn],
         ["최고 점수", stats.bestScore],
+        ["누적 획득 별", stats.totalStarsEarned],
         ["위기 극복", stats.crisisRecoveries],
         ["퀘스트 수락", stats.questsAccepted],
         ["퀘스트 성공", stats.questsCompleted],
         ["퀘스트 실패", stats.questsFailed],
+        ["해금 사건", state.archive.events.length],
+        ["해금 퀘스트", state.archive.quests.length],
         ["확인한 엔딩", state.archive.endings.length],
+        ["해금 세트 효과", state.archive.setEffects.length],
+        ["세트 효과 발동", stats.setEffectsTriggered],
+        ["총 플레이 시간", formatPlayTime(stats.totalPlayMs)],
         ["보관소 열람", stats.archiveOpens]
       ];
-      els.archiveList.innerHTML = `<div class="empty">누적 플레이 통계를 오른쪽에서 확인합니다.</div>`;
+      els.archiveList.innerHTML = "";
       els.archiveDetail.innerHTML = `
         <div class="archive-stat-grid">
           ${rows.map(([label, value]) => `
             <div class="archive-stat-item">
               <span>${escapeText(label)}</span>
-              <b>${Number(value || 0).toLocaleString("ko-KR")}</b>
+              <b>${typeof value === "string" ? escapeText(value) : Number(value || 0).toLocaleString("ko-KR")}</b>
             </div>
           `).join("")}
         </div>
@@ -6971,12 +7931,13 @@
         ["events", "사건", archiveUnlockedCount("events"), archiveTotalFor("events")],
         ["quests", "퀘스트", archiveUnlockedCount("quests"), archiveTotalFor("quests")],
         ["endings", "엔딩", archiveUnlockedCount("endings"), archiveTotalFor("endings")],
-        ["stats", "통계", 1, 1]
+        ["setEffects", "세트 효과", archiveUnlockedCount("setEffects"), archiveTotalFor("setEffects")],
+        ["stats", "통계", null, null]
       ];
       els.archiveStats.innerHTML = countRows.map(([tab, label, value, total]) => `
-        <button class="archive-card ${state.archiveTab === tab ? "active" : ""}" data-archive-stat-tab="${tab}" type="button">
+        <button class="archive-card ${tab === "stats" ? "stats-card" : ""} ${state.archiveTab === tab ? "active" : ""}" data-archive-stat-tab="${tab}" type="button">
           <span>${label}</span>
-          <b>${value}/${total}</b>
+          <b>${tab === "stats" ? "통계" : `${value}/${total}`}</b>
         </button>
       `).join("");
 
@@ -6984,6 +7945,7 @@
         button.classList.toggle("active", button.dataset.archiveTab === state.archiveTab);
       });
       els.archiveFilters.hidden = state.archiveTab === "stats";
+      els.archiveModal.querySelector(".archive-workspace")?.classList.toggle("stats-mode", state.archiveTab === "stats");
       els.archiveFilters.querySelectorAll("[data-archive-filter]").forEach(button => {
         button.classList.toggle("active", button.dataset.archiveFilter === state.archiveFilter);
       });
@@ -7159,6 +8121,10 @@
         .replaceAll('"', "&quot;");
     }
 
+    function isMobileViewport() {
+      return window.matchMedia("(max-width: 820px)").matches;
+    }
+
     function canUseServerRecords() {
       return location.protocol !== "file:";
     }
@@ -7185,7 +8151,7 @@
           <span class="leaderboard-rank">${index + 1}</span>
           <span class="leaderboard-main">
             <span class="leaderboard-name">${escapeText(item.name)}</span>
-            <span class="leaderboard-meta">${escapeText(item.difficultyLabel || item.difficulty)} · ${item.turn}턴 · ${item.avg}균형 · 별 ${item.bonusCount || 0}</span>
+            <span class="leaderboard-meta">${escapeText(item.modeLabel || "무한 모드")} · ${escapeText(item.difficultyLabel || item.difficulty)} · ${item.turn}턴 · ${item.avg}균형 · 별 ${item.bonusCount || 0}</span>
           </span>
           <span class="leaderboard-score">${item.score}</span>
         </div>
@@ -7234,7 +8200,9 @@
             bonusCount: state.finalResult.bonusCount,
             baseScore: state.finalResult.baseScore,
             difficulty: state.difficulty,
-            difficultyLabel: currentDifficulty().label
+            difficultyLabel: currentDifficulty().label,
+            mode: isDoubleMode() ? "double" : "single",
+            modeLabel: isDoubleMode() ? "더블로드 무한" : "무한 모드"
           })
         });
         if (!response.ok) throw new Error("submit failed");
@@ -7281,17 +8249,30 @@
 
     function choose(side) {
       if (state.ended) return;
+      if (state.tutorialCoachOpen) {
+        const step = activeTutorialSteps()[state.tutorialIndex];
+        const allowed = ["drag", "keyboard", "choice"].includes(step?.practice);
+        if (!allowed) {
+          renderTutorialCoach();
+          return;
+        }
+      }
       completeTutorialCoachPractice("choice");
       const card = currentCard();
       archiveCard(card);
       const choice = card[side];
-      const combined = effectiveChoiceDelta(card, side);
+      const setEffect = currentSetEffect();
+      if (setEffect) archiveSetEffect(setEffect);
+      const setEffectResult = applySetEffectDelta(effectiveChoiceDelta(card, side), setEffect);
+      const combined = setEffectResult.delta;
       const scoreGain = applyDeltaWithScore(combined);
       updatePlayerStats({
         totalClicks: 1,
         totalScoreGained: scoreGain.survivalScore + scoreGain.starBonus,
+        totalStarsEarned: scoreGain.starsEarned,
         leftChoices: side === "left" ? 1 : 0,
-        rightChoices: side === "right" ? 1 : 0
+        rightChoices: side === "right" ? 1 : 0,
+        doubleRoadChoices: isDoubleMode() ? 1 : 0
       });
       const effects = currentDifficulty().showResultDeltas
         ? (deltaText(combined) || `<span class="delta hidden-deltas">변화 없음</span>`)
@@ -7304,13 +8285,18 @@
         : "";
       const turnPhrase = card.noPressure
         ? "이번 턴은 퀘스트 판단으로 처리되었습니다."
-        : "이번 턴 시장 압박까지 반영되었습니다.";
+        : setEffect
+          ? "이번 턴은 더블로드 세트 효과와 시장 압박까지 반영되었습니다."
+          : "이번 턴 시장 압박까지 반영되었습니다.";
 
       state.turn += 1;
+      if (isDoubleMode()) advanceDoubleRoadAfterChoice();
 
-      const questMessages = [];
+      const questMessages = [...setEffectResult.messages];
       if (card.isQuestOffer && side === "left") {
-        questMessages.push(acceptQuest(card.quest));
+        questMessages.push(isDoubleMode()
+          ? completeQuestInstantly(card.quest)
+          : acceptQuest(card.quest));
       } else if (card.isQuestOffer && side === "right") {
         questMessages.push(`퀘스트 거절: ${card.quest.title}. 이번 목표는 장부에 올리지 않았습니다.`);
       }
@@ -7334,930 +8320,47 @@
       const logParts = [
         `${choice.label}: ${deltaSentence(combined) || "지표 변화 없음"}`
       ].concat(questMessages.map(message => message.replace(/<[^>]+>/g, "")));
+      const logId = `log-${Date.now()}-${state.logSequence + 1}`;
+      state.logSequence += 1;
+      state.latestLogId = logId;
       state.log.unshift({
+        id: logId,
+        order: state.logSequence,
         turn: state.turn,
         title: card.title,
         text: logParts.join(" · ")
       });
       recordStatHistory(`${card.title}: ${choice.label}`);
 
-      if (state.tutorialRun && state.tutorialIndex >= tutorialSteps.length - 1) {
+      if (state.tutorialRun && state.tutorialIndex >= activeTutorialSteps().length - 1) {
         endGame("튜토리얼 고정 런을 완료했습니다.");
         return;
       }
 
       if (questResult.gameOver) {
+        if (state.gameoverShield > 0 || state.invincible) {
+          state.gameoverShield = Math.max(0, state.gameoverShield - 1);
+          state.last += `<br><span class="server-note">더블로드 방어권이 퀘스트 중단 위험을 막았습니다.</span>`;
+          render();
+          return;
+        }
         endGame("퀘스트 실패로 프로젝트가 중단되었습니다.");
         return;
       }
 
       const failed = Object.entries(state.stats).find(([, value]) => value <= 0);
       if (failed && !state.invincible) {
+        if (state.gameoverShield > 0) {
+          state.gameoverShield -= 1;
+          state.stats[failed[0]] = 1;
+          state.last += `<br><span class="server-note">더블로드 방어권이 ${statNames[failed[0]]} 바닥을 1점에서 막았습니다.</span>`;
+          render();
+          return;
+        }
         endGame(`${statNames[failed[0]]}이 바닥났습니다.`);
         return;
       }
 
       if (isInfiniteMode() && state.turn >= state.deck.length) {
         extendInfiniteDeck();
-        state.last += `<br><span class="server-note">새 사건 묶음이 열렸습니다. 기록 도전이 계속됩니다.</span>`;
-      }
-
-      if (state.turn >= state.deck.length) {
-        endGame(state.tutorialRun ? "튜토리얼 고정 런을 완료했습니다." : "50개 사건을 모두 통과했습니다.");
-        return;
-      }
-
-      checkAchievements();
-      render();
-    }
-
-    function pickEnding(items, salt = 0) {
-      const index = Math.abs(Math.floor((state.seed + state.turn * 31 + state.score * 7 + state.dangerRecoveryCount * 13 + salt) % items.length));
-      return items[index];
-    }
-
-    function endingStory(reason, score) {
-      const avg = averageStat();
-      const low = lowestStat();
-      const lowestKey = Object.entries(state.stats).sort((a, b) => a[1] - b[1])[0][0];
-      const strongestKey = Object.entries(state.stats).sort((a, b) => b[1] - a[1])[0][0];
-      const clearedRun = !isInfiniteMode() && state.turn >= state.deck.length && !reason.includes("바닥");
-      const difficultyLabel = currentDifficulty().label;
-      const firstCard = state.deck[0] || currentCard();
-      const lastCard = state.deck[Math.max(0, state.turn - 1)] || currentCard();
-      const statLine = `현금흐름 ${Math.round(state.stats.cash)}, 신뢰 ${Math.round(state.stats.trust)}, 생활가치 ${Math.round(state.stats.city)}, 위험관리 ${Math.round(state.stats.control)}`;
-      const arcLine = `${firstCard.chapter}의 ${firstCard.title}에서 시작해 ${lastCard.chapter}의 ${lastCard.title}까지 이어진 기록`;
-      if (state.tutorialRun) {
-        return {
-          title: "엔딩: 첫 장부의 균형",
-          body: `정해진 튜토리얼 런을 끝까지 마쳤습니다. ${arcLine}은 SWAY의 기본 흐름을 보여주는 작은 실습 장부로 남았습니다. 카드를 밀면 뒤쪽 선택지가 보이고, 방향키도 같은 강도로 선택을 준비하며, 진행 기록은 한 턴의 선택과 퀘스트 결과를 한 줄에 묶어 보여줍니다. 최종 장부는 ${statLine}, 점수 ${score}점입니다.`
-        };
-      }
-      const context = {
-        avg,
-        low,
-        score,
-        reason,
-        statLine,
-        arcLine,
-        difficultyLabel,
-        lowest: statNames[lowestKey],
-        strongest: statNames[strongestKey],
-        player: state.playerName || "익명 투자자",
-        stars: state.bonusCount,
-        questSuccess: state.completedQuests.length,
-        questFail: state.failedQuests.length,
-        dangerRecoveries: state.dangerRecoveryCount,
-        dangerCount: state.dangerCount,
-        turn: state.turn
-      };
-      const pick = (items, salt = 0) => {
-        const selected = pickEnding(items, salt);
-        return {
-          title: selected.title,
-          body: typeof selected.body === "function" ? selected.body(context) : selected.body
-        };
-      };
-
-      const manualEndings = [
-        {
-          title: "엔딩: 조용한 장부 폐쇄",
-          body: c => `${c.player}님은 더 버틸 수 있었지만, 장부를 스스로 닫았습니다. ${c.arcLine}은 외부에는 평범한 운영 기록으로 남았지만, 내부 파일에는 무너질 뻔한 순간마다 보이지 않는 완충장치가 작동한 흔적이 남았습니다. 최종 장부는 ${c.statLine}, 획득 별 ${c.stars}개, 위기 극복 ${c.dangerRecoveries}회, 점수 ${c.score}점입니다.`
-        },
-        {
-          title: "엔딩: 비공개 운용 종료",
-          body: c => `프로젝트는 파산하지 않았고, 누구도 마지막 회의를 긴급회의라고 부르지 않았습니다. 다만 ${c.player}님은 더 긴 무한 운영보다 지금의 기록을 남기는 쪽을 골랐습니다. ${c.arcLine}은 공개 순위표에 올라갈 수 있는 하나의 시즌으로 봉인됩니다. 최종 장부는 ${c.statLine}, 별 ${c.stars}개, 점수 ${c.score}점입니다.`
-        }
-      ];
-
-      if (state.manualEnded) {
-        return pick(manualEndings, 4);
-      }
-
-      const infiniteEndings = {
-        early: [
-          {
-            title: "엔딩: 너무 빠른 야근",
-            body: c => `${c.player}님의 무한 운영은 ${c.turn}턴에서 멈췄습니다. 400개 사건 라이브러리는 아직 초반부였지만, ${c.lowest}의 균형이 먼저 흔들렸습니다. 팀은 첫 달 회의록을 다시 펼쳐 어떤 선택이 현장 신호를 놓쳤는지 표시합니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-          },
-          {
-            title: "엔딩: 첫 순환의 비용",
-            body: c => `시장은 아직 모든 얼굴을 보여주지 않았습니다. 그래도 ${c.player}님의 장부에는 초반 속도전이 남긴 비용이 선명합니다. 다음 도전에서는 400개 사건 중 비슷한 사건이 다시 나왔을 때, 같은 선택을 반복하지 않는 것이 첫 목표가 됩니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-          }
-        ],
-        long: [
-          {
-            title: "엔딩: 끝나지 않는 운영위원회",
-            body: c => `${c.player}님은 ${c.turn}턴 동안 동네의 질문을 계속 받았습니다. 금리, 공실, 임차인, 인허가, 기술 실험이 순서를 바꿔 돌아왔고, 별 ${c.stars}개는 네 지표가 한계를 넘겼던 순간의 증거가 되었습니다. 마지막에는 ${c.lowest}이 가장 약하게 남았습니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-          },
-          {
-            title: "엔딩: 순위표에 남은 도시",
-            body: c => `무한 모드는 끝났지만 ${c.player}님의 시즌은 순위표의 한 줄로 남습니다. ${c.arcLine}은 단순한 카드 흐름이 아니라, 같은 동네를 여러 번 다시 통과한 운영자의 기록입니다. 위기 극복 ${c.dangerRecoveries}회, 별 ${c.stars}개, 최종 점수 ${c.score}점입니다.`
-          },
-          {
-            title: "엔딩: 반복되는 시장의 얼굴",
-            body: c => `400개 사건은 모두 다르게 보였지만, 오래 버틴 뒤에는 같은 질문으로 돌아왔습니다. 현금을 남길 것인가, 신뢰를 지킬 것인가, 동네의 삶을 살릴 것인가, 위험을 잠글 것인가. ${c.player}님의 답은 ${c.turn}턴까지 이어졌고, 가장 강했던 축은 ${c.strongest}였습니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-          }
-        ],
-        legend: [
-          {
-            title: "엔딩: 별이 붙은 운용권",
-            body: c => `${c.player}님의 장부에는 별 ${c.stars}개가 붙었습니다. 지표가 100을 넘을 때마다 팀은 그 성과를 현금이 아니라 운영 신뢰의 표식으로 남겼고, 다시 20에서 시작해 다음 고비를 넘겼습니다. ${c.turn}턴의 기록은 동네 운용권을 하나의 장기 서사로 바꿨습니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-          },
-          {
-            title: "엔딩: 위기를 통과한 기록",
-            body: c => `${c.player}님은 위기 구간을 ${c.dangerRecoveries}번 빠져나왔습니다. 낮은 지표를 방치하지 않고 다시 끌어올린 순간마다 50점 보너스가 붙었고, 그 기록은 단순 생존보다 더 강한 회복력으로 평가됩니다. 최종 장부는 ${c.statLine}, 별 ${c.stars}개, 점수 ${c.score}점입니다.`
-          }
-        ]
-      };
-
-      if (isInfiniteMode()) {
-        if (state.bonusCount >= 6 || state.dangerRecoveryCount >= 4 || state.turn >= 120) {
-          return pick(infiniteEndings.legend, 22);
-        }
-        if (state.turn < 35) return pick(infiniteEndings.early, 11);
-        return pick(infiniteEndings.long, 17);
-      }
-
-      const clearedGreat = [
-        {
-          title: "엔딩: 동네 가치업 승인",
-          body: c => `${c.difficultyLabel} 난이도의 50개 사건을 넘긴 뒤, 운영위원회는 다음 시즌 운용권을 연장합니다. ${c.arcLine}은 400개 사건 라이브러리에서 뽑힌 한 시즌이었지만, 그 안에서 팀은 ${c.strongest}을 중심축으로 삼아 흔들림을 줄였습니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-        },
-        {
-          title: "엔딩: 숫자와 골목의 합의",
-          body: c => `은행은 장부를 보고 고개를 끄덕였고, 상인회는 회의가 끝난 뒤에도 자리를 떠나지 않았습니다. 이번 시즌은 수익률만 이긴 판이 아니라, 현금과 관계와 생활권을 동시에 설득한 판입니다. 최종 장부는 ${c.statLine}, 위기 극복 ${c.dangerRecoveries}회, 점수 ${c.score}점입니다.`
-        },
-        {
-          title: "엔딩: 다음 분기의 초대장",
-          body: c => `50번째 카드가 지나간 뒤, 팀은 더 큰 자산보다 더 긴 운영권을 제안받습니다. ${c.arcLine}은 작은 동네 프로젝트가 어떻게 신뢰 가능한 운용 사례로 바뀌는지 보여 준 보고서가 됩니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-        },
-        {
-          title: "엔딩: 조용한 우승",
-          body: c => `크게 떠드는 성과 발표는 없었습니다. 대신 공실표가 안정되고, 민원 기록이 줄고, 금융기관의 질문이 짧아졌습니다. ${c.difficultyLabel} 난이도에서 가장 좋은 승리는 이렇게 조용한 얼굴을 하고 있습니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-        }
-      ];
-
-      const comebackEndings = [
-        {
-          title: "엔딩: 회복의 장부",
-          body: c => `이번 시즌은 완벽하지 않았습니다. 하지만 위기 구간을 ${c.dangerRecoveries}번 빠져나오며 팀은 숫자를 회복하는 법을 배웠습니다. 50번째 결정 뒤 운영위원회는 높은 점수보다 회복 속도를 더 크게 평가합니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-        },
-        {
-          title: "엔딩: 낮은 지표의 반격",
-          body: c => `${c.lowest}이 여러 차례 흔들렸지만 완전히 무너지지는 않았습니다. 팀은 늦은 회복 선택으로 주민과 금융기관을 다시 설득했고, 장부에는 위기 극복 보너스가 차곡차곡 쌓였습니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-        },
-        {
-          title: "엔딩: 손실을 줄인 사람들",
-          body: c => `큰 성공보다 중요한 것은 무너지는 순간의 대응이었습니다. 이번 시즌의 보고서는 매입 성공기가 아니라, 위험을 알아차리고 방향을 바꾼 사람들의 기록으로 남습니다. 최종 장부는 ${c.statLine}, 위기 극복 ${c.dangerRecoveries}회, 점수 ${c.score}점입니다.`
-        }
-      ];
-
-      const fragileEndings = [
-        {
-          title: "엔딩: 버텼지만 얇은 장부",
-          body: c => `50번째 결정을 마쳤지만 회의실의 표정은 완전히 밝지 않습니다. 사람들은 생존을 인정하지만, 낮게 남은 ${c.lowest}이 다음 분기의 숙제로 적힙니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-        },
-        {
-          title: "엔딩: 조건부 연장",
-          body: c => `운영권은 연장됐지만 조건이 붙었습니다. 다음 시즌에는 ${c.lowest}을 회복하지 못하면 더 큰 자산도, 더 긴 자금도 허락되지 않습니다. 이번 시즌은 승리와 경고가 함께 찍힌 보고서입니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-        },
-        {
-          title: "엔딩: 골목의 숙제",
-          body: c => `동네는 버텼지만 아직 좋아졌다고 말하기엔 이릅니다. ${c.arcLine}은 선택의 누적이 어떤 지표를 살리고 어떤 지표를 남겨두는지 보여 줬습니다. 다음 판의 목표는 생존이 아니라 균형입니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-        }
-      ];
-
-      if (clearedRun && avg >= 62 && low >= 42) return pick(clearedGreat, 31);
-      if (clearedRun && state.dangerRecoveryCount >= 2) return pick(comebackEndings, 37);
-      if (clearedRun && avg >= 52 && low >= 30) return pick(clearedGreat, 43);
-      if (clearedRun) return pick(fragileEndings, 47);
-
-      const failureStories = {
-        cash: [
-          {
-            title: "엔딩: 유동성 회의",
-            body: c => `${c.reason} 은행은 추가 담보와 상환 계획을 요구합니다. 좋은 입지도 멋진 리모델링 계획도 월말 잔고 앞에서는 힘을 잃었습니다. 팀은 매각 가능한 자산부터 다시 분류합니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-          },
-          {
-            title: "엔딩: 월말의 빈 계좌",
-            body: c => `${c.reason} 임대료 입금일보다 이자 납부일이 먼저 다가왔고, 운영팀은 선택지를 잃었습니다. 이번 실패는 수익률 계산보다 현금 유보가 먼저였다는 사실을 남깁니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-          },
-          {
-            title: "엔딩: 너무 빠른 확장",
-            body: c => `${c.reason} 더 많은 자산을 담으려던 계획은 현금흐름의 얇은 바닥을 드러냈습니다. 동네의 가능성은 남아 있지만, 장부는 다음 투자보다 생존 비용을 먼저 요구합니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-          }
-        ],
-        trust: [
-          {
-            title: "엔딩: 닫힌 회의실",
-            body: c => `${c.reason} 임차인, 금융기관, 시공 파트너가 같은 질문을 던집니다. "이번 약속은 지켜집니까?" 숫자는 일부 남아 있었지만 관계의 비용이 너무 커졌습니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-          },
-          {
-            title: "엔딩: 설명하지 않은 비용",
-            body: c => `${c.reason} 빠르게 넘긴 설명들이 뒤늦게 모여 신뢰를 갉아먹었습니다. 팀은 다음 시즌을 시작하기 전에 계약서보다 먼저 사과문과 공개 자료를 준비해야 합니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-          },
-          {
-            title: "엔딩: 파트너의 퇴장",
-            body: c => `${c.reason} 가장 오래 버틴 파트너가 회의실을 나가며 더는 함께하기 어렵다고 말했습니다. 이번 실패는 돈보다 느리게 쌓이고 빠르게 사라지는 신뢰의 속도를 보여 줍니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-          }
-        ],
-        city: [
-          {
-            title: "엔딩: 텅 빈 골목",
-            body: c => `${c.reason} 생활가치가 식자 수익률표보다 빠르게 동네가 비어 갑니다. 공사 소음, 임대료 압박, 사라진 편의시설이 주민들의 일상을 흔들었습니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-          },
-          {
-            title: "엔딩: 살 이유가 사라진 자산",
-            body: c => `${c.reason} 건물은 남았지만 사람들이 머물 이유가 줄었습니다. 이번 프로젝트는 자산가치가 생활권을 이기면 결국 둘 다 약해진다는 기록으로 남습니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-          },
-          {
-            title: "엔딩: 민원의 지도",
-            body: c => `${c.reason} 주민 민원 지도에는 같은 골목이 반복해서 표시됐고, 운영팀은 그제야 숫자표 밖의 손실을 봅니다. 재설계는 매입 전략이 아니라 동네의 하루에서 다시 시작됩니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-          }
-        ],
-        control: [
-          {
-            title: "엔딩: 빨간 도장",
-            body: c => `${c.reason} 계약서의 작은 빈칸들이 한꺼번에 문제로 변했습니다. 권리관계, 인허가, 하자 대응이 얽히며 빠른 결정의 이익을 지워 버립니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-          },
-          {
-            title: "엔딩: 실사의 부재",
-            body: c => `${c.reason} 현장에서 작게 보였던 리스크가 서류 위에서 크게 돌아왔습니다. 팀은 거래를 멈추고 실사 체크리스트를 처음부터 다시 씁니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-          },
-          {
-            title: "엔딩: 빠른 종결의 대가",
-            body: c => `${c.reason} 속도는 경쟁자를 이겼지만, 통제되지 않은 리스크는 운영팀을 이겼습니다. 이번 시즌은 기회를 잡는 법보다 멈춰야 할 때를 아는 법을 남깁니다. 최종 장부는 ${c.statLine}, 점수 ${c.score}점입니다.`
-          }
-        ]
-      };
-
-      return pick(failureStories[lowestKey], 53);
-    }
-
-    function endGame(reason, options = {}) {
-      state.ended = true;
-      state.manualEnded = Boolean(options.manual);
-      render();
-      const avg = averageStat();
-      const low = lowestStat();
-      const clearedRun = state.turn >= state.deck.length && !reason.includes("바닥");
-      const balanceBonus = Math.round(avg * 0.9 + low * 0.6);
-      const completionBonus = clearedRun && !isInfiniteMode() && !state.tutorialRun ? 100 : 0;
-      const score = Math.max(0, state.score + balanceBonus + completionBonus - state.dangerCount * 2);
-      state.finalResult = { score, avg, low, reason, bonusCount: state.bonusCount, baseScore: state.score };
-      state.submitted = false;
-      updatePlayerStats({ totalSurvivedTurns: state.turn });
-      setPlayerStatMax("bestScore", score);
-      const hardUnlockedNow = clearedRun && !isInfiniteMode() && !state.tutorialRun && state.difficulty === "medium" && !state.hardUnlocked;
-      if (hardUnlockedNow) unlockHardMode();
-      els.scoreGrid.innerHTML = [
-        ["최종 점수", `${score}`],
-        ["생존 턴", `${state.turn}`],
-        ["평균 균형", `${avg}`],
-        ["최저 지표", `${Math.round(low)}`],
-        ["위기 극복", `${state.dangerRecoveryCount}`],
-        ["획득 별", `${state.bonusCount}`],
-        ["퀘스트 성공", `${state.completedQuests.length}`],
-        ["퀘스트 실패", `${state.failedQuests.length}`],
-        ["누적 점수", `${state.score}`]
-      ].map(([label, value]) => `
-        <div class="score-card">
-          <span>${label}</span>
-          <b>${value}</b>
-        </div>
-      `).join("");
-      const tone = state.tutorialRun
-        ? "튜토리얼 고정 런을 완료했습니다. 이 결과는 해금과 공개 순위표에는 영향을 주지 않고, 조작 흐름을 익히기 위한 기록으로만 남습니다."
-        : isInfiniteMode()
-        ? `${state.playerName || "익명 투자자"}님의 무한 모드 기록입니다. 서버 버전에서는 이 결과를 공개 순위표에 등록할 수 있습니다.`
-        : clearedRun
-        ? "이번 런의 50개 사건을 모두 넘겼습니다. 한쪽 지표만 밀어붙이지 않은 판단이 오래 버티는 힘이 됐습니다."
-        : state.turn >= 36
-          ? "막판까지 버텼지만 특정 지표의 누적 손실이 크게 남았습니다. 다음 판에서는 낮은 지표를 회복시키는 선택을 더 일찍 잡아야 합니다."
-          : state.turn >= 18
-            ? "중반 진입 전후에 압박이 커졌습니다. 빠른 현금화, 민원 회피, 실사 생략처럼 즉시 이득이 큰 선택의 후폭풍을 살펴야 합니다."
-            : "초반부터 균형이 급격히 무너졌습니다. 첫 10턴에서는 수익보다 네 지표의 바닥선을 만드는 선택이 중요합니다.";
-      const story = endingStory(reason, score);
-      const tarot = tarotForEnding(story, reason);
-      const endingId = `${story.title}-${reason}`;
-      const firstSeenEnding = !state.archive.endings.some(item => item.id === endingId);
-      archiveEnding(story, reason, score, tarot);
-      state.playerStats.endingsSeen = state.archive.endings.length;
-      persistPlayerStats();
-      const newlyUnlockedAchievements = checkAchievements();
-      els.endTarotWrap.innerHTML = tarotCardHtml(tarot, { flipped: true, id: endingId });
-      bindTarotInteractions(els.endTarotWrap);
-      const unlockLine = hardUnlockedNow
-        ? `<br><span class="server-note">중간 난이도 50장 클리어로 어려움 모드가 해금되었습니다.</span>`
-        : "";
-      const questTone = state.completedQuests.length || state.failedQuests.length
-        ? `<br><span class="server-note">퀘스트 성공 ${state.completedQuests.length}개, 실패 ${state.failedQuests.length}개가 이번 장부에 기록되었습니다.</span>`
-        : "";
-      els.endSummary.innerHTML = `
-        <strong>${reason}</strong><br>
-        ${tone}${unlockLine}${questTone}
-        <div class="ending-story">
-          <strong>${story.title}</strong>
-          ${story.body}
-        </div>
-      `;
-      renderEndAchievements(newlyUnlockedAchievements);
-      renderStatGraph();
-      els.submitSection.hidden = !isInfiniteMode() || state.tutorialRun;
-      els.submitScore.disabled = false;
-      els.leaderboardStatus.textContent = canUseServerRecords()
-        ? "기록 등록을 누르면 공개 순위표에 저장됩니다."
-        : "로컬 파일에서는 등록할 수 없습니다. 서버 버전에서 실행하세요.";
-      els.endModal.classList.add("open");
-      if (firstSeenEnding) {
-        showTarotReveal(tarot, endingId);
-      }
-    }
-
-    function resetGame(showStory = false, options = {}) {
-      const tutorialMode = Boolean(options.tutorial || (state.tutorialRun && !showStory));
-      state.tutorialRun = tutorialMode;
-      if (!tutorialMode) state.tutorialRunTracked = false;
-      state.runStartedTracked = false;
-      const start = currentDifficulty().start;
-      state.stats = { cash: start, trust: start, city: start, control: start };
-      state.seed = Date.now();
-      state.deck = createRunDeck();
-      state.turn = 0;
-      state.log = [];
-      state.activeQuests = [];
-      state.completedQuests = [];
-      state.failedQuests = [];
-      state.statHistory = [];
-      state.last = "첫 사건을 기다리는 중입니다.";
-      state.ended = false;
-      state.dangerCount = 0;
-      state.dangerRecoveryCount = 0;
-      state.inDanger = false;
-      state.score = 0;
-      state.bonusCount = 0;
-      state.statStars = { cash: 0, trust: 0, city: 0, control: 0 };
-      state.graphFilter = "all";
-      state.finalResult = null;
-      state.submitted = false;
-      state.manualEnded = false;
-      state.starPulseKeys = [];
-      state.storyArc = createStoryArc();
-      recordStatHistory("시작");
-      els.endModal.classList.remove("open");
-      els.statGraph.innerHTML = "";
-      els.endAchievements.innerHTML = "";
-      els.submitSection.hidden = true;
-      els.mobileLogDrawer.classList.remove("open");
-      els.storyModal.classList.toggle("open", showStory);
-      els.playCard.style.transform = "";
-      els.playCard.classList.remove("dragging", "left-lean", "right-lean", "preview-lock", "commit-ready");
-      resetKeyboardControl();
-      renderDifficultyOptions();
-      renderModeOptions();
-      render();
-    }
-
-    function setPeek(moved) {
-      const left = clamp(moved / 70, 0, 1);
-      const right = clamp(-moved / 70, 0, 1);
-      els.cardWrap.style.setProperty("--leftPeek", left.toFixed(2));
-      els.cardWrap.style.setProperty("--rightPeek", right.toFixed(2));
-    }
-
-    function resetPeek() {
-      els.cardWrap.style.setProperty("--leftPeek", "0");
-      els.cardWrap.style.setProperty("--rightPeek", "0");
-      els.playCard.style.transform = "";
-    }
-
-    function isModalOpen() {
-      return els.storyModal.classList.contains("open")
-        || els.endModal.classList.contains("open")
-        || els.patchModal.classList.contains("open")
-        || els.leaderboardModal.classList.contains("open")
-        || els.tutorialModal.classList.contains("open")
-        || els.settingsModal.classList.contains("open")
-        || els.archiveModal.classList.contains("open")
-        || els.achievementsModal.classList.contains("open")
-        || els.tarotRevealLayer.classList.contains("open");
-    }
-
-    function resetKeyboardControl() {
-      keyControl.left = false;
-      keyControl.right = false;
-      keyControl.lastPressed = null;
-      keyControl.releaseBurst = [];
-      clearTimeout(keyControl.releaseTimer);
-      keyControl.releaseTimer = null;
-      els.playCard.classList.remove("left-lean", "right-lean", "preview-lock", "commit-ready");
-      resetPeek();
-    }
-
-    function activeKeyboardDirection() {
-      if (keyControl.left && keyControl.right) return keyControl.lastPressed;
-      if (keyControl.left) return "left";
-      if (keyControl.right) return "right";
-      return null;
-    }
-
-    function applyKeyboardLean(direction) {
-      if (!direction) {
-        resetKeyboardControl();
-        return;
-      }
-      const moved = direction === "left" ? -158 : 158;
-      const rotate = direction === "left" ? -13.5 : 13.5;
-      els.playCard.style.transform = `translateX(${moved}px) rotate(${rotate}deg)`;
-      els.playCard.classList.toggle("left-lean", direction === "left");
-      els.playCard.classList.toggle("right-lean", direction === "right");
-      els.playCard.classList.add("preview-lock", "commit-ready");
-      setPeek(moved);
-    }
-
-    function commitKeyboardDirection(direction) {
-      resetKeyboardControl();
-      if (state.ended || isModalOpen()) return;
-      choose(direction === "left" ? "right" : "left");
-    }
-
-    function recordKeyRelease(direction) {
-      const now = performance.now();
-      keyControl.releaseBurst = keyControl.releaseBurst
-        .filter(item => now - item.time <= 120)
-        .concat({ direction, time: now });
-    }
-
-    function scheduleKeyboardCommit(direction) {
-      clearTimeout(keyControl.releaseTimer);
-      keyControl.releaseTimer = setTimeout(() => {
-        const now = performance.now();
-        const recent = keyControl.releaseBurst.filter(item => now - item.time <= 120);
-        const releasedDirections = new Set(recent.map(item => item.direction));
-        keyControl.releaseBurst = [];
-        if (releasedDirections.size > 1) {
-          resetKeyboardControl();
-          return;
-        }
-        commitKeyboardDirection(direction);
-      }, 90);
-    }
-
-    function toggleInvincibleMode() {
-      state.invincible = !state.invincible;
-      state.last = state.invincible
-        ? "낡은 장부 표지 안쪽에 작은 인감이 찍혔습니다."
-        : "장부 표지 안쪽의 인감이 조용히 닫혔습니다.";
-      render();
-      checkAchievements();
-    }
-
-    function isTextInputTarget(target) {
-      if (!target) return false;
-      const tag = target.tagName;
-      return tag === "INPUT" || tag === "TEXTAREA" || target.isContentEditable;
-    }
-
-    function clearSecretSuffixFromInput(target, suffix) {
-      if (!isTextInputTarget(target) || typeof target.value !== "string") return;
-      const pattern = new RegExp(`${suffix.slice(0, -1)}$`, "i");
-      target.value = target.value.replace(pattern, "");
-      target.dispatchEvent(new Event("input", { bubbles: true }));
-    }
-
-    function handleSecretSequence(event) {
-      if (event.repeat || event.key.length !== 1) return false;
-      const char = event.key.toUpperCase();
-      if (!/^[A-Z]$/.test(char)) return false;
-
-      keyControl.secretBuffer = `${keyControl.secretBuffer}${char}`.slice(-12);
-      if (keyControl.secretBuffer.endsWith("MUTEK")) {
-        event.preventDefault();
-        clearSecretSuffixFromInput(event.target, "MUTEK");
-        keyControl.secretBuffer = "";
-        toggleInvincibleMode();
-        return true;
-      }
-      if (keyControl.secretBuffer.endsWith("ENDRUN") && state.invincible && !state.ended && !isModalOpen()) {
-        event.preventDefault();
-        clearSecretSuffixFromInput(event.target, "ENDRUN");
-        keyControl.secretBuffer = "";
-        endGame("숨겨진 운용권으로 장부를 닫았습니다.", { manual: true });
-        return true;
-      }
-      return false;
-    }
-
-    function handleSecretKeys(event) {
-      if (handleSecretSequence(event)) return true;
-      if (!event.ctrlKey || !event.shiftKey) return false;
-      if (event.code === "KeyU") {
-        event.preventDefault();
-        toggleInvincibleMode();
-        return true;
-      }
-      if (event.code === "KeyE" && state.invincible && !state.ended && !isModalOpen()) {
-        event.preventDefault();
-        endGame("숨겨진 운용권으로 장부를 닫았습니다.", { manual: true });
-        return true;
-      }
-      return false;
-    }
-
-    function currentArchivePreviewCard() {
-      if (!els.archiveModal.classList.contains("open")) return null;
-      return els.archiveDetail.querySelector("[data-archive-play-card]");
-    }
-
-    function applyArchiveKeyboardPreview(direction) {
-      const card = currentArchivePreviewCard();
-      if (!card) return false;
-      const wrap = card.closest("[data-archive-card-wrap]");
-      const moved = direction === "left" ? -118 : 118;
-      const left = direction === "right" ? 1 : 0;
-      const right = direction === "left" ? 1 : 0;
-      wrap?.style.setProperty("--leftPeek", left.toFixed(2));
-      wrap?.style.setProperty("--rightPeek", right.toFixed(2));
-      card.style.transform = `translateX(${moved}px) rotate(${moved / 10}deg)`;
-      return true;
-    }
-
-    function resetArchiveKeyboardPreview() {
-      const card = currentArchivePreviewCard();
-      if (!card) return false;
-      const wrap = card.closest("[data-archive-card-wrap]");
-      card.style.transform = "";
-      wrap?.style.setProperty("--leftPeek", "0.74");
-      wrap?.style.setProperty("--rightPeek", "0.74");
-      return true;
-    }
-
-    function handleArrowKeyDown(event) {
-      if (handleSecretKeys(event)) return;
-      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-      event.preventDefault();
-      if (els.archiveModal.classList.contains("open")) {
-        applyArchiveKeyboardPreview(event.key === "ArrowLeft" ? "left" : "right");
-        return;
-      }
-      if (state.ended || isModalOpen()) return;
-      clearTimeout(keyControl.releaseTimer);
-      keyControl.releaseTimer = null;
-      const direction = event.key === "ArrowLeft" ? "left" : "right";
-      keyControl[direction] = true;
-      keyControl.lastPressed = direction;
-      completeTutorialCoachPractice("keyboard");
-      applyKeyboardLean(activeKeyboardDirection());
-    }
-
-    function handleArrowKeyUp(event) {
-      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-      event.preventDefault();
-      if (els.archiveModal.classList.contains("open")) {
-        resetArchiveKeyboardPreview();
-        return;
-      }
-      const direction = event.key === "ArrowLeft" ? "left" : "right";
-      recordKeyRelease(direction);
-      keyControl[direction] = false;
-      if (state.ended || isModalOpen()) {
-        resetKeyboardControl();
-        return;
-      }
-      const activeDirection = activeKeyboardDirection();
-      if (activeDirection) {
-        keyControl.lastPressed = activeDirection;
-        applyKeyboardLean(activeDirection);
-        return;
-      }
-      scheduleKeyboardCommit(direction);
-    }
-
-    function startDrag(event) {
-      if (state.ended || isModalOpen()) return;
-      if (state.settings.fastMode) return;
-      event.preventDefault();
-      resetKeyboardControl();
-      els.playCard.setPointerCapture?.(event.pointerId);
-      els.playCard.classList.add("dragging");
-      const startX = event.clientX;
-      const previewThreshold = 70;
-      const commitThreshold = 145;
-      let moved = 0;
-      const move = moveEvent => {
-        moved = moveEvent.clientX - startX;
-        const direction = Math.sign(moved) || 1;
-        const distance = Math.abs(moved);
-        const visualDistance = Math.min(distance, previewThreshold) * 2.25;
-        const visualMove = direction * visualDistance;
-        const rotate = direction * (Math.min(distance, previewThreshold) / 6.2);
-        els.playCard.style.transform = `translateX(${visualMove}px) rotate(${rotate}deg)`;
-        els.playCard.classList.toggle("left-lean", moved < -32);
-        els.playCard.classList.toggle("right-lean", moved > 32);
-        els.playCard.classList.toggle("preview-lock", distance >= previewThreshold);
-        els.playCard.classList.toggle("commit-ready", distance >= commitThreshold);
-        if (distance >= commitThreshold) completeTutorialCoachPractice("drag");
-        setPeek(moved);
-      };
-      const up = () => {
-        window.removeEventListener("pointermove", move);
-        window.removeEventListener("pointerup", up);
-        els.playCard.style.transform = "";
-        els.playCard.classList.remove("dragging");
-        els.playCard.classList.remove("left-lean", "right-lean", "preview-lock", "commit-ready");
-        resetPeek();
-        if (moved < -commitThreshold) {
-          choose("right");
-          return;
-        }
-        if (moved > commitThreshold) {
-          choose("left");
-          return;
-        }
-      };
-      window.addEventListener("pointermove", move);
-      window.addEventListener("pointerup", up);
-    }
-
-    function fastModeDirectionFromEvent(event) {
-      const rect = els.cardStage.getBoundingClientRect();
-      return event.clientX < rect.left + rect.width / 2 ? "left" : "right";
-    }
-
-    function previewFastMode(event) {
-      if (!state.settings.fastMode || state.ended || isModalOpen()) return;
-      const direction = fastModeDirectionFromEvent(event);
-      const moved = direction === "left" ? -158 : 158;
-      const rotate = direction === "left" ? -13.5 : 13.5;
-      els.playCard.style.transform = `translateX(${moved}px) rotate(${rotate}deg)`;
-      els.playCard.classList.toggle("left-lean", direction === "left");
-      els.playCard.classList.toggle("right-lean", direction === "right");
-      els.playCard.classList.add("preview-lock", "commit-ready");
-      setPeek(moved);
-    }
-
-    function commitFastMode(event) {
-      if (!state.settings.fastMode || state.ended || isModalOpen()) return;
-      const direction = fastModeDirectionFromEvent(event);
-      resetPeek();
-      choose(direction === "left" ? "right" : "left");
-    }
-
-    function resetFastModePreview() {
-      if (!state.settings.fastMode) return;
-      els.playCard.classList.remove("left-lean", "right-lean", "preview-lock", "commit-ready");
-      resetPeek();
-    }
-
-    function startTutorialPracticeDrag(event) {
-      const step = tutorialSteps[state.tutorialIndex];
-      if (step.practice !== "drag") return;
-      event.preventDefault();
-      els.tutorialPracticeCard.setPointerCapture?.(event.pointerId);
-      const startX = event.clientX;
-      let moved = 0;
-      const move = moveEvent => {
-        moved = moveEvent.clientX - startX;
-        const capped = Math.max(-96, Math.min(96, moved));
-        els.tutorialPracticeCard.style.transform = `translateX(${capped}px) rotate(${capped / 9}deg)`;
-      };
-      const up = () => {
-        window.removeEventListener("pointermove", move);
-        window.removeEventListener("pointerup", up);
-        els.tutorialPracticeCard.style.transform = "";
-        if (Math.abs(moved) > 34) completeTutorialPractice();
-      };
-      window.addEventListener("pointermove", move);
-      window.addEventListener("pointerup", up);
-    }
-
-    els.playCard.addEventListener("pointerdown", startDrag);
-    els.cardStage.addEventListener("mousemove", previewFastMode);
-    els.cardStage.addEventListener("mouseleave", resetFastModePreview);
-    els.cardStage.addEventListener("click", commitFastMode);
-    els.tutorialPracticeCard.addEventListener("pointerdown", startTutorialPracticeDrag);
-    els.tutorialPracticeCard.addEventListener("click", () => {
-      const step = tutorialSteps[state.tutorialIndex];
-      if (step.practice === "tarot") completeTutorialPractice();
-    });
-    els.tutorialMiniStats.addEventListener("click", event => {
-      if (!event.target.closest("[data-tutorial-stat]")) return;
-      if (tutorialSteps[state.tutorialIndex].practice === "stat") completeTutorialPractice();
-    });
-    els.meters.addEventListener("click", () => completeTutorialCoachPractice("stat"));
-    els.logList.addEventListener("click", () => completeTutorialCoachPractice("log"));
-    els.tutorialPracticeLeft.addEventListener("click", completeTutorialPractice);
-    els.tutorialPracticeRight.addEventListener("click", completeTutorialPractice);
-    els.newGameTop.addEventListener("click", () => resetGame(true));
-    els.openTutorialTop.addEventListener("click", () => openTutorial(0));
-    els.openTutorialStory.addEventListener("click", () => openTutorial(0));
-    els.openArchiveTop.addEventListener("click", () => {
-      completeTutorialCoachPractice("tarot");
-      openArchive();
-    });
-    els.openArchiveStory.addEventListener("click", () => {
-      completeTutorialCoachPractice("tarot");
-      openArchive();
-    });
-    els.openAchievementsTop.addEventListener("click", () => openAchievements());
-    els.openAchievementsStory.addEventListener("click", () => openAchievements());
-    els.openSettingsTop.addEventListener("click", () => {
-      state.settingsOpened = true;
-      applySettings();
-      els.settingsModal.classList.add("open");
-      checkAchievements();
-    });
-    els.openSettingsStory.addEventListener("click", () => {
-      state.settingsOpened = true;
-      applySettings();
-      els.settingsModal.classList.add("open");
-      checkAchievements();
-    });
-    els.quickLeft.addEventListener("click", () => choose("left"));
-    els.quickRight.addEventListener("click", () => choose("right"));
-    els.mobileLogToggle.addEventListener("click", () => {
-      els.mobileLogDrawer.classList.toggle("open");
-      completeTutorialCoachPractice("log");
-    });
-    els.mobileLogHandle.addEventListener("click", () => {
-      els.mobileLogDrawer.classList.toggle("open");
-      completeTutorialCoachPractice("log");
-    });
-    els.difficultyOptions.addEventListener("click", event => {
-      const button = event.target.closest("[data-difficulty]");
-      if (!button) return;
-      if (button.dataset.difficulty === "hard" && !state.hardUnlocked) {
-        els.difficultyHint.textContent = "어려움은 중간 난이도 50장 도전을 클리어하면 열립니다.";
-        return;
-      }
-      state.difficulty = button.dataset.difficulty;
-      resetGame(true);
-    });
-    els.modeOptions.addEventListener("click", event => {
-      const button = event.target.closest("[data-mode]");
-      if (!button) return;
-      state.mode = button.dataset.mode;
-      resetGame(true);
-    });
-    els.playerName.addEventListener("input", () => {
-      state.playerName = cleanPlayerName(els.playerName.value);
-      els.playerNameHint.textContent = "무한 모드 기록에 표시될 이름입니다. 2~12자로 입력하세요.";
-    });
-    els.startStory.addEventListener("click", () => {
-      if (isInfiniteMode()) {
-        const name = cleanPlayerName(els.playerName.value);
-        if (name.length < 2) {
-          els.playerNameHint.textContent = "무한 모드는 기록 이름을 2자 이상 입력해야 시작할 수 있습니다.";
-          els.playerName.focus();
-          return;
-        }
-        state.playerName = name;
-        els.playerName.value = name;
-      }
-      if (!state.runStartedTracked) {
-        state.runStartedTracked = true;
-        updatePlayerStats({ gamesPlayed: 1 });
-      }
-      els.storyModal.classList.remove("open");
-      updateBodyState();
-      completeTutorialCoachPractice("start");
-    });
-    els.closeEnd.addEventListener("click", () => els.endModal.classList.remove("open"));
-    els.closePatchNotes.addEventListener("click", () => els.patchModal.classList.remove("open"));
-    els.closeLeaderboardModal.addEventListener("click", () => els.leaderboardModal.classList.remove("open"));
-    els.closeTutorial.addEventListener("click", () => closeTutorialModal());
-    els.skipTutorial.addEventListener("click", () => closeTutorialModal());
-    els.prevTutorial.addEventListener("click", () => {
-      state.tutorialIndex -= 1;
-      renderTutorial();
-    });
-    els.nextTutorial.addEventListener("click", () => {
-      if (state.tutorialIndex >= tutorialSteps.length - 1) {
-        closeTutorialModal();
-        return;
-      }
-      state.tutorialIndex += 1;
-      renderTutorial();
-    });
-    els.tutorialCoachSkip.addEventListener("click", () => closeTutorialModal());
-    els.tutorialCoachPrev.addEventListener("click", () => {
-      state.tutorialIndex -= 1;
-      renderTutorialCoach();
-    });
-    els.tutorialCoachNext.addEventListener("click", () => {
-      if (state.tutorialIndex >= tutorialSteps.length - 1) {
-        closeTutorialModal();
-        return;
-      }
-      state.tutorialIndex += 1;
-      renderTutorialCoach();
-    });
-    els.closeSettings.addEventListener("click", () => els.settingsModal.classList.remove("open"));
-    els.darkModeToggle.addEventListener("click", () => {
-      state.settings.darkMode = !state.settings.darkMode;
-      persistSettings();
-      applySettings();
-      checkAchievements();
-    });
-    els.fastModeToggle.addEventListener("click", () => {
-      state.settings.fastMode = !state.settings.fastMode;
-      persistSettings();
-      applySettings();
-      checkAchievements();
-    });
-    els.closeArchive.addEventListener("click", () => els.archiveModal.classList.remove("open"));
-    els.closeAchievements.addEventListener("click", () => els.achievementsModal.classList.remove("open"));
-    els.achievementTabs.addEventListener("click", event => {
-      const button = event.target.closest("[data-achievement-tab]");
-      if (!button) return;
-      state.achievementTab = button.dataset.achievementTab;
-      renderAchievements();
-    });
-    els.archiveStats.addEventListener("click", event => {
-      const button = event.target.closest("[data-archive-stat-tab]");
-      if (!button) return;
-      state.archiveTab = button.dataset.archiveStatTab;
-      renderArchive();
-    });
-    els.archiveTabs.addEventListener("click", event => {
-      const button = event.target.closest("[data-archive-tab]");
-      if (!button) return;
-      state.archiveTab = button.dataset.archiveTab;
-      renderArchive();
-    });
-    els.archiveFilters.addEventListener("click", event => {
-      const button = event.target.closest("[data-archive-filter]");
-      if (!button) return;
-      state.archiveFilter = button.dataset.archiveFilter;
-      renderArchive();
-    });
-    els.archiveList.addEventListener("click", event => {
-      const row = event.target.closest("[data-archive-index]");
-      if (!row) return;
-      const item = (state.archiveListView || [])[Number(row.dataset.archiveIndex)];
-      renderArchiveDetail(item);
-    });
-    els.restartEnd.addEventListener("click", () => resetGame(true));
-    els.statGraph.addEventListener("click", event => {
-      const button = event.target.closest("[data-graph-filter]");
-      if (!button) return;
-      state.graphFilter = button.dataset.graphFilter;
-      renderStatGraph();
-      checkAchievements();
-    });
-    els.openPatchNotesStory.addEventListener("click", () => {
-      renderPatchNotes();
-      els.patchModal.classList.add("open");
-    });
-    els.openPatchNotesTop.addEventListener("click", () => {
-      renderPatchNotes();
-      els.patchModal.classList.add("open");
-    });
-    els.openLeaderboardTop.addEventListener("click", () => {
-      renderLeaderboardTabs();
-      loadLeaderboard();
-      els.leaderboardModal.classList.add("open");
-    });
-    els.submitScore.addEventListener("click", submitLeaderboardRecord);
-    els.refreshLeaderboard.addEventListener("click", loadLeaderboard);
-    els.startRefreshLeaderboard.addEventListener("click", loadLeaderboard);
-    els.leaderboardTabs.addEventListener("click", event => {
-      const button = event.target.closest("[data-leaderboard-difficulty]");
-      if (!button) return;
-      state.leaderboardDifficulty = button.dataset.leaderboardDifficulty;
-      renderLeaderboardTabs();
-      loadLeaderboard();
-    });
-    els.startLeaderboardTabs.addEventListener("click", event => {
-      const button = event.target.closest("[data-start-leaderboard-difficulty]");
-      if (!button) return;
-      state.leaderboardDifficulty = button.dataset.startLeaderboardDifficulty;
-      renderLeaderboardTabs();
-      loadLeaderboard();
-    });
-    els.modalLeaderboardTabs.addEventListener("click", event => {
-      const button = event.target.closest("[data-modal-leaderboard-difficulty]");
-      if (!button) return;
-      state.leaderboardDifficulty = button.dataset.modalLeaderboardDifficulty;
-      renderLeaderboardTabs();
-      loadLeaderboard();
-    });
-    window.addEventListener("keydown", handleArrowKeyDown);
-    window.addEventListener("keyup", handleArrowKeyUp);
-
-    resetGame(true);
-    renderLeaderboardTabs();
-    renderVersionFooter();
-    applySettings();
-    loadLeaderboard();
-    if (!readTutorialSeen()) {
-      openTutorial(0);
-    }
-    console.assert(buildDeck().length === TOTAL_EVENT_POOL, `card pool must contain ${TOTAL_EVENT_POOL} events`);
-    console.assert(buildQuestLibrary().length === QUEST_LIBRARY_SIZE, `quest library must contain ${QUEST_LIBRARY_SIZE} quests`);
-    console.assert(ACHIEVEMENTS.length === 150, "achievement library must contain 150 achievements");
-    console.assert(state.mode === "infinite" || state.deck.length === RUN_EVENT_COUNT, `run deck must contain ${RUN_EVENT_COUNT} events`);
-  </script>
-</body>
-</html>
+        state.last += `<br><span class="server-note">새 사건 묶음이 열렸습니다. 기록 도전이 계속됩니다.</spa
