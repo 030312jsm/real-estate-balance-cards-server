@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>부동산 밸런스 카드</title>
+  <title>SWAY</title>
   <style>
     :root {
       --bg: #f4f7f4;
@@ -139,6 +139,14 @@
       justify-content: flex-end;
       gap: 8px;
       flex-wrap: wrap;
+    }
+
+    #turnPill,
+    #deckPill,
+    #scorePill,
+    .subtitle,
+    .season-row {
+      display: none;
     }
 
     .pill {
@@ -511,9 +519,9 @@
 
     .game-panel {
       padding: 14px;
-      min-height: 690px;
+      min-height: 620px;
       display: grid;
-      grid-template-rows: auto 1fr auto;
+      grid-template-rows: minmax(0, 1fr) auto auto auto;
       gap: 14px;
       background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(244, 247, 244, 0.78)),
@@ -522,7 +530,7 @@
     }
 
     .season-row {
-      display: grid;
+      display: none;
       grid-template-columns: repeat(4, 1fr);
       gap: 8px;
     }
@@ -551,7 +559,8 @@
       grid-template-columns: minmax(280px, 1fr);
       align-items: center;
       justify-items: center;
-      min-height: 510px;
+      min-height: 500px;
+      min-width: 0;
     }
 
     .card-wrap {
@@ -654,6 +663,9 @@
       color: #526170;
       font-size: 11px;
       line-height: 1.45;
+      max-height: 76px;
+      overflow: hidden;
+      overflow-wrap: anywhere;
     }
 
     .peek-deltas {
@@ -677,7 +689,7 @@
       box-shadow: 0 24px 56px rgba(26, 36, 47, 0.18);
       padding: 16px;
       display: grid;
-      grid-template-rows: auto auto 1fr auto;
+      grid-template-rows: auto auto minmax(0, 1fr) auto;
       gap: 14px;
       transform: translateX(0) rotate(0);
       transition: transform 0.16s ease, border-color 0.16s ease;
@@ -685,6 +697,7 @@
       user-select: none;
       cursor: grab;
       will-change: transform;
+      overflow: hidden;
     }
 
     .play-card:active {
@@ -795,6 +808,19 @@
       line-height: 1.58;
       display: grid;
       gap: 10px;
+      min-height: 0;
+      max-height: 224px;
+      overflow: hidden;
+    }
+
+    .story-line,
+    .dilemma-line {
+      overflow-wrap: anywhere;
+    }
+
+    .dilemma-line {
+      max-height: 132px;
+      overflow: auto;
     }
 
     .story-line,
@@ -814,6 +840,8 @@
       color: #5f4624;
       font-size: 13px;
       line-height: 1.48;
+      max-height: 132px;
+      overflow: auto;
     }
 
     .card-tags {
@@ -839,7 +867,7 @@
     }
 
     body.fast-mode .quick-choice-panel {
-      display: grid;
+      display: none;
     }
 
     .quick-choice {
@@ -880,6 +908,8 @@
       color: #465666;
       font-size: 13px;
       line-height: 1.45;
+      max-height: 122px;
+      overflow: auto;
     }
 
     .quest-board {
@@ -981,35 +1011,51 @@
     }
 
     .log-list {
-      max-height: 560px;
+      max-height: 280px;
       overflow: auto;
       padding: 13px;
       display: grid;
       gap: 0;
       scrollbar-width: thin;
+      counter-reset: logStep;
     }
 
     .log-item {
-      min-height: 58px;
+      min-height: 42px;
       display: grid;
-      grid-template-columns: 56px 1fr;
-      gap: 8px;
-      padding: 9px 9px 9px 0;
-      border-left: 2px solid #dbe5e3;
+      grid-template-columns: 38px 1fr;
+      gap: 9px;
+      padding: 5px 6px 5px 0;
+      border-left: 2px solid transparent;
       background: transparent;
       position: relative;
+      counter-increment: logStep;
+      animation: logRise 0.32s ease both;
+    }
+
+    .log-item::after {
+      content: "";
+      position: absolute;
+      left: -2px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #dbe5e3;
+      transform-origin: top;
+      animation: logLineGrow 0.42s ease both;
     }
 
     .log-item::before {
       content: "";
       position: absolute;
       left: -6px;
-      top: 18px;
+      top: 14px;
       width: 10px;
       height: 10px;
       border-radius: 999px;
       background: #ffffff;
       border: 2px solid #1f6f5a;
+      z-index: 1;
     }
 
     .log-turn {
@@ -1018,6 +1064,7 @@
       font-size: 12px;
       text-align: right;
       padding-right: 6px;
+      padding-top: 9px;
     }
 
     .log-copy {
@@ -1026,8 +1073,17 @@
       border-radius: var(--radius);
       background: #fff;
       color: #526170;
-      font-size: 12px;
-      line-height: 1.42;
+      font-size: 11px;
+      line-height: 1.34;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateX(-12px);
+      animation: logTextIn 0.36s ease 0.08s forwards;
+    }
+
+    .log-copy b {
+      color: #1f6f5a;
+      margin-right: 4px;
     }
 
     .empty {
@@ -1552,6 +1608,15 @@
       background: #f3f8f6;
     }
 
+    .archive-row.locked {
+      opacity: 0.72;
+    }
+
+    .archive-row.locked b,
+    .archive-row.locked span {
+      color: var(--muted);
+    }
+
     body.dark-mode .archive-row:hover {
       background: rgba(39, 124, 120, 0.14);
     }
@@ -1625,6 +1690,7 @@
       grid-template-columns: 250px minmax(0, 1fr) 300px;
       grid-template-areas:
         "tarot summary scores"
+        "tarot achievements scores"
         "tarot graph graph"
         "tarot submit restart";
       align-items: stretch;
@@ -1655,7 +1721,7 @@
     #endModal .summary {
       grid-area: summary;
       min-height: 0;
-      max-height: 178px;
+      max-height: 138px;
       overflow: hidden;
       font-size: 12px;
       line-height: 1.42;
@@ -1663,12 +1729,12 @@
 
     #endModal .stat-graph {
       grid-area: graph;
-      max-height: 250px;
+      max-height: 320px;
       overflow: hidden;
     }
 
     #endModal .stat-graph svg {
-      max-height: 135px;
+      max-height: 210px;
     }
 
     #endModal .submit-section {
@@ -1702,6 +1768,10 @@
     .opening-story {
       display: grid;
       gap: 12px;
+    }
+
+    .start-extra {
+      display: none;
     }
 
     .story-panel {
@@ -2001,6 +2071,22 @@
     .graph-line.city { stroke: var(--city); }
     .graph-line.control { stroke: var(--control); }
 
+    .graph-point {
+      stroke: #ffffff;
+      stroke-width: 2;
+      filter: drop-shadow(0 2px 5px rgba(23, 32, 42, 0.2));
+      cursor: help;
+      opacity: 0;
+      transform-origin: center;
+      animation: graphPointIn 0.32s ease forwards;
+      animation-delay: var(--point-delay, 1s);
+    }
+
+    .graph-point.cash { fill: var(--cash); }
+    .graph-point.trust { fill: var(--trust); }
+    .graph-point.city { fill: var(--city); }
+    .graph-point.control { fill: var(--control); }
+
     .graph-legend {
       display: flex;
       flex-wrap: wrap;
@@ -2052,8 +2138,59 @@
       line-height: 1.4;
     }
 
+    .ending-achievements {
+      grid-area: achievements;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #f9fbfb;
+      padding: 10px;
+      display: grid;
+      gap: 6px;
+      color: #465666;
+      font-size: 12px;
+      line-height: 1.4;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .ending-achievements b {
+      color: #17202a;
+      font-size: 13px;
+    }
+
+    .ending-achievement-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .ending-achievement-chips span {
+      border: 1px solid #d6b46e;
+      border-radius: 999px;
+      background: rgba(250, 236, 212, 0.78);
+      color: #73460e;
+      padding: 4px 7px;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
     @keyframes drawGraph {
       to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes graphPointIn {
+      from { opacity: 0; transform: scale(0.35); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes logLineGrow {
+      from { transform: scaleY(0); }
+      to { transform: scaleY(1); }
+    }
+
+    @keyframes logTextIn {
+      from { opacity: 0; transform: translateX(-12px); }
+      to { opacity: 1; transform: translateX(0); }
     }
 
     .version-footer {
@@ -2503,9 +2640,84 @@
       line-height: 1.4;
     }
 
+    .achievement-progress {
+      height: 8px;
+      border-radius: 999px;
+      background: #e8eeee;
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+
+    .achievement-progress i {
+      display: block;
+      width: var(--progress, 0%);
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #1f6f5a, #d3892f);
+    }
+
+    .archive-stat-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      align-self: stretch;
+    }
+
+    .archive-stat-item {
+      min-height: 76px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.84);
+      display: grid;
+      gap: 4px;
+    }
+
+    .archive-stat-item span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .archive-stat-item b {
+      color: var(--ink);
+      font-size: 24px;
+      line-height: 1.05;
+    }
+
+    body.dark-mode .archive-stat-item {
+      background: #142022;
+      border-color: #435a5f;
+    }
+
     body.dark-mode .achievement-item.unlocked {
       background: linear-gradient(135deg, rgba(115, 70, 14, 0.34), rgba(39, 124, 120, 0.22));
       border-color: #d6b46e;
+    }
+
+    body.dark-mode .ending-achievements {
+      background: rgba(21, 31, 34, 0.96);
+      color: var(--muted);
+      border-color: var(--line);
+    }
+
+    body.dark-mode .ending-achievements b {
+      color: var(--ink);
+    }
+
+    body.dark-mode .ending-achievement-chips span {
+      background: rgba(115, 70, 14, 0.34);
+      color: #f0d9a7;
+      border-color: #d6b46e;
+    }
+
+    body.dark-mode .log-item::after {
+      background: #435a5f;
+    }
+
+    body.dark-mode .graph-point {
+      stroke: #172124;
     }
 
     .tutorial-coach {
@@ -2547,6 +2759,16 @@
       justify-content: space-between;
       gap: 8px;
       flex-wrap: wrap;
+    }
+
+    .tutorial-coach #tutorialCoachPrev,
+    .tutorial-coach #tutorialCoachNext {
+      display: none;
+    }
+
+    .tutorial-coach.done {
+      border-color: #d6b46e;
+      box-shadow: 0 24px 54px rgba(31, 111, 90, 0.22);
     }
 
     .tutorial-progress {
@@ -2613,7 +2835,7 @@
 
       .top-stats {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         justify-content: initial;
         width: 100%;
       }
@@ -2625,7 +2847,52 @@
       .top-stats .text-button {
         min-width: 0;
         padding: 0 8px;
-        font-size: 12px;
+        font-size: 11px;
+      }
+
+      .top-stats .text-button svg {
+        width: 17px;
+        height: 17px;
+      }
+
+      body.is-playing .topbar {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+      }
+
+      body.is-playing .brand {
+        align-items: center;
+      }
+
+      body.is-playing .mark {
+        width: 36px;
+        height: 36px;
+      }
+
+      body.is-playing .mark svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      body.is-playing h1 {
+        font-size: 24px;
+      }
+
+      body.is-playing .top-stats {
+        width: auto;
+        grid-template-columns: auto;
+      }
+
+      body.is-playing #openTutorialTop,
+      body.is-playing #openArchiveTop,
+      body.is-playing #openAchievementsTop,
+      body.is-playing #openSettingsTop {
+        display: none;
+      }
+
+      body.is-playing #newGameTop {
+        min-height: 36px;
+        padding: 0 10px;
       }
 
       .pill,
@@ -2728,24 +2995,24 @@
 
       .game-panel {
         min-height: auto;
-        padding: 10px;
-        gap: 10px;
+        padding: 8px;
+        gap: 8px;
       }
 
       .card-stage {
         grid-template-columns: 1fr;
-        min-height: auto;
+        min-height: 336px;
         overflow: hidden;
       }
 
       .card-wrap {
         width: min(100%, 350px);
-        min-height: 414px;
+        min-height: 336px;
         justify-self: center;
       }
 
       .under-choice-sheet {
-        min-height: 368px;
+        min-height: 306px;
         width: min(326px, 88vw);
         transform: translate(-50%, -50%) rotate(-2deg);
       }
@@ -2775,21 +3042,44 @@
       }
 
       .play-card {
-        min-height: 368px;
+        min-height: 306px;
         width: min(318px, 86vw);
-        padding: 14px;
+        padding: 13px;
+        gap: 9px;
       }
 
       .card-title {
-        font-size: 21px;
+        font-size: 20px;
       }
 
       .card-text {
         font-size: 13px;
+        line-height: 1.46;
+        gap: 7px;
+        max-height: 150px;
+        overflow: hidden;
+      }
+
+      .dilemma-line {
+        max-height: 74px;
+      }
+
+      .story-line {
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .dilemma-line {
+        max-height: 72px;
+        padding: 8px;
+        font-size: 11px;
+        line-height: 1.38;
       }
 
       .last-result {
-        font-size: 12px;
+        display: none;
       }
 
       .quest-board {
@@ -2808,15 +3098,22 @@
       .mobile-score-strip {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 7px;
+        gap: 6px;
+        min-height: 48px;
+      }
+
+      .mobile-score-strip .mobile-score-item:nth-child(3),
+      .mobile-score-strip .mobile-score-item:nth-child(4),
+      .mobile-score-strip .mobile-score-item:nth-child(5) {
+        display: none;
       }
 
       .mobile-score-item {
-        min-height: 56px;
+        min-height: 48px;
         border: 1px solid var(--line);
         border-radius: var(--radius);
         background: #ffffffd8;
-        padding: 8px;
+        padding: 7px;
         display: grid;
         gap: 3px;
       }
@@ -2828,7 +3125,7 @@
 
       .mobile-score-item b {
         color: #17202a;
-        font-size: 17px;
+        font-size: 16px;
         line-height: 1.1;
       }
 
@@ -2844,7 +3141,7 @@
       body.is-playing .mobile-log-toggle {
         position: fixed;
         left: 50%;
-        bottom: 10px;
+        bottom: 64px;
         z-index: 27;
         transform: translateX(-50%);
         min-height: 42px;
@@ -2868,7 +3165,7 @@
         right: 0;
         bottom: 0;
         z-index: 25;
-        max-height: min(68vh, 560px);
+        max-height: min(44vh, 360px);
         border-radius: 16px 16px 0 0;
         border: 1px solid var(--line);
         border-bottom: 0;
@@ -2910,7 +3207,7 @@
       .mobile-log-content {
         min-height: 0;
         overflow: auto;
-        padding: 10px 14px 18px;
+        padding: 8px 12px 14px;
       }
 
       .quick-choice-panel {
@@ -2935,6 +3232,7 @@
         grid-template-areas:
           "tarot"
           "summary"
+          "achievements"
           "scores"
           "graph"
           "submit"
@@ -2969,7 +3267,7 @@
       }
 
       #endModal .summary {
-        max-height: 112px;
+        max-height: 96px;
         font-size: 11px;
       }
 
@@ -2982,11 +3280,16 @@
       }
 
       #endModal .stat-graph {
-        max-height: 188px;
+        max-height: 238px;
       }
 
       #endModal .stat-graph svg {
-        max-height: 95px;
+        max-height: 150px;
+      }
+
+      .ending-achievements {
+        max-height: 86px;
+        font-size: 11px;
       }
 
       .difficulty-options {
@@ -3099,8 +3402,7 @@
           </svg>
         </div>
         <div>
-          <h1>부동산 밸런스 카드</h1>
-          <p class="subtitle">카드마다 하나의 사건. 선택 하나가 현금흐름, 신뢰, 생활가치, 위험관리를 흔듭니다.</p>
+          <h1>SWAY</h1>
         </div>
       </div>
       <div class="top-stats">
@@ -3113,7 +3415,7 @@
         </button>
         <button class="text-button compact" id="openArchiveTop" type="button">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16"/><path d="M6 5v16h12V5"/><path d="M9 9h6"/><path d="M9 13h6"/></svg>
-          보관기록소
+          기록보관소
         </button>
         <button class="text-button compact" id="openAchievementsTop" type="button">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 14.7 8.7 21 9.4l-4.6 4.2 1.2 6.2L12 16.6 6.4 19.8l1.2-6.2L3 9.4l6.3-.7z"/></svg>
@@ -3122,6 +3424,14 @@
         <button class="text-button compact" id="openSettingsTop" type="button">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 2l.05.05a2.1 2.1 0 0 1-2.97 2.97l-.05-.05a1.8 1.8 0 0 0-2-.36 1.8 1.8 0 0 0-1.1 1.66V21a2.1 2.1 0 0 1-4.2 0v-.08a1.8 1.8 0 0 0-1.1-1.66 1.8 1.8 0 0 0-2 .36l-.05.05a2.1 2.1 0 0 1-2.97-2.97l.05-.05a1.8 1.8 0 0 0 .36-2 1.8 1.8 0 0 0-1.66-1.1H3a2.1 2.1 0 0 1 0-4.2h.08a1.8 1.8 0 0 0 1.66-1.1 1.8 1.8 0 0 0-.36-2l-.05-.05a2.1 2.1 0 0 1 2.97-2.97l.05.05a1.8 1.8 0 0 0 2 .36A1.8 1.8 0 0 0 10.45 3V3a2.1 2.1 0 0 1 4.2 0v.08a1.8 1.8 0 0 0 1.1 1.66 1.8 1.8 0 0 0 2-.36l.05-.05a2.1 2.1 0 0 1 2.97 2.97l-.05.05a1.8 1.8 0 0 0-.36 2c.28.67.93 1.1 1.66 1.1H21a2.1 2.1 0 0 1 0 4.2h-.08a1.8 1.8 0 0 0-1.66 1.1z"/></svg>
           설정
+        </button>
+        <button class="text-button compact" id="openPatchNotesTop" type="button">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg>
+          패치
+        </button>
+        <button class="text-button compact" id="openLeaderboardTop" type="button">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5"/><path d="M8 19V9"/><path d="M12 19V3"/><path d="M16 19v-7"/><path d="M20 19V7"/></svg>
+          순위
         </button>
         <button class="text-button primary" id="newGameTop">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>
@@ -3245,7 +3555,7 @@
           현금흐름, 신뢰, 생활가치, 위험관리 중 하나라도 0이 되면 프로젝트가 중단됩니다. 선택은 다음 사건의 분위기와 서사 흐름에도 흔적을 남깁니다.
           <div class="start-actions">
             <button class="text-button compact" id="openTutorialStory" type="button">튜토리얼</button>
-            <button class="text-button compact" id="openArchiveStory" type="button">보관기록소</button>
+            <button class="text-button compact" id="openArchiveStory" type="button">기록보관소</button>
             <button class="text-button compact" id="openAchievementsStory" type="button">업적</button>
             <button class="text-button compact" id="openSettingsStory" type="button">설정</button>
           </div>
@@ -3337,6 +3647,7 @@
         <div id="endTarotWrap"></div>
         <div class="score-grid" id="scoreGrid"></div>
         <div class="summary" id="endSummary"></div>
+        <div class="ending-achievements" id="endAchievements"></div>
         <div class="stat-graph" id="statGraph"></div>
         <div class="submit-section" id="submitSection" hidden>
           <button class="text-button primary" id="submitScore" type="button">
@@ -3363,6 +3674,29 @@
       </div>
       <div class="modal-body">
         <div class="patch-list" id="patchNotesList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-layer" id="leaderboardModal" role="dialog" aria-modal="true" aria-labelledby="leaderboardTitle">
+    <div class="modal">
+      <div class="panel-head">
+        <h2 class="panel-title" id="leaderboardTitle">무한 모드 순위</h2>
+        <button class="icon-button" id="closeLeaderboardModal" title="닫기" aria-label="닫기">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="leaderboard-section">
+          <div class="leaderboard-tabs" id="modalLeaderboardTabs" role="tablist" aria-label="모달 순위 난이도">
+            <button class="leaderboard-tab active" data-modal-leaderboard-difficulty="easy" type="button">쉬움</button>
+            <button class="leaderboard-tab" data-modal-leaderboard-difficulty="medium" type="button">보통</button>
+            <button class="leaderboard-tab" data-modal-leaderboard-difficulty="hard" type="button">어려움</button>
+          </div>
+          <div class="leaderboard-list" id="modalLeaderboardList">
+            <div class="empty">서버 버전에서 공개 기록을 볼 수 있습니다.</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -3425,7 +3759,7 @@
           <div class="setting-row">
             <div class="setting-copy">
               <b>고속모드</b>
-              <span>드래그 대신 좌우 선택 버튼을 눌러 빠르게 진행합니다.</span>
+              <span>카드 영역에 마우스를 올려 좌우로 미리 기울이고 클릭으로 선택합니다.</span>
             </div>
             <button class="switch" id="fastModeToggle" type="button" aria-label="고속모드"><span></span></button>
           </div>
@@ -3437,7 +3771,7 @@
   <div class="modal-layer" id="archiveModal" role="dialog" aria-modal="true" aria-labelledby="archiveTitle">
     <div class="modal">
       <div class="panel-head">
-        <h2 class="panel-title" id="archiveTitle">보관기록소</h2>
+        <h2 class="panel-title" id="archiveTitle">기록보관소</h2>
         <button class="icon-button" id="closeArchive" title="닫기" aria-label="닫기">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
         </button>
@@ -3448,6 +3782,12 @@
           <button class="graph-filter active" data-archive-tab="events" type="button">사건</button>
           <button class="graph-filter" data-archive-tab="quests" type="button">퀘스트</button>
           <button class="graph-filter" data-archive-tab="endings" type="button">엔딩</button>
+          <button class="graph-filter" data-archive-tab="stats" type="button">통계</button>
+        </div>
+        <div class="graph-controls" id="archiveFilters">
+          <button class="graph-filter active" data-archive-filter="all" type="button">전체</button>
+          <button class="graph-filter" data-archive-filter="unlocked" type="button">해금됨</button>
+          <button class="graph-filter" data-archive-filter="locked" type="button">미해금</button>
         </div>
         <div class="archive-workspace">
           <div class="archive-list" id="archiveList"></div>
@@ -3508,8 +3848,56 @@
   <footer class="version-footer" id="versionFooter" aria-label="버전 정보"></footer>
 
   <script>
-    const GAME_VERSION = "v0.15.0";
+    const GAME_VERSION = "v0.18.0";
     const PATCH_HISTORY = [
+      {
+        version: "v0.18.0",
+        summary: "고정형 플레이 튜토리얼, 병합 진행기록, 기록보관소 필터/통계, 업적 게이지 개선",
+        details: [
+          "튜토리얼을 별도 예시 화면이 아니라 실제 게임 화면에서 진행되는 고정 튜토리얼 런으로 바꿨습니다.",
+          "튜토리얼 단계는 다음 버튼 없이 지표 클릭, 카드 밀기, 방향키 입력, 진행 기록 확인, 마지막 선택을 직접 수행해야 자동으로 넘어갑니다.",
+          "키보드 좌우 입력의 카드 기울기 강도를 마우스 드래그 미리보기와 같은 수준으로 키웠습니다.",
+          "진행 기록은 최신 기록이 위에 오고, 같은 턴의 선택과 퀘스트 결과를 하나의 박스 안에 합쳐 보여줍니다.",
+          "고속모드는 별도 선택 버튼 대신 카드 영역에 마우스를 올려 좌우로 미리 기울이고 클릭해 선택하는 방식으로 정리했습니다.",
+          "일반 플레이 중에도 상단 패치 기록과 무한 모드 순위 버튼으로 각각의 모달을 열 수 있게 했습니다.",
+          "기록보관소에 전체/해금됨/미해금 필터와 통계 탭을 추가하고, 잠긴 사건/퀘스트/엔딩은 ???로 표시합니다.",
+          "업적 목록에 다음 목표까지의 게이지를 넣고, 숨겨진 업적은 해금 전까지 ???로 표시합니다.",
+          "엔딩 그래프의 점이 선 애니메이션 타이밍에 맞춰 순차적으로 나타나도록 조정했습니다."
+        ]
+      },
+      {
+        version: "v0.17.0",
+        summary: "고정 튜토리얼 판, 기록/보관소/업적/고속모드 재정리",
+        details: [
+          "튜토리얼을 다음 버튼 방식이 아니라 고정된 튜토리얼 판에서 실제 조작을 완료하면 자동 진행되는 방식으로 변경했습니다.",
+          "키보드 좌우 입력의 카드 기울기 폭을 마우스 드래그 미리보기와 같은 강도로 조정했습니다.",
+          "진행 기록은 최신 기록을 위에 두고, 한 턴의 선택과 퀘스트 결과를 하나의 박스에 합쳐 표시하도록 수정했습니다.",
+          "일반 플레이 중에도 상단 패치 버튼과 순위 버튼으로 각각의 모달을 열 수 있게 했습니다.",
+          "고속모드는 별도 선택 버튼 대신 카드 영역에 마우스를 올리면 좌우로 미리 기울고 클릭으로 선택되도록 바꿨습니다.",
+          "기록보관소에 전체/해금됨/미해금 필터와 통계 탭을 추가했습니다.",
+          "업적에는 다음 목표까지의 게이지를 추가하고, 숨겨진 미해금 업적은 ???로 표시합니다.",
+          "지표 그래프의 점은 선 애니메이션 타이밍에 맞춰 순차적으로 나타나도록 조정했습니다."
+        ]
+      },
+      {
+        version: "v0.16.0",
+        summary: "SWAY 브랜딩, 모바일 겹침 수정, 상호작용 튜토리얼, 기록/업적/그래프 개선",
+        details: [
+          "게임 이름을 SWAY로 변경하고 상단 설명 문구와 불필요한 사건풀/점수/중복 턴 표시를 제거했습니다.",
+          "인게임의 현재 장, 사건 번호, 연속 생존, 정책 온도 요약 행을 제거하고 카드 영역을 더 넓게 재배치했습니다.",
+          "모바일에서 카드와 퀘스트, 점수 박스가 서로 겹치지 않도록 카드 높이와 하단 정보 배치를 다시 조정했습니다.",
+          "튜토리얼을 단순 다음 버튼 방식이 아니라 실제 클릭, 드래그, 선택을 해야 다음 단계로 넘어가도록 바꿨습니다.",
+          "진행 기록은 세로 선이 아래로 그려지고 텍스트가 좌에서 우로 나타나는 애니메이션으로 변경했습니다.",
+          "진행 기록에는 게임 턴과 별도로 기록 순번을 부여해 같은 숫자가 반복 표시되는 문제를 해결했습니다.",
+          "동일 계열 업적은 하나의 묶음으로 보여주고 다음 목표 수치를 표시하도록 정리했습니다.",
+          "업적 팝업은 같은 계열에서 가장 높은 달성값만 표시하고, 엔딩 화면에 이번 판 업적 요약을 추가했습니다.",
+          "기록보관소 카드도 방향키 좌우로 A/B 뒷면 선택지를 확인할 수 있게 했습니다.",
+          "기록보관소 문구를 기록보관소로 통일했습니다.",
+          "엔딩 카드 뒷면 조건에서 최종 점수를 제거하고 엔딩 조건을 더 상세하게 표시하도록 바꿨습니다.",
+          "엔딩 타로 아이콘을 종류별로 더 구분되도록 새 아이콘 세트로 교체했습니다.",
+          "엔딩 지표 그래프 크기를 키우고 마우스를 올리면 턴과 지표 수치를 직접 볼 수 있게 했습니다."
+        ]
+      },
       {
         version: "v0.15.0",
         summary: "다크모드 가독성, 보관소 인게임 카드, 업적 150개, 인게임 튜토리얼",
@@ -3518,10 +3906,10 @@
           "카드 뒤 선택지의 청록색과 회색 텍스트가 다크모드에서도 또렷하게 보이도록 선택지와 변화량 색상을 보강했습니다.",
           "처음 보는 엔딩 타로 카드의 공개 연출을 더 크게 만들고 뒷면에서 앞면으로 부드럽게 뒤집히도록 조정했습니다.",
           "기본 플레이 화면에서 페이지 전체 스크롤이 생기지 않도록 플레이 중 레이아웃을 화면 높이에 맞게 재정렬했습니다.",
-          "보관기록소의 사건, 퀘스트, 엔딩 숫자 카드 자체가 탭 버튼이 되도록 바꾸고 기존 작은 탭 버튼은 숨겼습니다.",
-          "보관기록소의 사건과 퀘스트 상세를 인게임 카드처럼 좌우로 밀어 A/B 선택지를 볼 수 있는 카드 스택으로 바꿨습니다.",
+          "기록보관소의 사건, 퀘스트, 엔딩 숫자 카드 자체가 탭 버튼이 되도록 바꾸고 기존 작은 탭 버튼은 숨겼습니다.",
+          "기록보관소의 사건과 퀘스트 상세를 인게임 카드처럼 좌우로 밀어 A/B 선택지를 볼 수 있는 카드 스택으로 바꿨습니다.",
           "이전 기록에서 설명이 빠진 퀘스트도 목표, 보상, 실패 조건을 자동 설명으로 복구하도록 보강했습니다.",
-          "보관기록소 엔딩 타로 카드의 뒷면에는 해당 엔딩을 본 조건을 표시하도록 했습니다.",
+          "기록보관소 엔딩 타로 카드의 뒷면에는 해당 엔딩을 본 조건을 표시하도록 했습니다.",
           "일반 업적과 숨겨진 업적으로 나뉘는 150개 업적 시스템과 상단 달성 팝업을 추가했습니다.",
           "튜토리얼을 별도 모달 대신 게임 화면 위 작은 코치 팝업으로 바꿨습니다.",
           "진행 기록 항목이 추가될 때 부드럽게 올라오는 애니메이션을 추가했습니다."
@@ -3534,22 +3922,22 @@
           "튜토리얼을 직접 드래그하고 선택해 보는 실습형 안내로 바꿨습니다.",
           "게임 종료 화면을 스크롤 없이 한 화면에 들어오도록 압축하고 엔딩 타로 카드를 추가했습니다.",
           "처음 보는 엔딩은 화면이 어두워지며 타로 카드가 뒤집히는 연출을 표시합니다.",
-          "보관기록소에서 사건, 퀘스트, 엔딩 카드를 직접 열어 보고 지표 변화량과 내용을 확인할 수 있게 했습니다.",
-          "엔딩 타로 카드는 보관기록소에서도 계속 뒤집을 수 있고 마우스 위치에 따라 기울어집니다.",
+          "기록보관소에서 사건, 퀘스트, 엔딩 카드를 직접 열어 보고 지표 변화량과 내용을 확인할 수 있게 했습니다.",
+          "엔딩 타로 카드는 기록보관소에서도 계속 뒤집을 수 있고 마우스 위치에 따라 기울어집니다.",
           "다크모드 색상 체계를 다시 잡고 퀘스트 카드를 보라색 특수 카드로 변경했습니다.",
           "지표 원형 게이지에 부드러운 수치 변화와 별 획득 이동 연출을 추가했습니다."
         ]
       },
       {
         version: "v0.13.0",
-        summary: "연결 서사, 튜토리얼, 설정, 보관기록소, 모바일 기록 서랍",
+        summary: "연결 서사, 튜토리얼, 설정, 기록보관소, 모바일 기록 서랍",
         details: [
           "퀘스트 카드를 검은색 특수 카드로 바꿔 일반 사건과 즉시 구분되도록 했습니다.",
           "선택 결과가 다음 사건 문장과 카드 흐름에 영향을 주는 서사 맥락 시스템을 추가했습니다.",
           "처음 진입 시 순차 튜토리얼을 제공하고, 상단 튜토리얼 버튼으로 언제든 다시 볼 수 있게 했습니다.",
           "시작 배경 창을 압축하고 순위표와 패치 기록은 접힌 보조 영역으로 정리했습니다.",
           "다크모드와 좌우 클릭 고속모드를 설정에 추가하고, 모바일 하단 진행 기록 서랍을 추가했습니다.",
-          "경험한 사건, 퀘스트, 엔딩을 모아 보는 보관기록소를 추가했습니다.",
+          "경험한 사건, 퀘스트, 엔딩을 모아 보는 기록보관소를 추가했습니다.",
           "퀘스트 목표 수치와 제한 턴을 현재 난이도와 지표 상태에 맞게 조정했습니다."
         ]
       },
@@ -3662,7 +4050,7 @@
       },
       {
         version: "v0.7.0",
-        summary: "부동산 밸런스 카드 기본 룰",
+        summary: "SWAY 기본 룰",
         details: [
           "4대 지표를 유지하며 부동산 사건 카드를 선택하는 기본 게임 구조를 만들었습니다.",
           "선택 결과에 따라 현금흐름, 신뢰, 생활가치, 위험관리가 변하도록 구성했습니다."
@@ -3682,6 +4070,8 @@
     const ARCHIVE_KEY = "realEstateBalanceArchive";
     const TUTORIAL_KEY = "realEstateBalanceTutorialSeen";
     const ACHIEVEMENT_KEY = "realEstateBalanceAchievements";
+    const PLAYER_STATS_KEY = "realEstateBalancePlayerStats";
+    const ENDING_ARCHIVE_TOTAL = 24;
 
     const STAT_META = {
       cash: { label: "현금흐름", colorClass: "cash", colorVar: "var(--cash)", copy: "임대료, 이자, 수리비, 공실 충격을 버티는 힘" },
@@ -4309,6 +4699,57 @@
       }
     }
 
+    function defaultPlayerStats() {
+      return {
+        gamesPlayed: 0,
+        tutorialRuns: 0,
+        totalClicks: 0,
+        leftChoices: 0,
+        rightChoices: 0,
+        totalScoreGained: 0,
+        totalSurvivedTurns: 0,
+        bestScore: 0,
+        crisisRecoveries: 0,
+        questsAccepted: 0,
+        questsCompleted: 0,
+        questsFailed: 0,
+        endingsSeen: 0,
+        archiveOpens: 0
+      };
+    }
+
+    function readPlayerStats() {
+      try {
+        return {
+          ...defaultPlayerStats(),
+          ...JSON.parse(localStorage.getItem(PLAYER_STATS_KEY) || "{}")
+        };
+      } catch {
+        return defaultPlayerStats();
+      }
+    }
+
+    function persistPlayerStats() {
+      try {
+        localStorage.setItem(PLAYER_STATS_KEY, JSON.stringify(state.playerStats));
+      } catch {
+      }
+    }
+
+    function updatePlayerStats(patch = {}) {
+      Object.entries(patch).forEach(([key, value]) => {
+        if (typeof state.playerStats[key] !== "number") state.playerStats[key] = 0;
+        state.playerStats[key] += value;
+      });
+      persistPlayerStats();
+    }
+
+    function setPlayerStatMax(key, value) {
+      if (typeof state.playerStats[key] !== "number") state.playerStats[key] = 0;
+      state.playerStats[key] = Math.max(state.playerStats[key], value);
+      persistPlayerStats();
+    }
+
     function readTutorialSeen() {
       try {
         return localStorage.getItem(TUTORIAL_KEY) === "true";
@@ -4369,11 +4810,17 @@
       settings: readSettings(),
       archive: readArchive(),
       archiveTab: "events",
+      archiveFilter: "all",
+      archiveListView: [],
       archiveOpened: false,
       settingsOpened: false,
       tarotFlipped: false,
       achievements: readAchievements(),
       achievementTab: "normal",
+      playerStats: readPlayerStats(),
+      tutorialRun: false,
+      tutorialRunTracked: false,
+      runStartedTracked: false,
       tutorialIndex: 0,
       tutorialPracticeDone: {},
       tutorialCoachOpen: false
@@ -4411,6 +4858,7 @@
       rightPeekText: document.getElementById("rightPeekText"),
       rightPeekDeltas: document.getElementById("rightPeekDeltas"),
       cardWrap: document.querySelector(".card-wrap"),
+      cardStage: document.querySelector(".card-stage"),
       playCard: document.getElementById("playCard"),
       lastResult: document.getElementById("lastResult"),
       quickLeft: document.getElementById("quickLeft"),
@@ -4438,6 +4886,8 @@
       openArchiveTop: document.getElementById("openArchiveTop"),
       openAchievementsTop: document.getElementById("openAchievementsTop"),
       openSettingsTop: document.getElementById("openSettingsTop"),
+      openPatchNotesTop: document.getElementById("openPatchNotesTop"),
+      openLeaderboardTop: document.getElementById("openLeaderboardTop"),
       openTutorialStory: document.getElementById("openTutorialStory"),
       openArchiveStory: document.getElementById("openArchiveStory"),
       openAchievementsStory: document.getElementById("openAchievementsStory"),
@@ -4456,6 +4906,10 @@
       patchModal: document.getElementById("patchModal"),
       closePatchNotes: document.getElementById("closePatchNotes"),
       patchNotesList: document.getElementById("patchNotesList"),
+      leaderboardModal: document.getElementById("leaderboardModal"),
+      closeLeaderboardModal: document.getElementById("closeLeaderboardModal"),
+      modalLeaderboardList: document.getElementById("modalLeaderboardList"),
+      modalLeaderboardTabs: document.getElementById("modalLeaderboardTabs"),
       tutorialModal: document.getElementById("tutorialModal"),
       closeTutorial: document.getElementById("closeTutorial"),
       skipTutorial: document.getElementById("skipTutorial"),
@@ -4480,6 +4934,7 @@
       closeArchive: document.getElementById("closeArchive"),
       archiveStats: document.getElementById("archiveStats"),
       archiveTabs: document.getElementById("archiveTabs"),
+      archiveFilters: document.getElementById("archiveFilters"),
       archiveList: document.getElementById("archiveList"),
       archiveDetail: document.getElementById("archiveDetail"),
       achievementsModal: document.getElementById("achievementsModal"),
@@ -4502,6 +4957,7 @@
       leaderboardStatus: document.getElementById("leaderboardStatus"),
       scoreGrid: document.getElementById("scoreGrid"),
       endSummary: document.getElementById("endSummary"),
+      endAchievements: document.getElementById("endAchievements"),
       statGraph: document.getElementById("statGraph"),
       versionFooter: document.getElementById("versionFooter")
     };
@@ -4549,6 +5005,46 @@
       practice: "start",
       target: "#storyModal .difficulty-panel"
     });
+
+    tutorialSteps[3] = {
+      title: "진행 기록을 직접 열어보세요",
+      text: "플레이 중 선택의 흔적은 진행 기록에 쌓입니다. 모바일에서는 하단 버튼을, 데스크톱에서는 오른쪽 기록 칸을 눌러 확인합니다.",
+      practice: "log",
+      target: "#logList"
+    };
+
+    tutorialSteps.splice(0, tutorialSteps.length,
+      {
+        title: "1. 지표를 눌러 확인",
+        text: "강조된 4대 지표 영역을 눌러보세요. 튜토리얼 판은 네 지표가 모두 살아남는 고정 흐름으로 진행됩니다.",
+        practice: "stat",
+        target: "#meters"
+      },
+      {
+        title: "2. 카드를 직접 밀기",
+        text: "현재 카드를 마우스나 터치로 좌우 중 한쪽으로 끝까지 밀어 선택하세요. 선택되면 자동으로 다음 안내가 열립니다.",
+        practice: "drag",
+        target: ".card-wrap"
+      },
+      {
+        title: "3. 방향키로 선택",
+        text: "키보드 좌우 방향키를 눌러 카드를 기울이고 마지막에 뗀 방향으로 선택하세요.",
+        practice: "keyboard",
+        target: ".card-wrap"
+      },
+      {
+        title: "4. 진행 기록 확인",
+        text: "진행 기록을 열어 최신 선택이 어떻게 한 줄에 정리되는지 확인하세요.",
+        practice: "log",
+        target: "#logList"
+      },
+      {
+        title: "5. 마지막 선택으로 엔딩",
+        text: "마지막 카드를 선택하면 고정 튜토리얼 엔딩 카드가 공개됩니다.",
+        practice: "choice",
+        target: ".card-wrap"
+      }
+    );
 
     function clamp(value, min = 0, max = 100) {
       return Math.max(min, Math.min(max, value));
@@ -4638,7 +5134,7 @@
         add({
           id: `ending-seen-${count}`,
           title: `엔딩 수집 ${count}장`,
-          description: `서로 다른 엔딩 타로 카드를 ${count}장 보관기록소에 남깁니다.`,
+          description: `서로 다른 엔딩 타로 카드를 ${count}장 기록보관소에 남깁니다.`,
           check: () => state.archive.endings.length >= count,
           progress: () => `${Math.min(state.archive.endings.length, count)} / ${count}`
         });
@@ -4651,8 +5147,8 @@
         ["hidden-dark", "야간 운용자", "다크모드를 켭니다.", () => state.settings.darkMode],
         ["hidden-fast", "빠른 결재선", "고속모드를 켭니다.", () => state.settings.fastMode],
         ["hidden-dark-fast", "야간 속전속결", "다크모드와 고속모드를 동시에 켭니다.", () => state.settings.darkMode && state.settings.fastMode],
-        ["hidden-archive-event-50", "사건 파일 50권", "보관기록소에 사건 50개를 남깁니다.", () => state.archive.events.length >= 50],
-        ["hidden-archive-quest-20", "퀘스트 장부 20권", "보관기록소에 퀘스트 20개를 남깁니다.", () => state.archive.quests.length >= 20],
+        ["hidden-archive-event-50", "사건 파일 50권", "기록보관소에 사건 50개를 남깁니다.", () => state.archive.events.length >= 50],
+        ["hidden-archive-quest-20", "퀘스트 장부 20권", "기록보관소에 퀘스트 20개를 남깁니다.", () => state.archive.quests.length >= 20],
         ["hidden-archive-ending-5", "타로 진열대", "엔딩 타로 카드 5장을 보관합니다.", () => state.archive.endings.length >= 5],
         ["hidden-all-stats-star", "네 지표의 별자리", "4대 지표 모두 별을 1개 이상 얻습니다.", () => STAT_KEYS.every(key => (state.statStars[key] || 0) >= 1)],
         ["hidden-low-safe", "바닥선의 감각", "한 지표가 10점 이하로 내려간 뒤에도 살아남습니다.", () => !state.ended && lowestStat() <= 10],
@@ -4664,9 +5160,9 @@
         ["hidden-score-2026", "2026 운영권", "점수 2026점 이상을 달성합니다.", () => Math.max(state.score, state.finalResult?.score || 0) >= 2026],
         ["hidden-graph-filter", "한 지표만 보는 눈", "엔딩 그래프에서 특정 지표만 확인합니다.", () => state.graphFilter !== "all"],
         ["hidden-tutorial", "튜토리얼 졸업", "코치 튜토리얼을 끝까지 봅니다.", () => readTutorialSeen()],
-        ["hidden-archive-open", "기록을 여는 손", "보관기록소를 열어봅니다.", () => state.archiveOpened],
+        ["hidden-archive-open", "기록을 여는 손", "기록보관소를 열어봅니다.", () => state.archiveOpened],
         ["hidden-settings-open", "설정의 문", "설정 화면을 열어봅니다.", () => state.settingsOpened],
-        ["hidden-tarot-flip", "카드를 뒤집는 사람", "보관기록소에서 엔딩 타로 카드를 뒤집습니다.", () => state.tarotFlipped],
+        ["hidden-tarot-flip", "카드를 뒤집는 사람", "기록보관소에서 엔딩 타로 카드를 뒤집습니다.", () => state.tarotFlipped],
         ["hidden-perfect-clear", "흔들림 없는 완주", "50장 클리어 시 최저 지표 40 이상을 유지합니다.", () => state.finalResult && state.turn >= state.deck.length && state.finalResult.low >= 40],
         ["hidden-star-10", "별 열 개의 보고서", "한 판에서 별을 10개 이상 획득합니다.", () => state.bonusCount >= 10],
         ["hidden-all-archive", "보관소 관리자", "사건, 퀘스트, 엔딩 기록을 모두 1개 이상 남깁니다.", () => state.archive.events.length && state.archive.quests.length && state.archive.endings.length]
@@ -5012,7 +5508,73 @@
       return state.mode === "infinite";
     }
 
+    function createTutorialDeck() {
+      return [
+        {
+          id: "tutorial-1",
+          key: "tutorial",
+          number: 1,
+          chapter: "튜토리얼",
+          badge: "기초",
+          badgeClass: "market",
+          mood: "안내",
+          title: "첫 회의의 현금흐름",
+          text: "운영위원회가 첫 장부를 펼쳤다. 임대료와 수리비, 신뢰, 생활권, 위험관리 네 지표가 같은 줄에서 출발한다.",
+          dilemma: "왼쪽으로 밀면 당장의 현금흐름을 지키고, 오른쪽으로 밀면 관계 회복을 먼저 시도한다.",
+          tags: ["튜토리얼", "지표", "첫 선택"],
+          left: { label: "현금흐름 점검", text: "지출을 먼저 줄여 숨 쉴 공간을 만든다.", delta: { cash: 6, trust: -2, city: -1, control: 1 } },
+          right: { label: "관계 회복", text: "설명회를 열어 신뢰를 먼저 회복한다.", delta: { cash: -3, trust: 6, city: 2, control: 0 } }
+        },
+        {
+          id: "tutorial-2",
+          key: "tutorial",
+          number: 2,
+          chapter: "튜토리얼",
+          badge: "입력",
+          badgeClass: "city",
+          mood: "연습",
+          title: "방향키로 결정을 고정하기",
+          text: "회의가 길어지자 빠른 판단이 필요해졌다. 이번에는 키보드 좌우 방향키로 카드를 기울여 선택한다.",
+          dilemma: "방향키를 누르면 카드가 크게 기울고, 마지막에 뗀 방향의 선택이 적용된다.",
+          tags: ["튜토리얼", "방향키", "선택"],
+          left: { label: "절차 단축", text: "승인 절차를 줄여 속도를 얻는다.", delta: { cash: 4, trust: -2, city: 1, control: -3 } },
+          right: { label: "검토 강화", text: "검토를 늘려 장기 위험을 낮춘다.", delta: { cash: -2, trust: 2, city: 0, control: 6 } }
+        },
+        {
+          id: "tutorial-3",
+          key: "tutorial",
+          number: 3,
+          chapter: "튜토리얼",
+          badge: "기록",
+          badgeClass: "contract",
+          mood: "확인",
+          title: "진행 기록 확인",
+          text: "앞선 결정이 장부에 남았다. 어떤 선택이 어느 턴에 있었는지 확인해야 다음 판단의 기준이 선명해진다.",
+          dilemma: "진행 기록을 열어 최신 결정부터 확인한다. 기록을 확인한 뒤 마지막 카드를 처리하면 튜토리얼이 끝난다.",
+          tags: ["튜토리얼", "기록", "복기"],
+          left: { label: "기록 공개", text: "회의록을 정리해 모두가 볼 수 있게 한다.", delta: { cash: -1, trust: 4, city: 2, control: 2 } },
+          right: { label: "내부 검토", text: "내부 검토를 먼저 끝내고 공개 시점을 늦춘다.", delta: { cash: 2, trust: -1, city: -1, control: 5 } }
+        },
+        {
+          id: "tutorial-4",
+          key: "tutorial",
+          number: 4,
+          chapter: "튜토리얼",
+          badge: "마감",
+          badgeClass: "",
+          mood: "완료",
+          title: "작은 완주",
+          text: "장부는 짧지만 완결된 흐름을 갖췄다. 네 지표를 모두 0 위에 남긴 채 운영위원회가 첫 결론을 적는다.",
+          dilemma: "마지막 선택은 큰 보상보다 균형을 유지하는 감각을 확인하는 절차다.",
+          tags: ["튜토리얼", "완주", "엔딩"],
+          left: { label: "균형 유지", text: "무리한 확장 없이 네 지표의 균형을 유지한다.", delta: { cash: 2, trust: 2, city: 2, control: 2 } },
+          right: { label: "과감한 정리", text: "불필요한 항목을 줄여 현금과 통제를 확보한다.", delta: { cash: 4, trust: -1, city: -1, control: 4 } }
+        }
+      ];
+    }
+
     function createRunDeck() {
+      if (state.tutorialRun) return createTutorialDeck();
       const deck = shuffle(buildDeck());
       if (isInfiniteMode()) return injectQuestCards(deck, INFINITE_QUEST_COUNT);
       return injectQuestCards(deck.slice(0, RUN_EVENT_COUNT - NORMAL_QUEST_COUNT), NORMAL_QUEST_COUNT)
@@ -5084,18 +5646,41 @@
       });
     }
 
-    function tarotSymbolSvg(type) {
+    function hashText(value) {
+      return String(value || "").split("").reduce((hash, char) => {
+        return ((hash << 5) - hash + char.charCodeAt(0)) | 0;
+      }, 0);
+    }
+
+    function uniqueTarotOverlay(seed) {
+      const hash = Math.abs(hashText(seed));
+      const x1 = 5 + (hash % 7);
+      const y1 = 5 + ((hash >> 3) % 7);
+      const x2 = 12 + ((hash >> 6) % 7);
+      const y2 = 12 + ((hash >> 9) % 7);
+      const r = 1 + ((hash >> 12) % 3) * 0.35;
+      const mode = hash % 4;
+      const extra = [
+        `<path d="M${x1} ${20 - y1} Q12 ${4 + (hash % 5)} ${x2} ${y2}" opacity=".62"/>`,
+        `<circle cx="${x1}" cy="${y1}" r="${r.toFixed(1)}" opacity=".7"/><path d="M${20 - x1} ${y1} 12 ${20 - y2} ${x2} ${y2}" opacity=".55"/>`,
+        `<path d="M${x1} ${y1}h${6 + (hash % 5)}v${5 + ((hash >> 4) % 5)}h-${3 + ((hash >> 7) % 4)}" opacity=".6"/>`,
+        `<path d="M12 ${4 + (hash % 4)}c${(hash % 5) - 2} 3 ${(hash >> 4) % 6} 5 0 10" opacity=".58"/><circle cx="${x2}" cy="${20 - y1}" r="${r.toFixed(1)}" opacity=".68"/>`
+      ];
+      return extra[mode];
+    }
+
+    function tarotSymbolSvg(type, seed = "") {
       const symbols = {
-        tower: `<path d="M9 21h6"/><path d="M10 21 8 8h8l-2 13"/><path d="m8 8 4-5 4 5"/><path d="M9 13h6"/><path d="M11 17h2"/>`,
-        star: `<path d="m12 3 2.2 6.3h6.5l-5.2 3.9 2 6.4-5.5-3.8-5.5 3.8 2-6.4-5.2-3.9h6.5z"/>`,
-        temperance: `<path d="M8 5c2 2 6 2 8 0"/><path d="M8 19c2-2 6-2 8 0"/><path d="M7 8h10"/><path d="M7 16h10"/><path d="M12 8v8"/>`,
-        chariot: `<path d="M6 10h12l-1.4 7H7.4z"/><path d="M8 10 6 6h12l-2 4"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/>`,
-        justice: `<path d="M12 4v17"/><path d="M5 8h14"/><path d="m7 8-3 6h6z"/><path d="m17 8-3 6h6z"/><path d="M8 21h8"/>`,
-        hermit: `<path d="M12 4v6"/><path d="M9 10h6l-1 11h-4z"/><path d="M15 8l3-2v6l-3-2"/><path d="M9 8 6 6v6l3-2"/>`,
-        wheel: `<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 4v16M4 12h16M6.5 6.5l11 11M17.5 6.5l-11 11"/>`,
-        world: `<circle cx="12" cy="12" r="8"/><path d="M8 12c2-4 6-4 8 0-2 4-6 4-8 0z"/><path d="M12 4c-2 3-2 13 0 16M12 4c2 3 2 13 0 16"/>`
+        tower: `<path d="M8 21h9"/><path d="M10 21 8.5 7.5h9L15 21"/><path d="M9 7.5 11 3l2.4 3 2-2 2.2 3.5"/><path d="m6 12 4-2"/><path d="m18 11-4 2"/><path d="M11 16h3"/>`,
+        star: `<path d="m12 2.8 1.6 5 5.2-1.2-3.5 4 3.8 3.7-5.3.2L12 19.8l-1.8-5.3-5.3-.2 3.8-3.7-3.5-4L10.4 8z"/><circle cx="19" cy="19" r="1.4"/><circle cx="5" cy="18" r="1"/>`,
+        temperance: `<path d="M7 5h6l-1 5H8z"/><path d="M13 14h6l-1 5h-4z"/><path d="M10 10c2.5 1.2 3.6 2.2 5 4"/><path d="M7 21h12"/><path d="M12 3v3"/>`,
+        chariot: `<path d="M4 10h16l-2 7H6z"/><path d="M7 10 5 6h14l-2 4"/><path d="M9 6V3h6v3"/><path d="M8 14h8"/><circle cx="8" cy="19" r="1.8"/><circle cx="16" cy="19" r="1.8"/>`,
+        justice: `<path d="M12 3v18"/><path d="M6 7h12"/><path d="M8 7 4.5 14h7z"/><path d="M16 7 12.5 14h7z"/><path d="M5.5 14h5"/><path d="M13.5 14h5"/><path d="M8 21h8"/>`,
+        hermit: `<path d="M10 21h5l-1-10H9z"/><path d="M11 11V5l3-2 3 2v5"/><path d="M15 6h5v5h-5z"/><path d="M17.5 11v4"/><path d="M7 13l-3 8"/><path d="M7 9h2"/>`,
+        wheel: `<circle cx="12" cy="12" r="8.2"/><circle cx="12" cy="12" r="2.6"/><path d="M12 3.8v4.6M12 15.6v4.6M3.8 12h4.6M15.6 12h4.6"/><path d="m6.2 6.2 3.2 3.2M14.6 14.6l3.2 3.2M17.8 6.2l-3.2 3.2M9.4 14.6l-3.2 3.2"/>`,
+        world: `<path d="M12 3c4 1.6 6 4.6 6 9s-2 7.4-6 9c-4-1.6-6-4.6-6-9s2-7.4 6-9z"/><path d="M8.5 12c2-4.2 5-4.2 7 0-2 4.2-5 4.2-7 0z"/><path d="M12 3c-1.6 3-1.6 15 0 18M12 3c1.6 3 1.6 15 0 18"/><path d="M5 12h14"/>`
       };
-      return `<svg viewBox="0 0 24 24" aria-hidden="true">${symbols[type] || symbols.world}</svg>`;
+      return `<svg viewBox="0 0 24 24" aria-hidden="true">${symbols[type] || symbols.world}${uniqueTarotOverlay(seed || type)}</svg>`;
     }
 
     function tarotForEnding(story, reason) {
@@ -5141,9 +5726,11 @@
     function endingConditionText(itemOrStory, reason = "", score = 0) {
       if (itemOrStory?.condition) return itemOrStory.condition;
       const title = itemOrStory?.title || itemOrStory?.endingTitle || "엔딩";
-      const scoreText = score ? `최종 점수 ${score}점` : "해당 판의 최종 장부";
       const reasonText = reason || itemOrStory?.meta || "게임 종료 조건";
-      return `${title}을 본 조건: ${reasonText}. ${scoreText}, 생존 ${state.turn}턴, 별 ${state.bonusCount}개, 위기 극복 ${state.dangerRecoveryCount}회 기준으로 공개되었습니다.`;
+      const statLine = STAT_KEYS
+        .map(key => `${statNames[key]} ${Math.round(state.stats[key])}+별${state.statStars[key] || 0}`)
+        .join(", ");
+      return `${title}을 본 조건: ${reasonText}. 모드 ${isInfiniteMode() ? "무한" : "50장"}, 난이도 ${currentDifficulty().label}, 생존 ${state.turn}턴, 최저 지표 ${Math.round(lowestStat())}, 평균 ${averageStat()}, 보유 별 ${state.bonusCount}개, 위기 극복 ${state.dangerRecoveryCount}회, 퀘스트 성공 ${state.completedQuests.length}개/실패 ${state.failedQuests.length}개. 지표 상태: ${statLine}.`;
     }
 
     function tarotCardHtml(tarot, options = {}) {
@@ -5162,7 +5749,7 @@
             <div class="tarot-face tarot-front">
               <span class="tarot-kicker">ENDING TAROT</span>
               <h3 class="tarot-title">${escapeText(tarot.name)}</h3>
-              <div class="tarot-symbol">${tarotSymbolSvg(tarot.type)}</div>
+              <div class="tarot-symbol">${tarotSymbolSvg(tarot.type, `${tarot.name}-${tarot.endingTitle || options.id || ""}`)}</div>
               <p class="tarot-copy">${escapeText(tarot.copy)}<br>${escapeText(tarot.endingTitle || "")}</p>
             </div>
           </div>
@@ -5244,6 +5831,30 @@
     function renderArchiveDetail(item) {
       if (!item) {
         els.archiveDetail.innerHTML = `<div class="empty">왼쪽 목록에서 카드를 선택하세요.</div>`;
+        return;
+      }
+
+      if (item.locked) {
+        if (state.archiveTab === "endings") {
+          const tarot = {
+            type: "hermit",
+            name: "???",
+            copy: "아직 발견되지 않은 엔딩입니다.",
+            endingTitle: "???",
+            colors: tarotColors("hermit")
+          };
+          els.archiveDetail.innerHTML = tarotCardHtml(tarot, { flipped: true, id: item.id, condition: "아직 해금되지 않아 조건이 공개되지 않았습니다." });
+          bindTarotInteractions(els.archiveDetail);
+          return;
+        }
+        els.archiveDetail.innerHTML = `
+          <div class="archive-detail-card">
+            <span class="badge">LOCKED</span>
+            <h3>???</h3>
+            <p>아직 경험하지 않은 ${state.archiveTab === "quests" ? "퀘스트" : "사건"}입니다. 플레이 중 만나면 카드 내용과 선택지 변화가 기록됩니다.</p>
+            <div class="card-tags"><span class="tag">미해금</span></div>
+          </div>
+        `;
         return;
       }
 
@@ -5548,6 +6159,7 @@
         deadlineTurn: state.turn + acceptedQuest.limit
       };
       state.activeQuests.push(entry);
+      updatePlayerStats({ questsAccepted: 1 });
       return `퀘스트 수락: ${quest.title}. ${acceptedQuest.limit}턴 안에 ${statNames[acceptedQuest.targetStat]} ${acceptedQuest.targetValue} 이상을 달성해야 합니다.`;
     }
 
@@ -5579,10 +6191,14 @@
         turn: state.turn,
         reward: questRewardLabel(quest)
       });
+      updatePlayerStats({ questsCompleted: 1 });
 
       const starLine = starResult.starBonus > 0
         ? ` 별 보너스 +${starResult.starBonus}점(${starResult.starDetails.join(", ")}).`
         : "";
+      if (starResult.starBonus > 0) {
+        updatePlayerStats({ totalScoreGained: starResult.starBonus });
+      }
       return `퀘스트 성공: ${quest.title}. ${questRewardLabel(quest)} 보상을 받았습니다.${starLine}`;
     }
 
@@ -5594,6 +6210,7 @@
         turn: state.turn,
         type: quest.failureType
       });
+      updatePlayerStats({ questsFailed: 1 });
 
       if (quest.failureType === "none") {
         result.message = `퀘스트 실패: ${quest.title}. 보상 없이 지나갔습니다.`;
@@ -5788,12 +6405,16 @@
         els.mobileLogList.innerHTML = `<div class="empty">아직 기록 없음</div>`;
         return;
       }
-      const html = [...state.log].reverse().map(item => `
+      const latestFirst = [...state.log];
+      const html = latestFirst.map((item, index) => {
+        const title = item.title ? `<strong>${escapeText(item.title)}</strong> ` : "";
+        return `
         <div class="log-item">
-          <span class="log-turn">${item.turn}턴</span>
-          <span class="log-copy">${item.text}</span>
+          <span class="log-turn">#${index + 1}</span>
+          <span class="log-copy"><b>${item.turn}턴</b> ${title}${escapeText(item.text)}</span>
         </div>
-      `).join("");
+      `;
+      }).join("");
       els.logList.innerHTML = html;
       els.mobileLogList.innerHTML = html;
     }
@@ -5915,6 +6536,96 @@
       setTimeout(() => toast.remove(), 3600);
     }
 
+    function achievementGroupId(achievement) {
+      const id = achievement.id || "";
+      if (id.startsWith("turn-")) return "turn";
+      if (id.startsWith("score-")) return "score";
+      if (id.startsWith("quest-success-")) return "quest-success";
+      if (id.startsWith("crisis-recovery-")) return "crisis-recovery";
+      if (id.startsWith("ending-seen-")) return "ending-seen";
+      const starMatch = id.match(/^star-([a-z]+)-/);
+      if (starMatch) return `star-${starMatch[1]}`;
+      return id;
+    }
+
+    function achievementTargetValue(achievement) {
+      const match = String(achievement.id || "").match(/-(\d+)$/);
+      return match ? Number(match[1]) : 0;
+    }
+
+    function achievementGroupTitle(achievement) {
+      const id = achievement.id || "";
+      if (id.startsWith("turn-")) return "생존 턴";
+      if (id.startsWith("score-")) return "점수 장부";
+      if (id.startsWith("quest-success-")) return "퀘스트 성공";
+      if (id.startsWith("crisis-recovery-")) return "위기 극복";
+      if (id.startsWith("ending-seen-")) return "엔딩 수집";
+      const starMatch = id.match(/^star-([a-z]+)-/);
+      if (starMatch) return `${statNames[starMatch[1]] || "지표"} 별`;
+      return achievement.title;
+    }
+
+    function groupedNormalAchievements() {
+      const groups = new Map();
+      ACHIEVEMENTS
+        .filter(achievement => achievement.type === "normal")
+        .forEach(achievement => {
+          const id = achievementGroupId(achievement);
+          if (!groups.has(id)) {
+            groups.set(id, {
+              id,
+              title: achievementGroupTitle(achievement),
+              items: []
+            });
+          }
+          groups.get(id).items.push(achievement);
+        });
+      return [...groups.values()].map(group => ({
+        ...group,
+        items: group.items.sort((a, b) => achievementTargetValue(a) - achievementTargetValue(b))
+      }));
+    }
+
+    function achievementGroupStatus(group) {
+      const unlockedItems = group.items
+        .filter(item => unlockedAchievement(item.id))
+        .sort((a, b) => achievementTargetValue(b) - achievementTargetValue(a));
+      const highest = unlockedItems[0] || null;
+      const next = group.items.find(item => !unlockedAchievement(item.id)) || null;
+      return {
+        highest,
+        next,
+        unlocked: Boolean(highest),
+        complete: !next
+      };
+    }
+
+    function achievementGroupCurrentValue(group) {
+      const id = group.id || "";
+      if (id === "turn") return Math.max(state.turn, state.finalResult ? state.turn : 0);
+      if (id === "score") return Math.max(state.score, state.finalResult?.score || 0);
+      if (id === "quest-success") return state.completedQuests.length;
+      if (id === "crisis-recovery") return state.dangerRecoveryCount;
+      if (id === "ending-seen") return state.archive.endings.length;
+      const starMatch = id.match(/^star-([a-z]+)/);
+      if (starMatch) return state.statStars[starMatch[1]] || 0;
+      return unlockedAchievement(id) ? 1 : 0;
+    }
+
+    function achievementToastItems(items) {
+      const grouped = new Map();
+      items.forEach(achievement => {
+        const id = achievementGroupId(achievement);
+        const numericGroup = achievement.type === "normal" && id !== achievement.id;
+        const groupKey = numericGroup ? id : achievement.id;
+        const current = grouped.get(groupKey);
+        if (!current || achievementTargetValue(achievement) > achievementTargetValue(current)) {
+          grouped.set(groupKey, achievement);
+        }
+      });
+      return [...grouped.values()];
+    }
+
     function checkAchievements() {
       const newlyUnlocked = [];
       ACHIEVEMENTS.forEach(achievement => {
@@ -5926,18 +6637,22 @@
         };
         newlyUnlocked.push(achievement);
       });
-      if (!newlyUnlocked.length) return;
+      if (!newlyUnlocked.length) return [];
       persistAchievements();
-      newlyUnlocked.slice(0, 3).forEach(showAchievementToast);
+      achievementToastItems(newlyUnlocked).slice(0, 3).forEach(showAchievementToast);
       if (els.achievementsModal.classList.contains("open")) renderAchievements();
+      return newlyUnlocked;
     }
 
     function achievementCounts() {
       const normal = ACHIEVEMENTS.filter(item => item.type === "normal");
       const hidden = ACHIEVEMENTS.filter(item => item.type === "hidden");
+      const normalGroups = groupedNormalAchievements();
       return {
-        normal: normal.filter(item => unlockedAchievement(item.id)).length,
-        normalTotal: normal.length,
+        normal: normalGroups.filter(group => achievementGroupStatus(group).unlocked).length,
+        normalTotal: normalGroups.length,
+        rawNormal: normal.filter(item => unlockedAchievement(item.id)).length,
+        rawNormalTotal: normal.length,
         hidden: hidden.filter(item => unlockedAchievement(item.id)).length,
         hiddenTotal: hidden.length
       };
@@ -5952,25 +6667,43 @@
           : `숨겨진 업적 ${counts.hidden}/${counts.hiddenTotal}`;
       });
 
-      const visible = ACHIEVEMENTS.filter(achievement => {
-        if (achievement.type !== state.achievementTab) return false;
-        if (achievement.hidden && !unlockedAchievement(achievement.id)) return false;
-        return true;
-      });
-
-      if (!visible.length) {
-        els.achievementList.innerHTML = `<div class="empty">아직 공개된 숨겨진 업적이 없습니다. 플레이 중 특수한 조건을 발견하면 이곳에 나타납니다.</div>`;
+      if (state.achievementTab === "normal") {
+        const groups = groupedNormalAchievements();
+        els.achievementList.innerHTML = groups.map(group => {
+          const status = achievementGroupStatus(group);
+          const unlocked = status.unlocked;
+          const highestText = status.highest
+            ? `최고 달성: ${escapeText(status.highest.title)}`
+            : "아직 달성 전";
+          const nextText = status.next
+            ? `다음 목표: ${escapeText(status.next.title)} · ${escapeText(status.next.progress())}`
+            : "모든 단계 완료";
+          const description = status.next?.description || status.highest?.description || "";
+          const target = achievementTargetValue(status.next || status.highest) || 1;
+          const current = status.complete ? target : achievementGroupCurrentValue(group);
+          const progress = clamp((current / target) * 100, 0, 100);
+          return `
+            <div class="achievement-item ${unlocked ? "unlocked" : ""}">
+              <b>${escapeText(group.title)}</b>
+              <span>${escapeText(description)}</span>
+              <div class="achievement-progress" style="--progress:${progress.toFixed(1)}%"><i></i></div>
+              <span>${highestText}</span>
+              <span>${nextText}</span>
+            </div>
+          `;
+        }).join("");
         return;
       }
 
+      const visible = ACHIEVEMENTS.filter(achievement => achievement.type === "hidden");
       els.achievementList.innerHTML = visible.map(achievement => {
         const unlocked = unlockedAchievement(achievement.id);
         const progress = unlocked ? "완료" : achievement.progress();
         return `
           <div class="achievement-item ${unlocked ? "unlocked" : ""}">
-            <b>${escapeText(achievement.title)}</b>
-            <span>${escapeText(achievement.description)}</span>
-            <span>${escapeText(progress)}</span>
+            <b>${escapeText(unlocked ? achievement.title : "???")}</b>
+            <span>${escapeText(unlocked ? achievement.description : "아직 발견되지 않은 숨겨진 업적입니다.")}</span>
+            <span>${escapeText(unlocked ? progress : "???")}</span>
           </div>
         `;
       }).join("");
@@ -5981,6 +6714,19 @@
       checkAchievements();
       renderAchievements();
       els.achievementsModal.classList.add("open");
+    }
+
+    function renderEndAchievements(unlockedNow = []) {
+      if (!els.endAchievements) return;
+      const counts = achievementCounts();
+      const featured = achievementToastItems(unlockedNow).slice(0, 5);
+      const chips = featured.length
+        ? `<div class="ending-achievement-chips">${featured.map(item => `<span>${escapeText(item.title)}</span>`).join("")}</div>`
+        : `<span>이번 엔딩에서 새로 열린 업적은 없습니다. 다음 목표를 노려보세요.</span>`;
+      els.endAchievements.innerHTML = `
+        <b>업적 요약 · 일반 ${counts.normal}/${counts.normalTotal}개 묶음 · 숨겨진 ${counts.hidden}/${counts.hiddenTotal}개</b>
+        ${chips}
+      `;
     }
 
     function renderTutorial() {
@@ -6050,31 +6796,65 @@
       const targetMap = {
         stat: "#meters",
         drag: ".card-wrap",
-        quest: "#questBoard",
+        log: "#logList",
         choice: "#lastResult",
         tarot: "#openArchiveTop"
       };
       return document.querySelector(step.target || targetMap[step.practice] || ".game-panel");
     }
 
+    function completeTutorialCoachPractice(practice) {
+      if (!state.tutorialCoachOpen) return;
+      const step = tutorialSteps[state.tutorialIndex];
+      if (practice && step.practice !== practice) return;
+      if (state.tutorialPracticeDone[state.tutorialIndex]) return;
+      state.tutorialPracticeDone[state.tutorialIndex] = true;
+      renderTutorialCoach();
+      setTimeout(() => {
+        if (!state.tutorialCoachOpen) return;
+        if (state.tutorialIndex >= tutorialSteps.length - 1) {
+          closeTutorialModal();
+          return;
+        }
+        state.tutorialIndex += 1;
+        renderTutorialCoach();
+      }, 520);
+    }
+
     function renderTutorialCoach() {
       const index = clamp(state.tutorialIndex, 0, tutorialSteps.length - 1);
       state.tutorialIndex = index;
       const step = tutorialSteps[index];
+      const done = Boolean(state.tutorialPracticeDone[index]);
       clearTutorialHighlight();
       const target = tutorialTargetFor(step);
       target?.classList.add("tutorial-highlight");
+      els.tutorialCoach.classList.toggle("done", done);
       els.tutorialCoachTitle.textContent = step.title;
-      els.tutorialCoachText.textContent = step.text;
+      els.tutorialCoachText.textContent = done
+        ? `${step.text} 완료되었습니다. 다음 단계로 자동 이동합니다.`
+        : `${step.text} 표시된 영역을 직접 조작해야 다음 단계로 넘어갈 수 있습니다.`;
       els.tutorialCoachProgress.textContent = `${index + 1} / ${tutorialSteps.length}`;
       els.tutorialCoachPrev.disabled = index === 0;
+      els.tutorialCoachNext.disabled = !done;
       els.tutorialCoachNext.textContent = index === tutorialSteps.length - 1 ? "완료" : "다음";
     }
 
     function openTutorial(startAt = 0) {
+      state.tutorialRun = true;
+      state.tutorialRunTracked = false;
+      state.runStartedTracked = false;
+      resetGame(false, { tutorial: true });
+      els.storyModal.classList.remove("open");
+      if (!state.tutorialRunTracked) {
+        state.tutorialRunTracked = true;
+        updatePlayerStats({ tutorialRuns: 1 });
+      }
       state.tutorialIndex = startAt;
+      state.tutorialPracticeDone = {};
       state.tutorialCoachOpen = true;
       els.tutorialModal.classList.remove("open");
+      els.endModal.classList.remove("open");
       els.tutorialCoach.classList.add("open");
       renderTutorialCoach();
     }
@@ -6088,38 +6868,144 @@
       checkAchievements();
     }
 
+    function archiveTotalFor(tab) {
+      if (tab === "events") return TOTAL_EVENT_POOL;
+      if (tab === "quests") return QUEST_LIBRARY_SIZE;
+      if (tab === "endings") return ENDING_ARCHIVE_TOTAL;
+      return 0;
+    }
+
+    function archiveUnlockedCount(tab) {
+      return Math.min((state.archive[tab] || []).length, archiveTotalFor(tab));
+    }
+
+    function archiveCatalog(tab) {
+      if (tab === "events") {
+        const seen = new Map((state.archive.events || []).map(item => [item.id, item]));
+        return buildDeck().map(card => {
+          const unlocked = seen.get(card.id);
+          if (unlocked) return { ...unlocked, locked: false };
+          return {
+            id: card.id,
+            title: "???",
+            meta: `미해금 사건 · #${String(card.number).padStart(3, "0")}`,
+            text: "",
+            dilemma: "",
+            tags: [],
+            locked: true
+          };
+        });
+      }
+
+      if (tab === "quests") {
+        const seen = new Map((state.archive.quests || []).map(item => [item.id, item]));
+        return buildQuestLibrary().map(quest => {
+          const unlocked = seen.get(quest.id);
+          if (unlocked) return { ...unlocked, locked: false };
+          return {
+            id: quest.id,
+            title: "???",
+            meta: "미해금 퀘스트",
+            text: "",
+            dilemma: "",
+            tags: [],
+            locked: true
+          };
+        });
+      }
+
+      if (tab === "endings") {
+        const seen = (state.archive.endings || []).slice(0, ENDING_ARCHIVE_TOTAL).map(item => ({ ...item, locked: false }));
+        const locked = Array.from({ length: Math.max(0, ENDING_ARCHIVE_TOTAL - seen.length) }, (_, index) => ({
+          id: `locked-ending-${index + 1}`,
+          title: "???",
+          meta: "미해금 엔딩",
+          locked: true
+        }));
+        return [...seen, ...locked];
+      }
+
+      return [];
+    }
+
+    function filteredArchiveCatalog(tab) {
+      const list = archiveCatalog(tab);
+      if (state.archiveFilter === "unlocked") return list.filter(item => !item.locked);
+      if (state.archiveFilter === "locked") return list.filter(item => item.locked);
+      return list;
+    }
+
+    function renderArchiveStatsPanel() {
+      const stats = state.playerStats;
+      const rows = [
+        ["게임한 수", stats.gamesPlayed],
+        ["튜토리얼 진행", stats.tutorialRuns],
+        ["클릭/선택 수", stats.totalClicks],
+        ["왼쪽 선택", stats.leftChoices],
+        ["오른쪽 선택", stats.rightChoices],
+        ["획득 점수", stats.totalScoreGained],
+        ["누적 생존 턴", stats.totalSurvivedTurns],
+        ["최고 점수", stats.bestScore],
+        ["위기 극복", stats.crisisRecoveries],
+        ["퀘스트 수락", stats.questsAccepted],
+        ["퀘스트 성공", stats.questsCompleted],
+        ["퀘스트 실패", stats.questsFailed],
+        ["확인한 엔딩", state.archive.endings.length],
+        ["보관소 열람", stats.archiveOpens]
+      ];
+      els.archiveList.innerHTML = `<div class="empty">누적 플레이 통계를 오른쪽에서 확인합니다.</div>`;
+      els.archiveDetail.innerHTML = `
+        <div class="archive-stat-grid">
+          ${rows.map(([label, value]) => `
+            <div class="archive-stat-item">
+              <span>${escapeText(label)}</span>
+              <b>${Number(value || 0).toLocaleString("ko-KR")}</b>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
     function renderArchive() {
-      const counts = {
-        events: state.archive.events.length,
-        quests: state.archive.quests.length,
-        endings: state.archive.endings.length
-      };
-      els.archiveStats.innerHTML = [
-        ["events", "경험한 사건", counts.events],
-        ["quests", "만난 퀘스트", counts.quests],
-        ["endings", "확인한 엔딩", counts.endings]
-      ].map(([tab, label, value]) => `
-        <button class="archive-card ${state.archiveTab === tab ? "active" : ""}" data-archive-stat-tab="${tab}" type="button" ${value ? "" : "disabled"}>
+      const countRows = [
+        ["events", "사건", archiveUnlockedCount("events"), archiveTotalFor("events")],
+        ["quests", "퀘스트", archiveUnlockedCount("quests"), archiveTotalFor("quests")],
+        ["endings", "엔딩", archiveUnlockedCount("endings"), archiveTotalFor("endings")],
+        ["stats", "통계", 1, 1]
+      ];
+      els.archiveStats.innerHTML = countRows.map(([tab, label, value, total]) => `
+        <button class="archive-card ${state.archiveTab === tab ? "active" : ""}" data-archive-stat-tab="${tab}" type="button">
           <span>${label}</span>
-          <b>${value}</b>
+          <b>${value}/${total}</b>
         </button>
       `).join("");
 
       els.archiveTabs.querySelectorAll("[data-archive-tab]").forEach(button => {
         button.classList.toggle("active", button.dataset.archiveTab === state.archiveTab);
       });
+      els.archiveFilters.hidden = state.archiveTab === "stats";
+      els.archiveFilters.querySelectorAll("[data-archive-filter]").forEach(button => {
+        button.classList.toggle("active", button.dataset.archiveFilter === state.archiveFilter);
+      });
 
-      const list = state.archive[state.archiveTab] || [];
+      if (state.archiveTab === "stats") {
+        state.archiveListView = [];
+        renderArchiveStatsPanel();
+        return;
+      }
+
+      const list = filteredArchiveCatalog(state.archiveTab);
+      state.archiveListView = list;
       if (!list.length) {
-        els.archiveList.innerHTML = `<div class="empty">아직 기록이 없습니다. 플레이하면 자동으로 채워집니다.</div>`;
+        els.archiveList.innerHTML = `<div class="empty">현재 필터에 해당하는 기록이 없습니다.</div>`;
         renderArchiveDetail(null);
         return;
       }
 
-      els.archiveList.innerHTML = list.slice(0, 80).map((item, index) => `
-        <button class="archive-row" data-archive-index="${index}" type="button">
-          <b>${escapeText(item.title)}</b>
-          <span>${escapeText(item.meta || "")} · 경험 ${item.count || 1}회</span>
+      els.archiveList.innerHTML = list.slice(0, 500).map((item, index) => `
+        <button class="archive-row ${item.locked ? "locked" : ""}" data-archive-index="${index}" type="button">
+          <b>${escapeText(item.locked ? "???" : item.title)}</b>
+          <span>${escapeText(item.locked ? item.meta || "미해금" : `${item.meta || ""} · 경험 ${item.count || 1}회`)}</span>
         </button>
       `).join("");
       renderArchiveDetail(list[0]);
@@ -6127,10 +7013,9 @@
 
     function openArchive(tab = state.archiveTab) {
       state.archiveOpened = true;
+      state.playerStats.archiveOpens += 1;
+      persistPlayerStats();
       state.archiveTab = tab;
-      if (!(state.archive[state.archiveTab] || []).length) {
-        state.archiveTab = ["events", "quests", "endings"].find(key => (state.archive[key] || []).length) || state.archiveTab;
-      }
       renderArchive();
       els.archiveModal.classList.add("open");
       checkAchievements();
@@ -6140,7 +7025,7 @@
       els.versionFooter.innerHTML = `
         <div class="version-footer-row">
           <div>
-            <strong>현재 빌드: 부동산 밸런스 카드 ${GAME_VERSION}</strong>
+            <strong>현재 빌드: SWAY ${GAME_VERSION}</strong>
             <span>최근 변경: ${PATCH_HISTORY[0].summary}</span>
           </div>
           <button class="text-button" id="openPatchNotes" type="button">
@@ -6170,9 +7055,9 @@
       const history = state.statHistory.length
         ? state.statHistory
         : [{ turn: 0, stats: { ...state.stats }, stars: { ...state.statStars } }];
-      const width = 360;
-      const height = 170;
-      const pad = 24;
+      const width = 640;
+      const height = 270;
+      const pad = 34;
       const graphWidth = width - pad * 2;
       const graphHeight = height - pad * 2;
       const maxIndex = Math.max(1, history.length - 1);
@@ -6205,6 +7090,21 @@
         const points = history.map((entry, historyIndex) => pointFor(entry, historyIndex, key)).join(" ");
         return `<polyline class="graph-line ${key}" style="animation-delay:${(index * 0.18).toFixed(2)}s" points="${points}" />`;
       }).join("");
+      const pointDots = visibleKeys.map((key, keyIndex) => {
+        const meta = STAT_META[key];
+        return history.map((entry, historyIndex) => {
+          const [x, y] = pointFor(entry, historyIndex, key).split(",");
+          const value = graphValue(entry, key);
+          const stars = entry.stars?.[key] || 0;
+          const raw = Math.round(entry.stats?.[key] || 0);
+          const delay = 0.68 + keyIndex * 0.16 + historyIndex * 0.035;
+          return `
+            <circle class="graph-point ${key}" style="--point-delay:${delay.toFixed(2)}s" cx="${x}" cy="${y}" r="4.4">
+              <title>${entry.turn}턴 · ${meta.label} ${value}점 · 별 ${stars}개 · 현재 지표 ${raw}</title>
+            </circle>
+          `;
+        }).join("");
+      }).join("");
       const controls = [
         ["all", "전체"],
         ...Object.entries(STAT_META).map(([key, meta]) => [key, meta.label])
@@ -6227,6 +7127,7 @@
           <line class="graph-grid-line" x1="${pad}" y1="${pad + graphHeight / 2}" x2="${width - pad}" y2="${pad + graphHeight / 2}" />
           ${starMarkers}
           ${lines}
+          ${pointDots}
         </svg>
         <div class="graph-legend">${legend}</div>
       `;
@@ -6244,6 +7145,9 @@
       });
       document.querySelectorAll("[data-start-leaderboard-difficulty]").forEach(button => {
         button.classList.toggle("active", button.dataset.startLeaderboardDifficulty === state.leaderboardDifficulty);
+      });
+      document.querySelectorAll("[data-modal-leaderboard-difficulty]").forEach(button => {
+        button.classList.toggle("active", button.dataset.modalLeaderboardDifficulty === state.leaderboardDifficulty);
       });
     }
 
@@ -6263,6 +7167,7 @@
       const setLists = html => {
         els.leaderboardList.innerHTML = html;
         els.startLeaderboardList.innerHTML = html;
+        els.modalLeaderboardList.innerHTML = html;
       };
 
       if (!canUseServerRecords()) {
@@ -6302,6 +7207,7 @@
       } catch {
         els.leaderboardList.innerHTML = `<div class="empty">순위표 서버에 연결할 수 없습니다.</div>`;
         els.startLeaderboardList.innerHTML = `<div class="empty">순위표 서버에 연결할 수 없습니다.</div>`;
+        els.modalLeaderboardList.innerHTML = `<div class="empty">순위표 서버에 연결할 수 없습니다.</div>`;
       }
     }
 
@@ -6356,6 +7262,7 @@
         state.inDanger = false;
         state.dangerRecoveryCount += 1;
         state.score += CRISIS_RECOVERY_BONUS;
+        updatePlayerStats({ crisisRecoveries: 1, totalScoreGained: CRISIS_RECOVERY_BONUS });
         result.recovered = true;
         result.recoveryBonus = CRISIS_RECOVERY_BONUS;
       }
@@ -6374,11 +7281,18 @@
 
     function choose(side) {
       if (state.ended) return;
+      completeTutorialCoachPractice("choice");
       const card = currentCard();
       archiveCard(card);
       const choice = card[side];
       const combined = effectiveChoiceDelta(card, side);
       const scoreGain = applyDeltaWithScore(combined);
+      updatePlayerStats({
+        totalClicks: 1,
+        totalScoreGained: scoreGain.survivalScore + scoreGain.starBonus,
+        leftChoices: side === "left" ? 1 : 0,
+        rightChoices: side === "right" ? 1 : 0
+      });
       const effects = currentDifficulty().showResultDeltas
         ? (deltaText(combined) || `<span class="delta hidden-deltas">변화 없음</span>`)
         : hiddenDeltaHint();
@@ -6417,17 +7331,20 @@
         ? `<br><span class="server-note">${questMessages.join("<br>")}</span>`
         : "";
       state.last = `<strong>${choice.label}</strong> 선택. ${choice.text}<br>${turnPhrase} 생존 점수 +${scoreGain.survivalScore}.${bonusLine}${protectedLine}${questLine}${recoveryLine}${dangerLine}${invincibleLine}<div class="delta-row">${effects}</div>`;
+      const logParts = [
+        `${choice.label}: ${deltaSentence(combined) || "지표 변화 없음"}`
+      ].concat(questMessages.map(message => message.replace(/<[^>]+>/g, "")));
       state.log.unshift({
         turn: state.turn,
-        text: `${card.title}: ${choice.label}. ${deltaSentence(combined) || "지표 변화 없음"}`
-      });
-      questMessages.forEach(message => {
-        state.log.unshift({
-          turn: state.turn,
-          text: message.replace(/<[^>]+>/g, "")
-        });
+        title: card.title,
+        text: logParts.join(" · ")
       });
       recordStatHistory(`${card.title}: ${choice.label}`);
+
+      if (state.tutorialRun && state.tutorialIndex >= tutorialSteps.length - 1) {
+        endGame("튜토리얼 고정 런을 완료했습니다.");
+        return;
+      }
 
       if (questResult.gameOver) {
         endGame("퀘스트 실패로 프로젝트가 중단되었습니다.");
@@ -6446,7 +7363,7 @@
       }
 
       if (state.turn >= state.deck.length) {
-        endGame("50개 사건을 모두 통과했습니다.");
+        endGame(state.tutorialRun ? "튜토리얼 고정 런을 완료했습니다." : "50개 사건을 모두 통과했습니다.");
         return;
       }
 
@@ -6470,6 +7387,12 @@
       const lastCard = state.deck[Math.max(0, state.turn - 1)] || currentCard();
       const statLine = `현금흐름 ${Math.round(state.stats.cash)}, 신뢰 ${Math.round(state.stats.trust)}, 생활가치 ${Math.round(state.stats.city)}, 위험관리 ${Math.round(state.stats.control)}`;
       const arcLine = `${firstCard.chapter}의 ${firstCard.title}에서 시작해 ${lastCard.chapter}의 ${lastCard.title}까지 이어진 기록`;
+      if (state.tutorialRun) {
+        return {
+          title: "엔딩: 첫 장부의 균형",
+          body: `정해진 튜토리얼 런을 끝까지 마쳤습니다. ${arcLine}은 SWAY의 기본 흐름을 보여주는 작은 실습 장부로 남았습니다. 카드를 밀면 뒤쪽 선택지가 보이고, 방향키도 같은 강도로 선택을 준비하며, 진행 기록은 한 턴의 선택과 퀘스트 결과를 한 줄에 묶어 보여줍니다. 최종 장부는 ${statLine}, 점수 ${score}점입니다.`
+        };
+      }
       const context = {
         avg,
         low,
@@ -6680,11 +7603,13 @@
       const low = lowestStat();
       const clearedRun = state.turn >= state.deck.length && !reason.includes("바닥");
       const balanceBonus = Math.round(avg * 0.9 + low * 0.6);
-      const completionBonus = clearedRun && !isInfiniteMode() ? 100 : 0;
+      const completionBonus = clearedRun && !isInfiniteMode() && !state.tutorialRun ? 100 : 0;
       const score = Math.max(0, state.score + balanceBonus + completionBonus - state.dangerCount * 2);
       state.finalResult = { score, avg, low, reason, bonusCount: state.bonusCount, baseScore: state.score };
       state.submitted = false;
-      const hardUnlockedNow = clearedRun && !isInfiniteMode() && state.difficulty === "medium" && !state.hardUnlocked;
+      updatePlayerStats({ totalSurvivedTurns: state.turn });
+      setPlayerStatMax("bestScore", score);
+      const hardUnlockedNow = clearedRun && !isInfiniteMode() && !state.tutorialRun && state.difficulty === "medium" && !state.hardUnlocked;
       if (hardUnlockedNow) unlockHardMode();
       els.scoreGrid.innerHTML = [
         ["최종 점수", `${score}`],
@@ -6702,7 +7627,9 @@
           <b>${value}</b>
         </div>
       `).join("");
-      const tone = isInfiniteMode()
+      const tone = state.tutorialRun
+        ? "튜토리얼 고정 런을 완료했습니다. 이 결과는 해금과 공개 순위표에는 영향을 주지 않고, 조작 흐름을 익히기 위한 기록으로만 남습니다."
+        : isInfiniteMode()
         ? `${state.playerName || "익명 투자자"}님의 무한 모드 기록입니다. 서버 버전에서는 이 결과를 공개 순위표에 등록할 수 있습니다.`
         : clearedRun
         ? "이번 런의 50개 사건을 모두 넘겼습니다. 한쪽 지표만 밀어붙이지 않은 판단이 오래 버티는 힘이 됐습니다."
@@ -6716,6 +7643,9 @@
       const endingId = `${story.title}-${reason}`;
       const firstSeenEnding = !state.archive.endings.some(item => item.id === endingId);
       archiveEnding(story, reason, score, tarot);
+      state.playerStats.endingsSeen = state.archive.endings.length;
+      persistPlayerStats();
+      const newlyUnlockedAchievements = checkAchievements();
       els.endTarotWrap.innerHTML = tarotCardHtml(tarot, { flipped: true, id: endingId });
       bindTarotInteractions(els.endTarotWrap);
       const unlockLine = hardUnlockedNow
@@ -6732,8 +7662,9 @@
           ${story.body}
         </div>
       `;
+      renderEndAchievements(newlyUnlockedAchievements);
       renderStatGraph();
-      els.submitSection.hidden = !isInfiniteMode();
+      els.submitSection.hidden = !isInfiniteMode() || state.tutorialRun;
       els.submitScore.disabled = false;
       els.leaderboardStatus.textContent = canUseServerRecords()
         ? "기록 등록을 누르면 공개 순위표에 저장됩니다."
@@ -6742,10 +7673,13 @@
       if (firstSeenEnding) {
         showTarotReveal(tarot, endingId);
       }
-      checkAchievements();
     }
 
-    function resetGame(showStory = false) {
+    function resetGame(showStory = false, options = {}) {
+      const tutorialMode = Boolean(options.tutorial || (state.tutorialRun && !showStory));
+      state.tutorialRun = tutorialMode;
+      if (!tutorialMode) state.tutorialRunTracked = false;
+      state.runStartedTracked = false;
       const start = currentDifficulty().start;
       state.stats = { cash: start, trust: start, city: start, control: start };
       state.seed = Date.now();
@@ -6773,6 +7707,7 @@
       recordStatHistory("시작");
       els.endModal.classList.remove("open");
       els.statGraph.innerHTML = "";
+      els.endAchievements.innerHTML = "";
       els.submitSection.hidden = true;
       els.mobileLogDrawer.classList.remove("open");
       els.storyModal.classList.toggle("open", showStory);
@@ -6801,6 +7736,7 @@
       return els.storyModal.classList.contains("open")
         || els.endModal.classList.contains("open")
         || els.patchModal.classList.contains("open")
+        || els.leaderboardModal.classList.contains("open")
         || els.tutorialModal.classList.contains("open")
         || els.settingsModal.classList.contains("open")
         || els.archiveModal.classList.contains("open")
@@ -6831,8 +7767,8 @@
         resetKeyboardControl();
         return;
       }
-      const moved = direction === "left" ? -98 : 98;
-      const rotate = direction === "left" ? -11 : 11;
+      const moved = direction === "left" ? -158 : 158;
+      const rotate = direction === "left" ? -13.5 : 13.5;
       els.playCard.style.transform = `translateX(${moved}px) rotate(${rotate}deg)`;
       els.playCard.classList.toggle("left-lean", direction === "left");
       els.playCard.classList.toggle("right-lean", direction === "right");
@@ -6929,22 +7865,59 @@
       return false;
     }
 
+    function currentArchivePreviewCard() {
+      if (!els.archiveModal.classList.contains("open")) return null;
+      return els.archiveDetail.querySelector("[data-archive-play-card]");
+    }
+
+    function applyArchiveKeyboardPreview(direction) {
+      const card = currentArchivePreviewCard();
+      if (!card) return false;
+      const wrap = card.closest("[data-archive-card-wrap]");
+      const moved = direction === "left" ? -118 : 118;
+      const left = direction === "right" ? 1 : 0;
+      const right = direction === "left" ? 1 : 0;
+      wrap?.style.setProperty("--leftPeek", left.toFixed(2));
+      wrap?.style.setProperty("--rightPeek", right.toFixed(2));
+      card.style.transform = `translateX(${moved}px) rotate(${moved / 10}deg)`;
+      return true;
+    }
+
+    function resetArchiveKeyboardPreview() {
+      const card = currentArchivePreviewCard();
+      if (!card) return false;
+      const wrap = card.closest("[data-archive-card-wrap]");
+      card.style.transform = "";
+      wrap?.style.setProperty("--leftPeek", "0.74");
+      wrap?.style.setProperty("--rightPeek", "0.74");
+      return true;
+    }
+
     function handleArrowKeyDown(event) {
       if (handleSecretKeys(event)) return;
       if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
       event.preventDefault();
+      if (els.archiveModal.classList.contains("open")) {
+        applyArchiveKeyboardPreview(event.key === "ArrowLeft" ? "left" : "right");
+        return;
+      }
       if (state.ended || isModalOpen()) return;
       clearTimeout(keyControl.releaseTimer);
       keyControl.releaseTimer = null;
       const direction = event.key === "ArrowLeft" ? "left" : "right";
       keyControl[direction] = true;
       keyControl.lastPressed = direction;
+      completeTutorialCoachPractice("keyboard");
       applyKeyboardLean(activeKeyboardDirection());
     }
 
     function handleArrowKeyUp(event) {
       if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
       event.preventDefault();
+      if (els.archiveModal.classList.contains("open")) {
+        resetArchiveKeyboardPreview();
+        return;
+      }
       const direction = event.key === "ArrowLeft" ? "left" : "right";
       recordKeyRelease(direction);
       keyControl[direction] = false;
@@ -6963,6 +7936,7 @@
 
     function startDrag(event) {
       if (state.ended || isModalOpen()) return;
+      if (state.settings.fastMode) return;
       event.preventDefault();
       resetKeyboardControl();
       els.playCard.setPointerCapture?.(event.pointerId);
@@ -6983,6 +7957,7 @@
         els.playCard.classList.toggle("right-lean", moved > 32);
         els.playCard.classList.toggle("preview-lock", distance >= previewThreshold);
         els.playCard.classList.toggle("commit-ready", distance >= commitThreshold);
+        if (distance >= commitThreshold) completeTutorialCoachPractice("drag");
         setPeek(moved);
       };
       const up = () => {
@@ -7003,6 +7978,36 @@
       };
       window.addEventListener("pointermove", move);
       window.addEventListener("pointerup", up);
+    }
+
+    function fastModeDirectionFromEvent(event) {
+      const rect = els.cardStage.getBoundingClientRect();
+      return event.clientX < rect.left + rect.width / 2 ? "left" : "right";
+    }
+
+    function previewFastMode(event) {
+      if (!state.settings.fastMode || state.ended || isModalOpen()) return;
+      const direction = fastModeDirectionFromEvent(event);
+      const moved = direction === "left" ? -158 : 158;
+      const rotate = direction === "left" ? -13.5 : 13.5;
+      els.playCard.style.transform = `translateX(${moved}px) rotate(${rotate}deg)`;
+      els.playCard.classList.toggle("left-lean", direction === "left");
+      els.playCard.classList.toggle("right-lean", direction === "right");
+      els.playCard.classList.add("preview-lock", "commit-ready");
+      setPeek(moved);
+    }
+
+    function commitFastMode(event) {
+      if (!state.settings.fastMode || state.ended || isModalOpen()) return;
+      const direction = fastModeDirectionFromEvent(event);
+      resetPeek();
+      choose(direction === "left" ? "right" : "left");
+    }
+
+    function resetFastModePreview() {
+      if (!state.settings.fastMode) return;
+      els.playCard.classList.remove("left-lean", "right-lean", "preview-lock", "commit-ready");
+      resetPeek();
     }
 
     function startTutorialPracticeDrag(event) {
@@ -7028,6 +8033,9 @@
     }
 
     els.playCard.addEventListener("pointerdown", startDrag);
+    els.cardStage.addEventListener("mousemove", previewFastMode);
+    els.cardStage.addEventListener("mouseleave", resetFastModePreview);
+    els.cardStage.addEventListener("click", commitFastMode);
     els.tutorialPracticeCard.addEventListener("pointerdown", startTutorialPracticeDrag);
     els.tutorialPracticeCard.addEventListener("click", () => {
       const step = tutorialSteps[state.tutorialIndex];
@@ -7037,13 +8045,21 @@
       if (!event.target.closest("[data-tutorial-stat]")) return;
       if (tutorialSteps[state.tutorialIndex].practice === "stat") completeTutorialPractice();
     });
+    els.meters.addEventListener("click", () => completeTutorialCoachPractice("stat"));
+    els.logList.addEventListener("click", () => completeTutorialCoachPractice("log"));
     els.tutorialPracticeLeft.addEventListener("click", completeTutorialPractice);
     els.tutorialPracticeRight.addEventListener("click", completeTutorialPractice);
     els.newGameTop.addEventListener("click", () => resetGame(true));
     els.openTutorialTop.addEventListener("click", () => openTutorial(0));
     els.openTutorialStory.addEventListener("click", () => openTutorial(0));
-    els.openArchiveTop.addEventListener("click", () => openArchive());
-    els.openArchiveStory.addEventListener("click", () => openArchive());
+    els.openArchiveTop.addEventListener("click", () => {
+      completeTutorialCoachPractice("tarot");
+      openArchive();
+    });
+    els.openArchiveStory.addEventListener("click", () => {
+      completeTutorialCoachPractice("tarot");
+      openArchive();
+    });
     els.openAchievementsTop.addEventListener("click", () => openAchievements());
     els.openAchievementsStory.addEventListener("click", () => openAchievements());
     els.openSettingsTop.addEventListener("click", () => {
@@ -7060,8 +8076,14 @@
     });
     els.quickLeft.addEventListener("click", () => choose("left"));
     els.quickRight.addEventListener("click", () => choose("right"));
-    els.mobileLogToggle.addEventListener("click", () => els.mobileLogDrawer.classList.toggle("open"));
-    els.mobileLogHandle.addEventListener("click", () => els.mobileLogDrawer.classList.toggle("open"));
+    els.mobileLogToggle.addEventListener("click", () => {
+      els.mobileLogDrawer.classList.toggle("open");
+      completeTutorialCoachPractice("log");
+    });
+    els.mobileLogHandle.addEventListener("click", () => {
+      els.mobileLogDrawer.classList.toggle("open");
+      completeTutorialCoachPractice("log");
+    });
     els.difficultyOptions.addEventListener("click", event => {
       const button = event.target.closest("[data-difficulty]");
       if (!button) return;
@@ -7093,11 +8115,17 @@
         state.playerName = name;
         els.playerName.value = name;
       }
+      if (!state.runStartedTracked) {
+        state.runStartedTracked = true;
+        updatePlayerStats({ gamesPlayed: 1 });
+      }
       els.storyModal.classList.remove("open");
       updateBodyState();
+      completeTutorialCoachPractice("start");
     });
     els.closeEnd.addEventListener("click", () => els.endModal.classList.remove("open"));
     els.closePatchNotes.addEventListener("click", () => els.patchModal.classList.remove("open"));
+    els.closeLeaderboardModal.addEventListener("click", () => els.leaderboardModal.classList.remove("open"));
     els.closeTutorial.addEventListener("click", () => closeTutorialModal());
     els.skipTutorial.addEventListener("click", () => closeTutorialModal());
     els.prevTutorial.addEventListener("click", () => {
@@ -7158,10 +8186,16 @@
       state.archiveTab = button.dataset.archiveTab;
       renderArchive();
     });
+    els.archiveFilters.addEventListener("click", event => {
+      const button = event.target.closest("[data-archive-filter]");
+      if (!button) return;
+      state.archiveFilter = button.dataset.archiveFilter;
+      renderArchive();
+    });
     els.archiveList.addEventListener("click", event => {
       const row = event.target.closest("[data-archive-index]");
       if (!row) return;
-      const item = (state.archive[state.archiveTab] || [])[Number(row.dataset.archiveIndex)];
+      const item = (state.archiveListView || [])[Number(row.dataset.archiveIndex)];
       renderArchiveDetail(item);
     });
     els.restartEnd.addEventListener("click", () => resetGame(true));
@@ -7175,6 +8209,15 @@
     els.openPatchNotesStory.addEventListener("click", () => {
       renderPatchNotes();
       els.patchModal.classList.add("open");
+    });
+    els.openPatchNotesTop.addEventListener("click", () => {
+      renderPatchNotes();
+      els.patchModal.classList.add("open");
+    });
+    els.openLeaderboardTop.addEventListener("click", () => {
+      renderLeaderboardTabs();
+      loadLeaderboard();
+      els.leaderboardModal.classList.add("open");
     });
     els.submitScore.addEventListener("click", submitLeaderboardRecord);
     els.refreshLeaderboard.addEventListener("click", loadLeaderboard);
@@ -7190,6 +8233,13 @@
       const button = event.target.closest("[data-start-leaderboard-difficulty]");
       if (!button) return;
       state.leaderboardDifficulty = button.dataset.startLeaderboardDifficulty;
+      renderLeaderboardTabs();
+      loadLeaderboard();
+    });
+    els.modalLeaderboardTabs.addEventListener("click", event => {
+      const button = event.target.closest("[data-modal-leaderboard-difficulty]");
+      if (!button) return;
+      state.leaderboardDifficulty = button.dataset.modalLeaderboardDifficulty;
       renderLeaderboardTabs();
       loadLeaderboard();
     });
