@@ -126,6 +126,15 @@
       font-weight: 850;
     }
 
+    .build-label {
+      display: inline-block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+      line-height: 1.1;
+    }
+
     .subtitle {
       margin: 5px 0 0;
       color: var(--muted);
@@ -139,6 +148,15 @@
       justify-content: flex-end;
       gap: 8px;
       flex-wrap: wrap;
+    }
+
+    #openTutorialTop,
+    #openArchiveTop,
+    #openAchievementsTop,
+    #openSettingsTop,
+    #openPatchNotesTop,
+    #openLeaderboardTop {
+      display: none;
     }
 
     #turnPill,
@@ -239,7 +257,9 @@
 
     body.dark-mode .play-card,
     body.dark-mode .under-choice-sheet,
-    body.dark-mode .archive-detail-card {
+    body.dark-mode .archive-detail-card,
+    body.dark-mode .tutorial-double-demo,
+    body.dark-mode .tutorial-double-card {
       background: #192427;
       color: var(--ink);
       border-color: #4b5d61;
@@ -269,6 +289,8 @@
     }
 
     body.dark-mode .card-title,
+    body.dark-mode .tutorial-double-head,
+    body.dark-mode .tutorial-double-card .card-title,
     body.dark-mode .tutorial-card h3,
     body.dark-mode .archive-card b,
     body.dark-mode .archive-row b,
@@ -284,6 +306,8 @@
 
     body.dark-mode .story-line,
     body.dark-mode .card-text,
+    body.dark-mode .tutorial-double-card .story-line,
+    body.dark-mode .tutorial-double-card .card-text,
     body.dark-mode .meter-copy,
     body.dark-mode .quick-choice span,
     body.dark-mode .tutorial-card p,
@@ -301,6 +325,22 @@
       border-left-color: #d9a052;
     }
 
+    body.dark-mode .quest-board-title,
+    body.dark-mode .quest-row-top,
+    body.dark-mode .quest-row-copy {
+      color: #dcebe7;
+    }
+
+    body.dark-mode .quest-row-top b {
+      color: #9cf0d2;
+    }
+
+    body.dark-mode .tutorial-double-effect {
+      color: #f0d9a7;
+      background: rgba(115, 70, 14, 0.34);
+      border-color: #d6b46e;
+    }
+
     .icon-button:hover,
     .text-button:hover {
       transform: translateY(-1px);
@@ -309,7 +349,7 @@
 
     .layout {
       display: grid;
-      grid-template-columns: minmax(300px, 0.78fr) minmax(420px, 1.08fr) minmax(300px, 0.78fr);
+      grid-template-columns: minmax(208px, 0.48fr) minmax(560px, 1.55fr) minmax(260px, 0.62fr);
       gap: 14px;
       align-items: start;
       margin-top: 14px;
@@ -348,14 +388,14 @@
 
     .meters {
       display: grid;
-      gap: 11px;
-      padding: 13px;
+      gap: 8px;
+      padding: 10px;
     }
 
     .meter {
       display: grid;
-      gap: 7px;
-      padding: 10px;
+      gap: 6px;
+      padding: 8px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: #ffffff;
@@ -365,14 +405,14 @@
 
     .meter-main {
       display: grid;
-      grid-template-columns: 58px minmax(0, 1fr);
-      gap: 10px;
+      grid-template-columns: 50px minmax(0, 1fr);
+      gap: 8px;
       align-items: center;
     }
 
     .stat-gauge {
-      width: 54px;
-      height: 54px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       display: grid;
       place-items: center;
@@ -466,6 +506,7 @@
       color: #61707f;
       font-size: 12px;
       line-height: 1.36;
+      display: none;
     }
 
     .stat-stars {
@@ -486,9 +527,9 @@
     }
 
     .radar {
-      padding: 13px;
+      padding: 10px;
       display: grid;
-      gap: 10px;
+      gap: 8px;
     }
 
     .radar-grid {
@@ -498,8 +539,8 @@
     }
 
     .small-card {
-      min-height: 76px;
-      padding: 9px;
+      min-height: 66px;
+      padding: 8px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: #fff;
@@ -561,6 +602,7 @@
       justify-items: center;
       min-height: 500px;
       min-width: 0;
+      position: relative;
     }
 
     .card-wrap {
@@ -976,6 +1018,8 @@
       padding: 10px;
       display: grid;
       gap: 8px;
+      width: 100%;
+      min-height: 0;
     }
 
     .double-road-panel[hidden] {
@@ -1044,6 +1088,224 @@
 
     .double-road-card small {
       font-weight: 900;
+    }
+
+    .double-road-preview-card {
+      position: relative;
+      min-height: 390px;
+      border: 1px solid #cad8d7;
+      border-radius: var(--radius);
+      background: #fff;
+      box-shadow: 0 20px 44px rgba(26, 36, 47, 0.14);
+      color: #17202a;
+      padding: 14px;
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr) auto;
+      gap: 11px;
+      overflow: hidden;
+      text-align: left;
+      touch-action: none;
+      user-select: none;
+      cursor: grab;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .double-road-preview-card > :not(.card-illustration) {
+      position: relative;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .double-road-preview-card:hover,
+    .double-road-preview-card.active {
+      transform: rotateX(3deg) rotateY(-4deg) translateY(-2px);
+      border-color: #1f6f5a;
+      box-shadow: 0 24px 54px rgba(31, 111, 90, 0.2);
+    }
+
+    .double-road-preview-card.quest-card {
+      color: #fff8f1;
+      border-color: #8e6bc7;
+      background:
+        radial-gradient(circle at 18% 8%, rgba(255, 226, 150, 0.18), transparent 28%),
+        linear-gradient(145deg, #4b2c68, #2d486f 58%, #28343d),
+        #3f2d58;
+    }
+
+    .double-road-preview-card .card-text {
+      max-height: 180px;
+    }
+
+    .tutorial-double-demo {
+      position: absolute;
+      inset: 16px;
+      z-index: 8;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      gap: 10px;
+      padding: 14px;
+      border: 1px solid rgba(31, 111, 90, 0.34);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(244, 247, 244, 0.9)),
+        repeating-linear-gradient(90deg, rgba(39, 124, 120, 0.06) 0 1px, transparent 1px 64px);
+      box-shadow: 0 26px 64px rgba(23, 32, 42, 0.22);
+    }
+
+    .tutorial-double-demo[hidden] {
+      display: none;
+    }
+
+    .tutorial-double-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: #243442;
+      font-size: 12px;
+      font-weight: 950;
+    }
+
+    .tutorial-double-cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      min-height: 0;
+    }
+
+    .tutorial-double-card {
+      min-height: 300px;
+      padding: 14px;
+      border: 1px solid #cad8d7;
+      border-radius: var(--radius);
+      background: #fff;
+      color: #17202a;
+      box-shadow: 0 18px 42px rgba(26, 36, 47, 0.13);
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr) auto;
+      gap: 10px;
+      text-align: left;
+      overflow: hidden;
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .tutorial-double-card:hover,
+    .tutorial-double-card.selected {
+      transform: translateY(-3px);
+      border-color: #1f6f5a;
+      box-shadow: 0 24px 54px rgba(31, 111, 90, 0.2);
+    }
+
+    .tutorial-double-card .card-text {
+      font-size: 13px;
+      line-height: 1.5;
+      max-height: none;
+    }
+
+    .tutorial-double-effect {
+      min-height: 44px;
+      border: 1px solid rgba(214, 180, 110, 0.72);
+      border-radius: var(--radius);
+      background: rgba(250, 236, 212, 0.78);
+      color: #73460e;
+      font-size: 12px;
+      font-weight: 950;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-align: center;
+      animation: setGlow 1.45s ease-in-out infinite alternate;
+    }
+
+    body.tutorial-double-active .card-wrap {
+      opacity: 0.18;
+      transform: scale(0.96);
+      pointer-events: none;
+    }
+
+    body.double-mode .card-stage {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      min-height: 470px;
+      align-items: center;
+    }
+
+    body.double-mode .card-wrap[data-double-slot="2"] {
+      order: 2;
+    }
+
+    body.double-mode .double-road-panel[data-double-slot="1"] {
+      order: 1;
+    }
+
+    body.double-mode .double-road-panel[data-double-slot="2"] {
+      order: 2;
+    }
+
+    body.double-mode .card-wrap {
+      width: 100%;
+      min-height: 438px;
+    }
+
+    body.double-mode .play-card,
+    body.double-mode .under-choice-sheet {
+      width: min(330px, 96%);
+      min-height: 390px;
+    }
+
+    body.double-mode .stack-shadow,
+    body.double-mode .stack-shadow::before {
+      width: min(315px, 92%);
+      height: 382px;
+    }
+
+    body.double-mode .double-road-panel {
+      align-self: center;
+      justify-self: stretch;
+      background: transparent;
+      border: 0;
+      padding: 0;
+      box-shadow: none;
+    }
+
+    body.double-mode .play-card {
+      outline: 3px solid rgba(31, 111, 90, 0.13);
+    }
+
+    body.double-mode .play-card::after {
+      content: "선택 카드";
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      z-index: 3;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: rgba(31, 111, 90, 0.92);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 950;
+      pointer-events: none;
+    }
+
+    body.set-effect-active .play-card,
+    body.set-effect-active .double-road-preview-card {
+      animation: setGlow 1.45s ease-in-out infinite alternate;
+    }
+
+    body.set-penalty-active .play-card,
+    body.set-penalty-active .double-road-preview-card {
+      animation: setPenaltyGlow 1.35s ease-in-out infinite alternate;
+    }
+
+    @keyframes setGlow {
+      from { box-shadow: 0 20px 44px rgba(26, 36, 47, 0.14), 0 0 0 rgba(255, 210, 116, 0); }
+      to { box-shadow: 0 24px 62px rgba(31, 111, 90, 0.22), 0 0 32px rgba(255, 210, 116, 0.36); }
+    }
+
+    @keyframes setPenaltyGlow {
+      from { box-shadow: 0 20px 44px rgba(26, 36, 47, 0.14), 0 0 0 rgba(184, 72, 95, 0); }
+      to { box-shadow: 0 24px 62px rgba(129, 45, 64, 0.24), 0 0 30px rgba(184, 72, 95, 0.38); }
     }
 
     .last-result {
@@ -1229,6 +1491,10 @@
       opacity: 1;
       transform: none;
       animation: none;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 7px;
+      align-items: start;
     }
 
     .log-item.new-log {
@@ -1248,6 +1514,26 @@
     .log-copy b {
       color: #1f6f5a;
       margin-right: 4px;
+    }
+
+    .log-choice-turn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 38px;
+      min-height: 22px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(31, 111, 90, 0.12);
+      color: #1f6f5a;
+      font-size: 11px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .log-text {
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
 
     .empty {
@@ -1327,10 +1613,18 @@
       pointer-events: none;
       padding-top: 96px;
       align-items: start;
+      overflow: auto;
     }
 
     #storyModal .modal {
       pointer-events: auto;
+      max-height: calc(100dvh - 112px);
+      overflow: auto;
+      border-color: var(--line);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(244, 247, 244, 0.82)),
+        repeating-linear-gradient(90deg, rgba(39, 124, 120, 0.05) 0 1px, transparent 1px 80px),
+        repeating-linear-gradient(0deg, rgba(56, 92, 168, 0.035) 0 1px, transparent 1px 80px);
     }
 
     .modal-layer.open {
@@ -1355,6 +1649,22 @@
       padding: 14px;
       display: grid;
       gap: 12px;
+      overflow-x: hidden;
+    }
+
+    .options-modal {
+      width: min(560px, 100%);
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .options-grid .text-button {
+      min-height: 58px;
+      font-weight: 950;
     }
 
     .tutorial-card {
@@ -1565,7 +1875,7 @@
 
     .mode-title {
       display: grid;
-      grid-template-columns: auto auto minmax(0, 1fr);
+      grid-template-columns: auto minmax(0, 1fr) auto;
       align-items: center;
     }
 
@@ -1579,6 +1889,7 @@
       font-size: 12px;
       font-weight: 950;
       white-space: nowrap;
+      justify-self: end;
     }
 
     .mode-toggle.active {
@@ -1615,11 +1926,13 @@
     .archive-list {
       max-height: 320px;
       overflow: auto;
+      overflow-x: clip;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: #fff;
       display: grid;
       gap: 0;
+      align-content: start;
     }
 
     .archive-workspace {
@@ -1628,6 +1941,7 @@
       gap: 10px;
       min-height: 430px;
       overflow: hidden;
+      overflow-x: clip;
     }
 
     .archive-workspace .archive-list {
@@ -1643,6 +1957,12 @@
       display: none;
     }
 
+    .archive-workspace.stats-mode .archive-detail {
+      min-height: 430px;
+      max-height: 430px;
+      align-self: stretch;
+    }
+
     .archive-detail {
       min-height: 430px;
       border: 1px solid var(--line);
@@ -1653,6 +1973,8 @@
       place-items: center;
       overflow: hidden;
       overflow-y: auto;
+      overflow-x: clip;
+      overscroll-behavior: contain;
     }
 
     .archive-detail-card {
@@ -2005,6 +2327,10 @@
     .opening-story {
       display: grid;
       gap: 12px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(244, 247, 244, 0.78)),
+        repeating-linear-gradient(90deg, rgba(39, 124, 120, 0.06) 0 1px, transparent 1px 80px),
+        repeating-linear-gradient(0deg, rgba(56, 92, 168, 0.04) 0 1px, transparent 1px 80px);
     }
 
     .start-extra {
@@ -2043,7 +2369,7 @@
     .difficulty-panel {
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: #f9fbfb;
+      background: rgba(255, 255, 255, 0.9);
       padding: 12px;
       display: grid;
       gap: 10px;
@@ -2059,9 +2385,14 @@
       font-weight: 900;
     }
 
+    #difficultyHint,
+    #modeHint {
+      display: none;
+    }
+
     .difficulty-title.mode-title {
       display: grid;
-      grid-template-columns: auto auto minmax(0, 1fr);
+      grid-template-columns: auto minmax(0, 1fr) auto;
       align-items: center;
     }
 
@@ -2451,6 +2782,7 @@
     }
 
     .version-footer {
+      display: none;
       width: min(1420px, calc(100% - 28px));
       margin: 14px auto 0;
       padding: 12px 14px;
@@ -2504,6 +2836,11 @@
       line-height: 1.5;
     }
 
+    .patch-time {
+      font-size: 12px !important;
+      font-weight: 850;
+    }
+
     .patch-detail-list {
       margin: 8px 0 0;
       padding-left: 18px;
@@ -2519,7 +2856,7 @@
 
     body.is-playing .app {
       height: 100dvh;
-      padding: 10px 0;
+      padding: 8px 0;
       display: grid;
       grid-template-rows: auto minmax(0, 1fr);
     }
@@ -2538,33 +2875,63 @@
 
     body.is-playing .game-panel {
       grid-template-rows: auto minmax(0, 1fr) auto auto auto;
-      gap: 10px;
+      gap: 8px;
     }
 
     body.is-playing .card-wrap {
-      min-height: min(500px, calc(100dvh - 230px));
+      min-height: min(470px, calc(100dvh - 214px));
     }
 
     body.is-playing .topbar {
-      padding: 10px 12px;
+      padding: 8px 10px;
     }
 
     body.is-playing .layout {
-      gap: 10px;
-      margin-top: 10px;
+      gap: 8px;
+      margin-top: 8px;
     }
 
     body.is-playing .meters {
-      gap: 8px;
-      padding: 10px;
+      gap: 6px;
+      padding: 8px;
     }
 
     body.is-playing .meter {
+      padding: 7px;
+    }
+
+    body.is-playing .radar {
       padding: 8px;
+    }
+
+    body.is-playing .small-card {
+      min-height: 58px;
+      padding: 8px;
+    }
+
+    body.is-playing .stat-gauge {
+      width: 48px;
+      height: 48px;
     }
 
     body.is-playing .log-list {
       max-height: calc(100dvh - 242px);
+    }
+
+    body.master-mode .radar,
+    body.master-mode .side-right,
+    body.master-mode .last-result,
+    body.master-mode .meter-copy,
+    body.master-mode .mobile-score-item:nth-child(n+4) {
+      display: none !important;
+    }
+
+    body.master-mode .layout {
+      grid-template-columns: minmax(260px, 0.72fr) minmax(420px, 1.28fr);
+    }
+
+    body.master-mode .card-stage {
+      min-height: min(520px, calc(100dvh - 180px));
     }
 
     body.dark-mode .patch-item,
@@ -2573,6 +2940,7 @@
     body.dark-mode .mode-toggle,
     body.dark-mode .double-road-panel,
     body.dark-mode .double-road-card,
+    body.dark-mode .double-road-preview-card,
     body.dark-mode .keyboard-key,
     body.dark-mode .player-name-row input,
     body.dark-mode .leaderboard-tab,
@@ -2594,6 +2962,7 @@
     body.dark-mode .difficulty-option b,
     body.dark-mode .double-road-head,
     body.dark-mode .double-road-card b,
+    body.dark-mode .double-road-preview-card .card-title,
     body.dark-mode .player-name-row label,
     body.dark-mode .leaderboard-name,
     body.dark-mode .leaderboard-score,
@@ -2607,6 +2976,7 @@
     body.dark-mode .difficulty-option span,
     body.dark-mode .double-road-card span,
     body.dark-mode .double-road-card small,
+    body.dark-mode .double-road-preview-card .story-line,
     body.dark-mode .player-name-row small,
     body.dark-mode .leaderboard-meta,
     body.dark-mode .achievement-item span,
@@ -2731,7 +3101,8 @@
       display: grid;
       place-items: center;
       perspective: 1200px;
-      overflow: visible;
+      overflow: clip;
+      contain: layout paint;
     }
 
     .archive-card-wrap .under-choice-sheet {
@@ -3030,13 +3401,13 @@
       position: fixed;
       right: 18px;
       bottom: 18px;
-      z-index: 42;
+      z-index: 62;
       width: min(360px, calc(100vw - 24px));
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: rgba(255, 255, 255, 0.96);
       box-shadow: 0 24px 54px rgba(23, 32, 42, 0.22);
-      padding: 13px;
+      padding: 42px 13px 13px;
       display: none;
       gap: 9px;
     }
@@ -3072,6 +3443,27 @@
       display: none;
     }
 
+    .tutorial-coach #tutorialCoachSkip {
+      position: absolute;
+      left: 10px;
+      top: 9px;
+      min-height: 28px;
+      padding: 0 9px;
+    }
+
+    .tutorial-coach.confirm-step #tutorialCoachNext {
+      display: inline-flex;
+    }
+
+    .tutorial-coach[data-practice="doublePick"],
+    .tutorial-coach[data-practice="doubleSet"] {
+      top: 86px;
+      left: 18px;
+      right: auto;
+      bottom: auto;
+      width: min(330px, calc(100vw - 28px));
+    }
+
     .tutorial-coach.done {
       border-color: #d6b46e;
       box-shadow: 0 24px 54px rgba(31, 111, 90, 0.22);
@@ -3098,7 +3490,7 @@
 
     .tutorial-highlight {
       position: relative;
-      z-index: 44 !important;
+      z-index: 50 !important;
       outline: 3px solid rgba(255, 210, 116, 0.78);
       outline-offset: 4px;
       box-shadow: 0 0 0 8px rgba(255, 210, 116, 0.16);
@@ -3196,7 +3588,11 @@
       }
 
       body.is-playing h1 {
-        font-size: 24px;
+        font-size: 21px;
+      }
+
+      body.is-playing .build-label {
+        font-size: 10px;
       }
 
       body.is-playing .top-stats {
@@ -3326,14 +3722,22 @@
 
       .card-stage {
         grid-template-columns: 1fr;
-        min-height: 300px;
+        min-height: 286px;
         overflow: hidden;
       }
 
       .card-wrap {
         width: min(100%, 350px);
-        min-height: 300px;
+        min-height: 270px;
         justify-self: center;
+      }
+
+      body.is-playing .card-stage {
+        min-height: 276px;
+      }
+
+      body.is-playing .card-wrap {
+        min-height: 270px;
       }
 
       .under-choice-sheet {
@@ -3367,7 +3771,7 @@
       }
 
       .play-card {
-        min-height: 270px;
+        min-height: 258px;
         width: min(318px, 86vw);
         padding: 13px;
         gap: 9px;
@@ -3410,12 +3814,56 @@
       .quest-board {
         padding: 8px;
         gap: 6px;
-        max-height: 104px;
+        max-height: 92px;
       }
 
       .double-road-panel {
         padding: 8px;
         gap: 6px;
+      }
+
+      body.double-mode .card-stage {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+        min-height: 298px;
+        overflow: visible;
+      }
+
+      body.double-mode .card-wrap {
+        width: 100%;
+        min-height: 286px;
+      }
+
+      body.double-mode .play-card,
+      body.double-mode .under-choice-sheet {
+        width: min(100%, 44vw);
+        min-height: 258px;
+        padding: 10px;
+      }
+
+      body.double-mode .card-title,
+      body.double-mode .double-road-preview-card .card-title {
+        font-size: 16px;
+      }
+
+      body.double-mode .card-text,
+      body.double-mode .double-road-preview-card .card-text {
+        font-size: 11px;
+        max-height: 96px;
+      }
+
+      body.double-mode .double-road-panel {
+        padding: 0;
+      }
+
+      .double-road-preview-card {
+        min-height: 258px;
+        padding: 10px;
+        gap: 8px;
+      }
+
+      .double-road-preview-card .dilemma-line {
+        display: none;
       }
 
       .double-road-head {
@@ -3672,6 +4120,25 @@
         align-items: end;
       }
 
+      #storyModal {
+        padding: 8px;
+        align-items: center;
+        pointer-events: auto;
+      }
+
+      #storyModal .modal {
+        max-height: calc(100dvh - 16px);
+      }
+
+      #storyModal .modal-body {
+        gap: 8px;
+      }
+
+      #storyModal .start-summary {
+        font-size: 12px;
+        padding: 9px;
+      }
+
       .modal {
         max-height: calc(100vh - 16px);
       }
@@ -3701,7 +4168,8 @@
       }
 
       .archive-workspace.stats-mode .archive-detail {
-        max-height: 58vh;
+        min-height: 310px;
+        max-height: 45vh;
       }
 
       .archive-workspace .archive-list {
@@ -3714,8 +4182,42 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
+      .tutorial-double-demo {
+        inset: 8px;
+        padding: 10px;
+        gap: 8px;
+      }
+
+      .tutorial-double-cards {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .tutorial-double-card {
+        min-height: 142px;
+        padding: 10px;
+        gap: 6px;
+      }
+
+      .tutorial-double-card .card-title {
+        font-size: 18px;
+      }
+
+      .tutorial-double-card .card-text {
+        font-size: 11px;
+        line-height: 1.36;
+      }
+
+      .tutorial-double-card .dilemma-line {
+        display: none;
+      }
+
       .leaderboard-tabs {
         gap: 5px;
+      }
+
+      body.master-mode .layout {
+        grid-template-columns: 1fr;
       }
 
       .player-name-row {
@@ -3724,6 +4226,10 @@
 
       .player-name-row small {
         grid-column: 1;
+      }
+
+      .options-grid {
+        grid-template-columns: 1fr;
       }
 
       .version-footer {
@@ -3800,6 +4306,7 @@
         </div>
         <div>
           <h1>SWAY</h1>
+          <span class="build-label" id="buildLabel">현재 빌드 v0.23.0</span>
         </div>
       </div>
       <div class="top-stats">
@@ -3830,6 +4337,10 @@
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5"/><path d="M8 19V9"/><path d="M12 19V3"/><path d="M16 19v-7"/><path d="M20 19V7"/></svg>
           순위
         </button>
+        <button class="text-button compact" id="openOptionsTop" type="button" title="ESC 메뉴" aria-label="메뉴 열기">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+          메뉴
+        </button>
         <button class="text-button primary" id="newGameTop">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>
           새 게임
@@ -3841,7 +4352,6 @@
       <section class="panel">
         <div class="panel-head">
           <h2 class="panel-title">4대 지표</h2>
-          <span class="panel-note">0이면 종료</span>
         </div>
         <div class="meters" id="meters"></div>
         <div class="radar">
@@ -3863,7 +4373,7 @@
           <div class="season-item"><span>정책 온도</span><b id="marketMood">중립</b></div>
         </div>
 
-        <div class="card-stage">
+        <div class="card-stage" id="cardStage">
           <div class="card-wrap">
             <div class="stack-shadow" aria-hidden="true"></div>
             <div class="under-choice-sheet" id="underChoiceSheet" aria-hidden="true">
@@ -3894,8 +4404,9 @@
               <div class="card-tags" id="cardTags"></div>
             </article>
           </div>
+          <div class="double-road-panel" id="doubleRoadPanel" hidden></div>
+          <div class="tutorial-double-demo" id="tutorialDoubleDemo" hidden></div>
         </div>
-        <div class="double-road-panel" id="doubleRoadPanel" hidden></div>
 
         <div class="last-result" id="lastResult">첫 사건을 기다리는 중입니다.</div>
         <div class="quick-choice-panel" id="quickChoicePanel" aria-label="고속 선택">
@@ -4093,6 +4604,10 @@
       </div>
       <div class="modal-body">
         <div class="leaderboard-section">
+          <div class="leaderboard-tabs leaderboard-mode-tabs" id="modalLeaderboardModeTabs" role="tablist" aria-label="순위 모드">
+            <button class="leaderboard-tab active" data-leaderboard-mode="single" type="button">일반 무한</button>
+            <button class="leaderboard-tab" data-leaderboard-mode="double" type="button">더블로드 무한</button>
+          </div>
           <div class="leaderboard-tabs" id="modalLeaderboardTabs" role="tablist" aria-label="모달 순위 난이도">
             <button class="leaderboard-tab active" data-modal-leaderboard-difficulty="easy" type="button">쉬움</button>
             <button class="leaderboard-tab" data-modal-leaderboard-difficulty="medium" type="button">보통</button>
@@ -4175,6 +4690,34 @@
             </div>
             <button class="switch" id="vibrationToggle" type="button" aria-label="모바일 진동"><span></span></button>
           </div>
+          <div class="setting-row">
+            <div class="setting-copy">
+              <b>마스터 모드</b>
+              <span>진행 기록, 세부 지표 설명, 위기/극복/누적 별 같은 보조 정보를 접고 카드 판단에 집중합니다.</span>
+            </div>
+            <button class="switch" id="masterModeToggle" type="button" aria-label="마스터 모드"><span></span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-layer" id="optionsModal" role="dialog" aria-modal="true" aria-labelledby="optionsTitle">
+    <div class="modal options-modal">
+      <div class="panel-head">
+        <h2 class="panel-title" id="optionsTitle">옵션</h2>
+        <button class="icon-button" id="closeOptions" title="닫기" aria-label="닫기">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="options-grid">
+          <button class="text-button" id="optionsTutorial" type="button">튜토리얼</button>
+          <button class="text-button" id="optionsArchive" type="button">기록보관소</button>
+          <button class="text-button" id="optionsAchievements" type="button">업적</button>
+          <button class="text-button" id="optionsSettings" type="button">설정</button>
+          <button class="text-button" id="optionsPatch" type="button">패치 기록</button>
+          <button class="text-button" id="optionsLeaderboard" type="button">무한 순위</button>
         </div>
       </div>
     </div>
@@ -4201,6 +4744,11 @@
           <button class="graph-filter active" data-archive-filter="all" type="button">전체</button>
           <button class="graph-filter" data-archive-filter="unlocked" type="button">해금됨</button>
           <button class="graph-filter" data-archive-filter="locked" type="button">미해금</button>
+        </div>
+        <div class="graph-controls set-effect-kind-filters" id="setEffectKindFilters" hidden>
+          <button class="graph-filter active" data-set-effect-kind="all" type="button">전체 효과</button>
+          <button class="graph-filter" data-set-effect-kind="positive" type="button">긍정 효과</button>
+          <button class="graph-filter" data-set-effect-kind="negative" type="button">부정 효과</button>
         </div>
         <div class="archive-workspace">
           <div class="archive-list" id="archiveList"></div>
@@ -4262,10 +4810,53 @@
   <footer class="version-footer" id="versionFooter" aria-label="버전 정보"></footer>
 
   <script>
-    const GAME_VERSION = "v0.20.0";
+    const GAME_VERSION = "v0.23.0";
     const PATCH_HISTORY = [
       {
+        version: "v0.23.0",
+        schedule: "2026-06-06 05:05 KST",
+        summary: "튜토리얼 더블로드 예시와 시작 화면 인게임 UI 통일",
+        details: [
+          "튜토리얼의 더블로드 단계를 실제 두 장 카드 예시로 바꾸고, 예시 카드와 세트 효과를 직접 눌러야 다음 단계로 넘어가도록 했습니다.",
+          "튜토리얼 안내 박스가 강조 영역이나 카드 텍스트에 가려지지 않도록 레이어 순서와 위치 계산을 조정했습니다.",
+          "시작 배경이 열려 있을 때도 뒤쪽 앱 레이아웃은 인게임 압축 UI와 같은 상태로 유지되도록 바꿨습니다.",
+          "시작 배경 모달의 배경과 선택 패널을 인게임 카드 패널 톤에 맞춰 재정리했습니다.",
+          "모바일 튜토리얼의 더블로드 예시는 세로형 작은 카드로 표시해 텍스트 충돌을 줄였습니다."
+        ]
+      },
+      {
+        version: "v0.22.0",
+        schedule: "2026-06-06 04:10 KST",
+        summary: "메뉴 버튼, 더블로드 위치 고정, 부정 세트 효과, 보관소 설명 복구",
+        details: [
+          "우측 상단에 ESC 옵션과 같은 메뉴 버튼을 추가했습니다.",
+          "패치 기록에 작성 일정과 시간대 표기를 추가했습니다.",
+          "더블로드에서 1번/2번 카드의 위치가 선택에 따라 바뀌지 않도록 슬롯 순서를 고정하고, 사용한 슬롯만 새 카드로 교체되게 했습니다.",
+          "더블로드 부정 세트 효과 20종을 추가하고 기록보관소에서 긍정/부정 효과를 분류해 볼 수 있게 했습니다.",
+          "기록보관소에 저장된 오래된 사건/퀘스트 기록에 설명이 비어 있으면 원본 데이터에서 설명과 선택지를 복구합니다.",
+          "기록보관소 카드 드래그 중 생기던 가로 스크롤을 차단했습니다.",
+          "4대 지표 설명을 일반 모드에서도 제거하고 좌측 패널 폭을 줄여 카드 공간을 넓혔습니다.",
+          "마스터 모드에서도 진행 중 퀘스트는 계속 보이도록 유지했습니다."
+        ]
+      },
+      {
+        version: "v0.21.0",
+        schedule: "2026-06-06 03:20 KST",
+        summary: "모바일 새게임 스크롤, ESC 옵션 메뉴, 더블로드 카드 배치, 마스터 모드 개선",
+        details: [
+          "모바일 새게임 창에서 아래로 내리지 못해 게임을 시작할 수 없던 배치 문제를 수정했습니다.",
+          "상단은 새 게임과 현재 빌드만 남기고, ESC를 누르면 튜토리얼, 기록보관소, 업적, 설정, 패치 기록, 순위 메뉴가 열리도록 바꿨습니다.",
+          "더블로드는 카드 영역 안에서 선택 카드와 보조 카드가 나란히 보이도록 재배치하고 선택 강조와 세트 효과 발광을 추가했습니다.",
+          "다크모드 진행 중 퀘스트 텍스트 대비를 보강했습니다.",
+          "진행기록의 턴 표시는 본문 문장과 분리해 별도 배지로 보여줍니다.",
+          "설정에 마스터 모드를 추가해 진행기록과 세부 보조 정보를 접고 플레이할 수 있게 했습니다.",
+          "기록보관소 통계 탭의 높이를 다른 탭과 맞추고 총 플레이 통계 표시를 유지했습니다.",
+          "엔딩 타로 아이콘 뒤에 남던 추가 미세 문양을 제거했습니다."
+        ]
+      },
+      {
         version: "v0.20.0",
+        schedule: "2026-06-06 02:35 KST",
         summary: "더블로드 모드, 세트 효과, 퀘스트 간격 재조정, 기록보관소 통계/스크롤 정리",
         details: [
           "게임 모드를 50장 도전과 더블로드로 나누고, 무한 모드는 별도 ON/OFF 토글로 바꿨습니다.",
@@ -4283,6 +4874,7 @@
       },
       {
         version: "v0.19.0",
+        schedule: "2026-06-05 18:20 KST",
         summary: "기록보관소 엔딩 조건 정리, 최신 진행기록 고정, 모바일 레이아웃과 진동 피드백 개선",
         details: [
           "기록보관소의 미해금 엔딩은 타로 문양만 확인할 수 있게 하고, 뒷면에는 플레이 당시 점수나 턴 기록이 아니라 엔딩 조건만 표시하도록 정리했습니다.",
@@ -4503,13 +5095,14 @@
       }
     ];
     const TOTAL_EVENT_POOL = 400;
+    const PATCH_TIMEZONE = "Asia/Seoul (KST, UTC+09:00)";
     const RUN_EVENT_COUNT = 50;
     const DOUBLE_RUN_COUNT = 100;
     const QUEST_LIBRARY_SIZE = 50;
     const NORMAL_QUEST_COUNT = 5;
     const DOUBLE_QUEST_COUNT = 8;
     const INFINITE_QUEST_COUNT = 8;
-    const SET_EFFECT_ARCHIVE_TOTAL = 30;
+    const SET_EFFECT_ARCHIVE_TOTAL = 50;
     const STAT_STAR_RESET = 20;
     const STAR_SCORE_RATE = 0.2;
     const CRISIS_RECOVERY_BONUS = 50;
@@ -5102,7 +5695,32 @@
       { id: "set-operate-tech", title: "민원 자동화", pair: ["operate", "tech"], type: "shieldStat", stat: "trust", turns: 4, floor: 34, copy: "신뢰가 4턴 동안 34점 아래로 내려가지 않습니다." },
       { id: "set-harvest-tech", title: "디지털 매각실", pair: ["harvest", "tech"], type: "bonusScore", amount: 130, copy: "선택 즉시 130점을 추가로 얻습니다." },
       { id: "set-develop-reit", title: "공모 개발권", pair: ["develop", "reit"], type: "gameoverShield", turns: 2, copy: "다음 2회 중단 위험을 방어합니다." }
-    ];
+    ].map(effect => ({ category: "positive", ...effect }));
+
+    const NEGATIVE_SET_EFFECTS = [
+      { id: "penalty-market-reit", title: "공시 과열", pair: ["market", "reit"], type: "noPositive", copy: "이번 선택의 긍정 지표 상승이 모두 막힙니다." },
+      { id: "penalty-market-operate", title: "현장 피로", pair: ["market", "operate"], type: "statDrain", stat: "trust", amount: 5, copy: "신뢰가 추가로 하락합니다." },
+      { id: "penalty-market-tech", title: "알고리즘 쏠림", pair: ["market", "tech"], type: "forceSide", side: "right", turns: 3, copy: "3턴 동안 오른쪽 선택만 허용됩니다." },
+      { id: "penalty-analysis-deal", title: "검토 지연", pair: ["analysis", "deal"], type: "scoreTax", amount: 70, copy: "검토 지연 비용으로 점수 70점을 잃습니다." },
+      { id: "penalty-analysis-develop", title: "숫자만 남은 조감도", pair: ["analysis", "develop"], type: "freezeStat", stat: "city", copy: "이번 선택의 생활가치 상승이 막힙니다." },
+      { id: "penalty-analysis-harvest", title: "회수 착시", pair: ["analysis", "harvest"], type: "statDrain", stat: "cash", amount: 6, copy: "현금흐름이 추가로 하락합니다." },
+      { id: "penalty-deal-reit", title: "모집 압박", pair: ["deal", "reit"], type: "pressureSpike", amount: 3, copy: "모든 지표가 추가로 3점씩 압박받습니다." },
+      { id: "penalty-deal-tech", title: "데이터 없는 제안", pair: ["deal", "tech"], type: "freezeStat", stat: "control", copy: "이번 선택의 위험관리 상승이 막힙니다." },
+      { id: "penalty-contract-reit", title: "투자자 특약 충돌", pair: ["contract", "reit"], type: "statDrain", stat: "control", amount: 7, copy: "위험관리가 추가로 하락합니다." },
+      { id: "penalty-contract-develop", title: "인허가 특약 누락", pair: ["contract", "develop"], type: "forceSide", side: "left", turns: 2, copy: "2턴 동안 왼쪽 선택만 허용됩니다." },
+      { id: "penalty-finance-tech", title: "자동화 비용 폭주", pair: ["finance", "tech"], type: "statDrain", stat: "cash", amount: 8, copy: "현금흐름이 크게 추가 하락합니다." },
+      { id: "penalty-finance-market", title: "레버리지 착시", pair: ["finance", "market"], type: "scoreTax", amount: 90, copy: "레버리지 비용으로 점수 90점을 잃습니다." },
+      { id: "penalty-reit-develop", title: "공모 전 개발 리스크", pair: ["reit", "develop"], type: "pressureSpike", amount: 4, copy: "모든 지표가 추가로 4점씩 압박받습니다." },
+      { id: "penalty-reit-contract", title: "보고서와 계약서 충돌", pair: ["reit", "contract"], type: "freezeStat", stat: "trust", copy: "이번 선택의 신뢰 상승이 막힙니다." },
+      { id: "penalty-develop-finance", title: "PF 일정 잠김", pair: ["develop", "finance"], type: "forceSide", side: "left", turns: 3, copy: "3턴 동안 왼쪽 선택만 허용됩니다." },
+      { id: "penalty-develop-market", title: "분양 시장 급랭", pair: ["develop", "market"], type: "noPositive", copy: "이번 선택의 긍정 지표 상승이 모두 막힙니다." },
+      { id: "penalty-operate-contract", title: "운영 승계 공백", pair: ["operate", "contract"], type: "statDrain", stat: "trust", amount: 6, copy: "신뢰가 추가로 하락합니다." },
+      { id: "penalty-operate-finance", title: "예비비 소진", pair: ["operate", "finance"], type: "scoreTax", amount: 60, copy: "예비비 소진으로 점수 60점을 잃습니다." },
+      { id: "penalty-harvest-deal", title: "매각 협상 역풍", pair: ["harvest", "deal"], type: "pressureSpike", amount: 3, copy: "모든 지표가 추가 압박을 받습니다." },
+      { id: "penalty-harvest-contract", title: "클로징 하자", pair: ["harvest", "contract"], type: "freezeStat", stat: "cash", copy: "이번 선택의 현금흐름 상승이 막힙니다." }
+    ].map(effect => ({ category: "negative", ...effect }));
+
+    const ALL_SET_EFFECTS = [...SET_EFFECTS, ...NEGATIVE_SET_EFFECTS];
 
     function readHardUnlock() {
       try {
@@ -5132,10 +5750,11 @@
           darkMode: false,
           fastMode: false,
           vibration: true,
+          masterMode: false,
           ...JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}")
         };
       } catch {
-        return { darkMode: false, fastMode: false, vibration: true };
+        return { darkMode: false, fastMode: false, vibration: true, masterMode: false };
       }
     }
 
@@ -5280,6 +5899,7 @@
       playerName: "",
       hardUnlocked: readHardUnlock(),
       leaderboardDifficulty: "easy",
+      leaderboardMode: "single",
       deck: [],
       turn: 0,
       log: [],
@@ -5292,8 +5912,10 @@
       doubleDeckIndex: 0,
       doubleSelected: 0,
       activeSetEffect: null,
+      activeSetEffects: [],
       gameoverShield: 0,
       statShields: {},
+      sideLock: null,
       statHistory: [],
       last: "첫 사건을 기다리는 중입니다.",
       ended: false,
@@ -5315,6 +5937,7 @@
       archive: readArchive(),
       archiveTab: "events",
       archiveFilter: "all",
+      setEffectKindFilter: "all",
       archiveListView: [],
       archiveOpened: false,
       settingsOpened: false,
@@ -5374,6 +5997,7 @@
       quickRightTitle: document.getElementById("quickRightTitle"),
       quickRightText: document.getElementById("quickRightText"),
       doubleRoadPanel: document.getElementById("doubleRoadPanel"),
+      tutorialDoubleDemo: document.getElementById("tutorialDoubleDemo"),
       keyboardHints: document.getElementById("keyboardHints"),
       questBoard: document.getElementById("questBoard"),
       logList: document.getElementById("logList"),
@@ -5396,6 +6020,7 @@
       openSettingsTop: document.getElementById("openSettingsTop"),
       openPatchNotesTop: document.getElementById("openPatchNotesTop"),
       openLeaderboardTop: document.getElementById("openLeaderboardTop"),
+      openOptionsTop: document.getElementById("openOptionsTop"),
       openTutorialStory: document.getElementById("openTutorialStory"),
       openArchiveStory: document.getElementById("openArchiveStory"),
       openAchievementsStory: document.getElementById("openAchievementsStory"),
@@ -5445,6 +6070,7 @@
       archiveStats: document.getElementById("archiveStats"),
       archiveTabs: document.getElementById("archiveTabs"),
       archiveFilters: document.getElementById("archiveFilters"),
+      setEffectKindFilters: document.getElementById("setEffectKindFilters"),
       archiveList: document.getElementById("archiveList"),
       archiveDetail: document.getElementById("archiveDetail"),
       achievementsModal: document.getElementById("achievementsModal"),
@@ -5470,6 +6096,17 @@
       endSummary: document.getElementById("endSummary"),
       endAchievements: document.getElementById("endAchievements"),
       statGraph: document.getElementById("statGraph"),
+      buildLabel: document.getElementById("buildLabel"),
+      masterModeToggle: document.getElementById("masterModeToggle"),
+      optionsModal: document.getElementById("optionsModal"),
+      closeOptions: document.getElementById("closeOptions"),
+      optionsTutorial: document.getElementById("optionsTutorial"),
+      optionsArchive: document.getElementById("optionsArchive"),
+      optionsAchievements: document.getElementById("optionsAchievements"),
+      optionsSettings: document.getElementById("optionsSettings"),
+      optionsPatch: document.getElementById("optionsPatch"),
+      optionsLeaderboard: document.getElementById("optionsLeaderboard"),
+      modalLeaderboardModeTabs: document.getElementById("modalLeaderboardModeTabs"),
       versionFooter: document.getElementById("versionFooter")
     };
 
@@ -5545,12 +6182,24 @@
       },
       {
         title: "4. 진행 기록 확인",
-        text: "진행 기록을 열어 최신 선택이 어떻게 한 줄에 정리되는지 확인하세요.",
+        text: "진행 기록은 최신 선택부터 위에 쌓입니다. 확인 버튼을 눌러 다음 단계로 넘어가세요.",
         practice: "log",
         target: "#logList"
       },
       {
-        title: "5. 마지막 선택으로 엔딩",
+        title: "5. 더블로드 기본",
+        text: "더블로드에서는 두 카드가 각자의 위치에 남아 있습니다. 예시 카드 1번 또는 2번을 직접 눌러 선택해보세요.",
+        practice: "doublePick",
+        target: "#tutorialDoubleDemo"
+      },
+      {
+        title: "6. 세트 효과",
+        text: "두 카드의 계열이 맞으면 아래 세트 효과가 빛납니다. 빛나는 세트 효과 칸을 눌러 확인하세요.",
+        practice: "doubleSet",
+        target: "#tutorialDoubleDemo"
+      },
+      {
+        title: "7. 마지막 선택으로 엔딩",
         text: "마지막 카드를 선택하면 고정 튜토리얼 엔딩 카드가 공개됩니다.",
         practice: "choice",
         target: ".card-wrap"
@@ -6140,20 +6789,31 @@
         state.doubleSelected = 0;
         return;
       }
-      while (state.doubleChoices.length < 2) {
-        if (state.doubleDeckIndex >= state.deck.length) {
-          if (isInfiniteMode()) {
-            extendInfiniteDeck();
-          } else {
-            break;
-          }
-        }
-        const nextCard = state.deck[state.doubleDeckIndex];
-        if (!nextCard) break;
-        state.doubleChoices.push(nextCard);
-        state.doubleDeckIndex += 1;
+      state.doubleChoices = state.doubleChoices.slice(0, 2);
+      while (state.doubleChoices.length < 2) state.doubleChoices.push(null);
+      for (let index = 0; index < 2; index += 1) {
+        if (!state.doubleChoices[index]) state.doubleChoices[index] = drawNextDoubleRoadCard();
       }
       state.doubleSelected = clamp(state.doubleSelected, 0, Math.max(0, state.doubleChoices.length - 1));
+      if (!state.doubleChoices[state.doubleSelected]) {
+        const nextAvailable = state.doubleChoices.findIndex(Boolean);
+        state.doubleSelected = nextAvailable >= 0 ? nextAvailable : 0;
+      }
+    }
+
+    function drawNextDoubleRoadCard() {
+      if (!isDoubleMode()) return null;
+      if (state.doubleDeckIndex >= state.deck.length) {
+        if (isInfiniteMode()) {
+          extendInfiniteDeck();
+        } else {
+          return null;
+        }
+      }
+      const nextCard = state.deck[state.doubleDeckIndex];
+      if (!nextCard) return null;
+      state.doubleDeckIndex += 1;
+      return nextCard;
     }
 
     function setupDoubleRoad() {
@@ -6161,12 +6821,14 @@
       state.doubleDeckIndex = 0;
       state.doubleSelected = 0;
       state.activeSetEffect = null;
+      state.activeSetEffects = [];
       refillDoubleRoadChoices();
     }
 
     function advanceDoubleRoadAfterChoice() {
       if (!isDoubleMode()) return;
-      state.doubleChoices.splice(state.doubleSelected, 1);
+      const usedSlot = state.doubleSelected;
+      state.doubleChoices[usedSlot] = drawNextDoubleRoadCard();
       refillDoubleRoadChoices();
     }
 
@@ -6237,10 +6899,14 @@
       });
     }
 
-    function currentSetEffect() {
+    function currentSetEffects() {
       if (!isDoubleMode() || state.doubleChoices.length < 2) return null;
       const keys = state.doubleChoices.map(card => card?.key).filter(Boolean);
-      return SET_EFFECTS.find(effect => effect.pair.every(key => keys.includes(key))) || null;
+      return ALL_SET_EFFECTS.filter(effect => effect.pair.every(key => keys.includes(key)));
+    }
+
+    function currentSetEffect() {
+      return currentSetEffects()?.[0] || null;
     }
 
     function archiveSetEffect(effect) {
@@ -6251,7 +6917,8 @@
         title: effect.title,
         meta: effect.pair.map(key => setEffectKeyLabel(key)).join(" + "),
         text: effect.copy,
-        tags: ["더블로드", "세트효과"],
+        tags: ["더블로드", effect.category === "negative" ? "부정효과" : "긍정효과"],
+        category: effect.category || "positive",
         type: effect.type
       });
       const after = state.archive.setEffects?.length || 0;
@@ -6272,38 +6939,73 @@
       return next;
     }
 
-    function applySetEffectDelta(delta, effect) {
-      if (!effect) return { delta, messages: [] };
-      const next = positiveOnlyDelta(delta);
-      const messages = [`세트 효과 발동: ${effect.title}. 부정 효과를 제외하고 긍정 효과만 적용합니다.`];
+    function applySetEffectsDelta(delta, effects, side) {
+      if (!effects?.length) return { delta, messages: [] };
+      let next = effects.some(effect => effect.category !== "negative") ? positiveOnlyDelta(delta) : { ...delta };
+      const messages = [];
 
-      if (effect.type === "doubleStat" && effect.stat) {
-        next[effect.stat] = Math.max(next[effect.stat] || 0, (next[effect.stat] || 0) * 2);
-        messages.push(`${statNames[effect.stat]} 상승량이 2배가 됩니다.`);
-      }
+      effects.forEach(effect => {
+        if (effect.category === "negative") {
+          messages.push(`부정 세트 발동: ${effect.title}. ${effect.copy}`);
+          if (effect.type === "noPositive") {
+            STAT_KEYS.forEach(key => {
+              if ((next[key] || 0) > 0) next[key] = 0;
+            });
+          }
+          if (effect.type === "freezeStat" && effect.stat && (next[effect.stat] || 0) > 0) {
+            next[effect.stat] = 0;
+          }
+          if (effect.type === "statDrain" && effect.stat) {
+            next[effect.stat] = (next[effect.stat] || 0) - (effect.amount || 4);
+          }
+          if (effect.type === "pressureSpike") {
+            STAT_KEYS.forEach(key => {
+              next[key] = (next[key] || 0) - (effect.amount || 3);
+            });
+          }
+          if (effect.type === "scoreTax") {
+            state.score = Math.max(0, state.score - (effect.amount || 0));
+            messages.push(`점수 -${effect.amount || 0}이 즉시 적용됩니다.`);
+          }
+          if (effect.type === "forceSide") {
+            state.sideLock = {
+              side: effect.side || side,
+              until: state.turn + (effect.turns || 2) + 1
+            };
+            messages.push(`${effect.turns || 2}턴 동안 ${state.sideLock.side === "left" ? "왼쪽" : "오른쪽"} 선택만 가능합니다.`);
+          }
+          return;
+        }
 
-      if (effect.type === "allPositiveBoost") {
-        STAT_KEYS.forEach(key => {
-          if ((next[key] || 0) > 0) next[key] += effect.amount || 1;
-        });
-        messages.push(`모든 긍정 지표에 +${effect.amount || 1}가 더해집니다.`);
-      }
+        messages.push(`세트 효과 발동: ${effect.title}. 부정 효과를 제외하고 긍정 효과만 적용합니다.`);
+        if (effect.type === "doubleStat" && effect.stat) {
+          next[effect.stat] = Math.max(next[effect.stat] || 0, (next[effect.stat] || 0) * 2);
+          messages.push(`${statNames[effect.stat]} 상승량이 2배가 됩니다.`);
+        }
 
-      if (effect.type === "shieldStat" && effect.stat) {
-        state.statShields[effect.stat] = Math.max(state.statShields[effect.stat] || 0, state.turn + (effect.turns || 4));
-        messages.push(`${statNames[effect.stat]}은 ${effect.floor || 30}점 아래로 내려가지 않습니다.`);
-      }
+        if (effect.type === "allPositiveBoost") {
+          STAT_KEYS.forEach(key => {
+            if ((next[key] || 0) > 0) next[key] += effect.amount || 1;
+          });
+          messages.push(`모든 긍정 지표에 +${effect.amount || 1}가 더해집니다.`);
+        }
 
-      if (effect.type === "gameoverShield") {
-        state.gameoverShield += effect.turns || 1;
-        messages.push(`중단 위험 방어권 ${effect.turns || 1}회가 추가됩니다.`);
-      }
+        if (effect.type === "shieldStat" && effect.stat) {
+          state.statShields[effect.stat] = Math.max(state.statShields[effect.stat] || 0, state.turn + (effect.turns || 4));
+          messages.push(`${statNames[effect.stat]}은 ${effect.floor || 30}점 아래로 내려가지 않습니다.`);
+        }
 
-      if (effect.type === "bonusScore") {
-        state.score += effect.amount || 0;
-        updatePlayerStats({ totalScoreGained: effect.amount || 0 });
-        messages.push(`추가 점수 +${effect.amount || 0}점을 얻습니다.`);
-      }
+        if (effect.type === "gameoverShield") {
+          state.gameoverShield += effect.turns || 1;
+          messages.push(`중단 위험 방어권 ${effect.turns || 1}회가 추가됩니다.`);
+        }
+
+        if (effect.type === "bonusScore") {
+          state.score += effect.amount || 0;
+          updatePlayerStats({ totalScoreGained: effect.amount || 0 });
+          messages.push(`추가 점수 +${effect.amount || 0}점을 얻습니다.`);
+        }
+      });
 
       return { delta: next, messages };
     }
@@ -6342,7 +7044,7 @@
         wheel: `<circle cx="12" cy="12" r="8.2"/><circle cx="12" cy="12" r="2.6"/><path d="M12 3.8v4.6M12 15.6v4.6M3.8 12h4.6M15.6 12h4.6"/><path d="m6.2 6.2 3.2 3.2M14.6 14.6l3.2 3.2M17.8 6.2l-3.2 3.2M9.4 14.6l-3.2 3.2"/>`,
         world: `<path d="M12 3c4 1.6 6 4.6 6 9s-2 7.4-6 9c-4-1.6-6-4.6-6-9s2-7.4 6-9z"/><path d="M8.5 12c2-4.2 5-4.2 7 0-2 4.2-5 4.2-7 0z"/><path d="M12 3c-1.6 3-1.6 15 0 18M12 3c1.6 3 1.6 15 0 18"/><path d="M5 12h14"/>`
       };
-      return `<svg viewBox="0 0 24 24" aria-hidden="true">${symbols[type] || symbols.world}${uniqueTarotOverlay(seed || type)}</svg>`;
+      return `<svg viewBox="0 0 24 24" aria-hidden="true">${symbols[type] || symbols.world}</svg>`;
     }
 
     function tarotForEnding(story, reason) {
@@ -6476,8 +7178,17 @@
       return { label: side === "left" ? "A 선택" : "B 선택", text: "기록 당시 선택지 정보가 부족합니다.", delta: emptyDelta() };
     }
 
+    function usableArchiveText(value) {
+      const text = String(value || "").trim();
+      if (!text) return "";
+      if (text.includes("기록된 사건 설명이 없습니다")) return "";
+      if (text.includes("설명이 없습니다")) return "";
+      return text;
+    }
+
     function questArchiveDescription(item) {
-      if (item.text && item.text.trim()) return item.text;
+      const text = usableArchiveText(item.text);
+      if (text) return text;
       const target = statNames[item.targetStat] || "목표 지표";
       const reward = statNames[item.rewardStat] || "보상 지표";
       const failure = questFailureLabel(item.failureType || "none");
@@ -6499,8 +7210,8 @@
     function archiveStackCardHtml(item, isQuest) {
       const left = fallbackArchiveChoice(item, "left");
       const right = fallbackArchiveChoice(item, "right");
-      const description = isQuest ? questArchiveDescription(item) : (item.text || "기록된 사건 설명이 없습니다.");
-      const dilemma = item.dilemma || (isQuest ? "수락하면 목표가 장부에 남고, 실패하면 위험 결과가 적용될 수 있습니다." : "기록 당시의 선택지를 다시 확인합니다.");
+      const description = isQuest ? questArchiveDescription(item) : (usableArchiveText(item.text) || "기록된 사건 설명이 없습니다.");
+      const dilemma = usableArchiveText(item.dilemma) || (isQuest ? "수락하면 목표가 장부에 남고, 실패하면 위험 결과가 적용될 수 있습니다." : "기록 당시의 선택지를 다시 확인합니다.");
       return `
         <div class="archive-card-wrap" data-archive-card-wrap>
           <div class="under-choice-sheet" aria-hidden="true">
@@ -6532,9 +7243,10 @@
 
       if (item.locked) {
         if (state.archiveTab === "setEffects") {
+          const categoryLabel = item.category === "negative" ? "부정 SET" : "긍정 SET";
           els.archiveDetail.innerHTML = `
             <div class="archive-detail-card set-effect-detail">
-              <span class="badge">SET</span>
+              <span class="badge ${item.category === "negative" ? "contract" : "city"}">${categoryLabel}</span>
               <h3>???</h3>
               <p>조합: ${escapeText(item.meta || "미해금 조합")}</p>
               <p>더블로드에서 이 조합의 두 카드가 동시에 등장하면 세트 효과가 공개됩니다.</p>
@@ -6575,9 +7287,10 @@
       }
 
       if (state.archiveTab === "setEffects") {
+        const categoryLabel = item.category === "negative" ? "부정 SET" : "긍정 SET";
         els.archiveDetail.innerHTML = `
           <div class="archive-detail-card set-effect-detail">
-            <span class="badge">SET</span>
+            <span class="badge ${item.category === "negative" ? "contract" : "city"}">${categoryLabel}</span>
             <h3>${escapeText(item.title || "세트 효과")}</h3>
             <p>조합: ${escapeText(item.meta || "")}</p>
             <p>${escapeText(item.text || item.copy || "더블로드에서 발동한 세트 효과입니다.")}</p>
@@ -7185,13 +7898,22 @@
       els.playCard.dataset.cardKey = card.isQuestOffer ? "quest" : (card.key || "default");
       els.playCard.querySelector(".card-illustration")?.remove();
       els.playCard.insertAdjacentHTML("afterbegin", cardIllustrationSvg(els.playCard.dataset.cardKey, `${card.title} ${card.text}`));
-      els.cardNumber.textContent = `#${String(card.number).padStart(3, "0")}`;
+      els.cardNumber.textContent = isDoubleMode() && !state.tutorialRun
+        ? `${state.doubleSelected + 1}번 선택 · #${String(card.number).padStart(3, "0")}`
+        : `#${String(card.number).padStart(3, "0")}`;
       els.cardTitle.textContent = card.title;
       els.cardText.innerHTML = `
         <p class="story-line">${card.text}</p>
         <p class="dilemma-line">${card.dilemma}</p>
       `;
       els.cardTags.innerHTML = card.tags.map(tag => `<span class="tag">${tag}</span>`).join("");
+      if (isDoubleMode() && !state.tutorialRun) {
+        els.cardWrap.dataset.doubleSlot = String(state.doubleSelected + 1);
+        els.doubleRoadPanel.dataset.doubleSlot = String(state.doubleSelected === 0 ? 2 : 1);
+      } else {
+        delete els.cardWrap.dataset.doubleSlot;
+        delete els.doubleRoadPanel.dataset.doubleSlot;
+      }
       const config = currentDifficulty();
       const leftDelta = effectiveChoiceDelta(card, "left");
       const rightDelta = effectiveChoiceDelta(card, "right");
@@ -7216,25 +7938,37 @@
         return;
       }
       refillDoubleRoadChoices();
-      const effect = currentSetEffect();
-      state.activeSetEffect = effect;
+      const effects = currentSetEffects() || [];
+      state.activeSetEffects = effects;
+      state.activeSetEffect = effects[0] || null;
       els.doubleRoadPanel.hidden = false;
-      const cards = state.doubleChoices.map((item, index) => {
-        const card = narrativeCard(item);
-        return `
-          <button class="double-road-card ${index === state.doubleSelected ? "active" : ""}" data-double-index="${index}" type="button">
-            <small>${index + 1}번 카드 · ${escapeText(card.badge || card.chapter || "사건")}</small>
-            <b>${escapeText(card.title || "대기 카드")}</b>
-            <span>${escapeText((card.text || "").slice(0, 58))}${(card.text || "").length > 58 ? "..." : ""}</span>
-          </button>
-        `;
-      }).join("");
+      const candidateOtherIndex = state.doubleSelected === 0 ? 1 : 0;
+      const otherIndex = state.doubleChoices[candidateOtherIndex] ? candidateOtherIndex : state.doubleSelected;
+      const otherRaw = state.doubleChoices[otherIndex] || state.doubleChoices[state.doubleSelected];
+      const other = narrativeCard(otherRaw);
+      const otherText = other?.text || "다음 선택지를 기다리는 중입니다.";
+      const otherDilemma = other?.dilemma || "1, 2키 또는 카드를 눌러 사용할 카드를 바꿀 수 있습니다.";
+      const effectText = effects.length
+        ? effects.map(effect => `${effect.category === "negative" ? "부정" : "긍정"}: ${escapeText(effect.title)}`).join(" · ")
+        : "세트 대기";
       els.doubleRoadPanel.innerHTML = `
         <div class="double-road-head">
-          <span>더블로드 · ${isInfiniteMode() ? "무한" : "100장"} · 1/2키로 카드 선택</span>
-          <span class="double-road-effect">${effect ? `세트: ${escapeText(effect.title)}` : "세트 대기"}</span>
+          <span>${otherIndex + 1}번 카드 대기 · ${isInfiniteMode() ? "무한" : "100장"}</span>
+          <span class="double-road-effect">${effectText}</span>
         </div>
-        <div class="double-road-cards">${cards}</div>
+        <button class="double-road-preview-card ${other?.isQuestOffer ? "quest-card" : ""}" data-double-index="${otherIndex}" type="button">
+          ${cardIllustrationSvg(other?.isQuestOffer ? "quest" : (other?.key || "default"), `${other?.title || ""} ${otherText}`)}
+          <div class="card-top">
+            <span class="badge ${other?.badgeClass || ""}">${escapeText(other?.badge || "대기")}</span>
+            <span class="card-number">#${String(other?.number || 0).padStart(3, "0")}</span>
+          </div>
+          <h2 class="card-title">${escapeText(other?.title || "대기 카드")}</h2>
+          <div class="card-text">
+            <p class="story-line">${escapeText(otherText)}</p>
+            <p class="dilemma-line">${escapeText(otherDilemma)}</p>
+          </div>
+          <div class="card-tags">${(other?.tags || ["더블로드"]).slice(0, 4).map(tag => `<span class="tag">${escapeText(tag)}</span>`).join("")}</div>
+        </button>
       `;
     }
 
@@ -7252,7 +7986,7 @@
         return `
         <div class="log-item ${isNew ? "new-log" : ""}">
           <span class="log-turn">#${order}</span>
-          <span class="log-copy"><b>${item.turn}턴</b> ${title}${escapeText(item.text)}</span>
+          <span class="log-copy"><span class="log-choice-turn">${item.turn}턴</span><span class="log-text">${title}${escapeText(item.text)}</span></span>
         </div>
       `;
       }).join("");
@@ -7373,9 +8107,11 @@
     function applySettings() {
       document.body.classList.toggle("dark-mode", Boolean(state.settings.darkMode));
       document.body.classList.toggle("fast-mode", Boolean(state.settings.fastMode));
+      document.body.classList.toggle("master-mode", Boolean(state.settings.masterMode));
       els.darkModeToggle.classList.toggle("active", Boolean(state.settings.darkMode));
       els.fastModeToggle.classList.toggle("active", Boolean(state.settings.fastMode));
       els.vibrationToggle?.classList.toggle("active", Boolean(state.settings.vibration));
+      els.masterModeToggle?.classList.toggle("active", Boolean(state.settings.masterMode));
     }
 
     function unlockedAchievement(id) {
@@ -7654,6 +8390,8 @@
       const targetMap = {
         stat: "#meters",
         drag: ".card-wrap",
+        doublePick: "#tutorialDoubleDemo",
+        doubleSet: "#tutorialDoubleDemo",
         log: "#logList",
         choice: "#lastResult",
         tarot: "#openArchiveTop"
@@ -7664,16 +8402,56 @@
     function positionTutorialCoach(target) {
       if (!target || !els.tutorialCoach.classList.contains("open")) return;
       const rect = target.getBoundingClientRect();
-      const width = Math.min(360, window.innerWidth - 18);
-      const left = clamp(rect.left, 8, Math.max(8, window.innerWidth - width - 8));
-      const below = rect.bottom + 10;
-      const top = below + 132 < window.innerHeight
-        ? below
-        : Math.max(8, rect.top - 142);
+      const margin = 10;
+      const width = isMobileViewport()
+        ? window.innerWidth - 16
+        : Math.min(360, window.innerWidth - 18);
+      const coachHeight = isMobileViewport() ? 128 : 154;
+      const practice = els.tutorialCoach.dataset.practice;
+      if (!isMobileViewport() && ["doublePick", "doubleSet"].includes(practice)) {
+        const sideWidth = Math.min(330, window.innerWidth - 18);
+        const rightLeft = rect.right + margin;
+        const leftLeft = rect.left - margin - sideWidth;
+        let sideLeft;
+        let sideTop = clamp(rect.top, 8, Math.max(8, window.innerHeight - coachHeight - 8));
+        if (rightLeft + sideWidth <= window.innerWidth - 8) {
+          sideLeft = rightLeft;
+        } else if (leftLeft >= 8) {
+          sideLeft = leftLeft;
+        } else {
+          sideLeft = clamp(rect.left, 8, Math.max(8, window.innerWidth - sideWidth - 8));
+          sideTop = rect.top - margin - coachHeight >= 8
+            ? rect.top - margin - coachHeight
+            : Math.max(8, window.innerHeight - coachHeight - 8);
+        }
+        els.tutorialCoach.style.width = `${sideWidth}px`;
+        els.tutorialCoach.style.left = `${sideLeft}px`;
+        els.tutorialCoach.style.right = "auto";
+        els.tutorialCoach.style.top = `${clamp(sideTop, 8, Math.max(8, window.innerHeight - coachHeight - 8))}px`;
+        els.tutorialCoach.style.bottom = "auto";
+        return;
+      }
+      let left = clamp(rect.left, 8, Math.max(8, window.innerWidth - width - 8));
+      let top;
+      if (rect.bottom + margin + coachHeight <= window.innerHeight) {
+        top = rect.bottom + margin;
+      } else if (rect.top - margin - coachHeight >= 8) {
+        top = rect.top - margin - coachHeight;
+      } else if (!isMobileViewport() && rect.right + margin + width <= window.innerWidth) {
+        left = rect.right + margin;
+        top = clamp(rect.top, 8, Math.max(8, window.innerHeight - coachHeight - 8));
+      } else if (!isMobileViewport() && rect.left - margin - width >= 8) {
+        left = rect.left - margin - width;
+        top = clamp(rect.top, 8, Math.max(8, window.innerHeight - coachHeight - 8));
+      } else {
+        top = rect.top < window.innerHeight / 2
+          ? Math.max(8, window.innerHeight - coachHeight - 8)
+          : 8;
+      }
       els.tutorialCoach.style.width = `${width}px`;
       els.tutorialCoach.style.left = `${left}px`;
       els.tutorialCoach.style.right = "auto";
-      els.tutorialCoach.style.top = `${clamp(top, 8, Math.max(8, window.innerHeight - 150))}px`;
+      els.tutorialCoach.style.top = `${clamp(top, 8, Math.max(8, window.innerHeight - coachHeight - 8))}px`;
       els.tutorialCoach.style.bottom = "auto";
       if (isMobileViewport()) {
         els.tutorialCoach.style.width = "calc(100% - 16px)";
@@ -7684,8 +8462,12 @@
 
     function stepMobileTop(rect) {
       const lower = rect.bottom + 8;
-      if (lower < window.innerHeight - 130) return `${lower}px`;
-      return "8px";
+      const coachHeight = 128;
+      if (lower + coachHeight <= window.innerHeight - 8) return `${lower}px`;
+      if (rect.top - coachHeight - 8 >= 8) return `${rect.top - coachHeight - 8}px`;
+      return rect.top < window.innerHeight / 2
+        ? `${Math.max(8, window.innerHeight - coachHeight - 8)}px`
+        : "8px";
     }
 
     function completeTutorialCoachPractice(practice) {
@@ -7707,26 +8489,81 @@
       }, 520);
     }
 
+    function renderTutorialDoubleDemo(step) {
+      const active = Boolean(state.tutorialCoachOpen && ["doublePick", "doubleSet"].includes(step?.practice));
+      document.body.classList.toggle("tutorial-double-active", active);
+      if (!els.tutorialDoubleDemo) return;
+      els.tutorialDoubleDemo.hidden = !active;
+      if (!active) {
+        els.tutorialDoubleDemo.innerHTML = "";
+        return;
+      }
+      const effectActive = step.practice === "doubleSet";
+      els.tutorialDoubleDemo.innerHTML = `
+        <div class="tutorial-double-head">
+          <span>더블로드 예시</span>
+          <span class="double-road-effect">${effectActive ? "세트 효과 발동" : "1, 2번 중 하나 선택"}</span>
+        </div>
+        <div class="tutorial-double-cards">
+          <button class="tutorial-double-card selected" data-tutorial-double-card="1" type="button">
+            ${cardIllustrationSvg("market", "금리와 시장의 흔들림")}
+            <div class="card-top">
+              <span class="badge market">1번</span>
+              <span class="card-number">#예시 1</span>
+            </div>
+            <h2 class="card-title">금리 발표 전야</h2>
+            <div class="card-text">
+              <p class="story-line">시장 카드가 왼쪽 슬롯에 그대로 남아 있습니다.</p>
+              <p class="dilemma-line">이 카드를 선택해도 2번 카드는 오른쪽에 유지됩니다.</p>
+            </div>
+            <div class="card-tags"><span class="tag">시장</span><span class="tag">현금흐름</span></div>
+          </button>
+          <button class="tutorial-double-card ${effectActive ? "selected" : ""}" data-tutorial-double-card="2" type="button">
+            ${cardIllustrationSvg("finance", "자금과 대출의 완충")}
+            <div class="card-top">
+              <span class="badge city">2번</span>
+              <span class="card-number">#예시 2</span>
+            </div>
+            <h2 class="card-title">대출 조건 협상</h2>
+            <div class="card-text">
+              <p class="story-line">두 번째 카드는 오른쪽 슬롯에서 대기합니다.</p>
+              <p class="dilemma-line">1번, 2번 키 또는 직접 클릭으로 사용할 카드를 고릅니다.</p>
+            </div>
+            <div class="card-tags"><span class="tag">금융</span><span class="tag">세트</span></div>
+          </button>
+        </div>
+        <button class="tutorial-double-effect" data-tutorial-double-effect type="button">
+          ${effectActive ? "금리 방어선: 현금흐름 방어 효과 확인" : "시장 + 금융 조합은 세트 효과 후보입니다"}
+        </button>
+      `;
+    }
+
     function renderTutorialCoach() {
       const steps = activeTutorialSteps();
       const index = clamp(state.tutorialIndex, 0, steps.length - 1);
       state.tutorialIndex = index;
       const step = steps[index];
       const done = Boolean(state.tutorialPracticeDone[index]);
+      const confirmStep = ["stat", "log", "confirm"].includes(step.practice);
       clearTutorialHighlight();
+      renderTutorialDoubleDemo(step);
       const target = tutorialTargetFor(step);
       target?.classList.add("tutorial-highlight");
       els.tutorialScrim.classList.add("open");
       els.keyboardHints?.classList.toggle("show", step.practice === "keyboard");
       els.tutorialCoach.classList.toggle("done", done);
+      els.tutorialCoach.classList.toggle("confirm-step", confirmStep);
+      els.tutorialCoach.dataset.practice = step.practice;
       els.tutorialCoachTitle.textContent = step.title;
       els.tutorialCoachText.textContent = done
         ? `${step.text} 완료되었습니다. 다음 단계로 자동 이동합니다.`
-        : `${step.text} 표시된 영역을 직접 조작해야 다음 단계로 넘어갈 수 있습니다.`;
+        : confirmStep
+          ? step.text
+          : `${step.text} 표시된 영역을 직접 조작해야 다음 단계로 넘어갈 수 있습니다.`;
       els.tutorialCoachProgress.textContent = `${index + 1} / ${steps.length}`;
       els.tutorialCoachPrev.disabled = index === 0;
-      els.tutorialCoachNext.disabled = !done;
-      els.tutorialCoachNext.textContent = index === steps.length - 1 ? "완료" : "다음";
+      els.tutorialCoachNext.disabled = !confirmStep && !done;
+      els.tutorialCoachNext.textContent = confirmStep ? "확인" : (index === steps.length - 1 ? "완료" : "다음");
       requestAnimationFrame(() => positionTutorialCoach(target));
     }
 
@@ -7764,6 +8601,11 @@
       els.tutorialCoach.style.top = "";
       els.tutorialCoach.style.bottom = "";
       els.tutorialModal.classList.remove("open");
+      document.body.classList.remove("tutorial-double-active");
+      if (els.tutorialDoubleDemo) {
+        els.tutorialDoubleDemo.hidden = true;
+        els.tutorialDoubleDemo.innerHTML = "";
+      }
       clearTutorialHighlight();
       if (state.tutorialSavedFastMode !== null) {
         state.settings.fastMode = state.tutorialSavedFastMode;
@@ -7798,7 +8640,20 @@
         const seen = new Map((state.archive.events || []).map(item => [item.id, item]));
         return buildDeck().map(card => {
           const unlocked = seen.get(card.id);
-          if (unlocked) return { ...unlocked, locked: false };
+          if (unlocked) {
+            return {
+              ...card,
+              ...unlocked,
+              title: unlocked.title || card.title,
+              meta: unlocked.meta || `${card.chapter} · #${String(card.number).padStart(3, "0")}`,
+              text: usableArchiveText(unlocked.text) || card.text,
+              dilemma: usableArchiveText(unlocked.dilemma) || card.dilemma,
+              tags: unlocked.tags?.length ? unlocked.tags : card.tags,
+              left: unlocked.left || card.left,
+              right: unlocked.right || card.right,
+              locked: false
+            };
+          }
           return {
             id: card.id,
             title: "???",
@@ -7815,7 +8670,23 @@
         const seen = new Map((state.archive.quests || []).map(item => [item.id, item]));
         return buildQuestLibrary().map(quest => {
           const unlocked = seen.get(quest.id);
-          if (unlocked) return { ...unlocked, locked: false };
+          if (unlocked) {
+            return {
+              ...unlocked,
+              title: unlocked.title || quest.title,
+              meta: unlocked.meta || `#Q${String(quest.number || 0).padStart(3, "0")} · ${statNames[quest.targetStat]} 목표 · ${questFailureLabel(quest.failureType)}`,
+              text: usableArchiveText(unlocked.text) || quest.story,
+              dilemma: usableArchiveText(unlocked.dilemma) || `목표: ${statNames[quest.targetStat]} ${quest.targetValue} 이상. 보상은 ${statNames[quest.rewardStat]} +${quest.rewardAmount}, 실패 조건은 ${questFailureLabel(quest.failureType)}입니다.`,
+              tags: unlocked.tags?.length ? unlocked.tags : ["퀘스트", statNames[quest.targetStat], questFailureLabel(quest.failureType)],
+              targetStat: unlocked.targetStat || quest.targetStat,
+              targetValue: unlocked.targetValue || quest.targetValue,
+              rewardStat: unlocked.rewardStat || quest.rewardStat,
+              rewardAmount: unlocked.rewardAmount || quest.rewardAmount,
+              failureType: unlocked.failureType || quest.failureType,
+              number: unlocked.number || quest.number,
+              locked: false
+            };
+          }
           return {
             id: quest.id,
             title: "???",
@@ -7849,7 +8720,7 @@
 
       if (tab === "setEffects") {
         const seen = new Map((state.archive.setEffects || []).map(item => [item.id, item]));
-        return SET_EFFECTS.map(effect => {
+        return ALL_SET_EFFECTS.map(effect => {
           const unlocked = seen.get(effect.id);
           if (unlocked) return { ...effect, ...unlocked, locked: false };
           return {
@@ -7857,7 +8728,8 @@
             title: "???",
             meta: effect.pair.map(key => setEffectKeyLabel(key)).join(" + "),
             text: "",
-            tags: ["미해금"],
+            tags: [effect.category === "negative" ? "부정효과" : "긍정효과", "미해금"],
+            category: effect.category || "positive",
             locked: true
           };
         });
@@ -7868,6 +8740,14 @@
 
     function filteredArchiveCatalog(tab) {
       const list = archiveCatalog(tab);
+      if (tab === "setEffects" && state.setEffectKindFilter !== "all") {
+        return list.filter(item => (item.category || "positive") === state.setEffectKindFilter)
+          .filter(item => {
+            if (state.archiveFilter === "unlocked") return !item.locked;
+            if (state.archiveFilter === "locked") return item.locked;
+            return true;
+          });
+      }
       if (state.archiveFilter === "unlocked") return list.filter(item => !item.locked);
       if (state.archiveFilter === "locked") return list.filter(item => item.locked);
       return list;
@@ -7945,9 +8825,13 @@
         button.classList.toggle("active", button.dataset.archiveTab === state.archiveTab);
       });
       els.archiveFilters.hidden = state.archiveTab === "stats";
+      els.setEffectKindFilters.hidden = state.archiveTab !== "setEffects";
       els.archiveModal.querySelector(".archive-workspace")?.classList.toggle("stats-mode", state.archiveTab === "stats");
       els.archiveFilters.querySelectorAll("[data-archive-filter]").forEach(button => {
         button.classList.toggle("active", button.dataset.archiveFilter === state.archiveFilter);
+      });
+      els.setEffectKindFilters.querySelectorAll("[data-set-effect-kind]").forEach(button => {
+        button.classList.toggle("active", button.dataset.setEffectKind === state.setEffectKindFilter);
       });
 
       if (state.archiveTab === "stats") {
@@ -7964,12 +8848,19 @@
         return;
       }
 
-      els.archiveList.innerHTML = list.slice(0, 500).map((item, index) => `
+      els.archiveList.innerHTML = list.slice(0, 500).map((item, index) => {
+        const metaLabel = state.archiveTab === "setEffects"
+          ? `${item.category === "negative" ? "부정효과" : "긍정효과"} · ${item.meta || ""}${item.locked ? "" : ` · 경험 ${item.count || 1}회`}`
+          : item.locked
+            ? item.meta || "미해금"
+            : `${item.meta || ""} · 경험 ${item.count || 1}회`;
+        return `
         <button class="archive-row ${item.locked ? "locked" : ""}" data-archive-index="${index}" type="button">
           <b>${escapeText(item.locked ? "???" : item.title)}</b>
-          <span>${escapeText(item.locked ? item.meta || "미해금" : `${item.meta || ""} · 경험 ${item.count || 1}회`)}</span>
+          <span>${escapeText(metaLabel)}</span>
         </button>
-      `).join("");
+      `;
+      }).join("");
       renderArchiveDetail(list[0]);
     }
 
@@ -7984,6 +8875,9 @@
     }
 
     function renderVersionFooter() {
+      if (els.buildLabel) {
+        els.buildLabel.textContent = `현재 빌드 ${GAME_VERSION}`;
+      }
       els.versionFooter.innerHTML = `
         <div class="version-footer-row">
           <div>
@@ -8003,9 +8897,10 @@
     }
 
     function renderPatchNotes() {
-      els.patchNotesList.innerHTML = PATCH_HISTORY.map(item => `
+      els.patchNotesList.innerHTML = PATCH_HISTORY.map((item, index) => `
         <div class="patch-item">
           <b>${item.version} ${item.summary}</b>
+          <p class="patch-time">작성 일정: ${escapeText(item.schedule || (index < 12 ? "2026-06-05 KST" : "2026-06-04 이전 KST"))} · 시간대: ${PATCH_TIMEZONE}</p>
           <ul class="patch-detail-list">
             ${item.details.map(detail => `<li>${detail}</li>`).join("")}
           </ul>
@@ -8097,11 +8992,19 @@
 
     function updateBodyState() {
       const storyOpen = els.storyModal.classList.contains("open");
-      document.body.classList.toggle("is-playing", !storyOpen && !state.ended);
+      document.body.classList.toggle("is-playing", !state.ended);
       document.body.classList.toggle("is-story-open", storyOpen);
+      document.body.classList.toggle("double-mode", isDoubleMode() && !state.tutorialRun && !state.ended);
+      const activeEffects = state.activeSetEffects || [];
+      document.body.classList.toggle("set-effect-active", activeEffects.some(effect => effect.category !== "negative") && isDoubleMode() && !state.ended);
+      document.body.classList.toggle("set-penalty-active", activeEffects.some(effect => effect.category === "negative") && isDoubleMode() && !state.ended);
+      document.body.classList.toggle("options-open", els.optionsModal?.classList.contains("open"));
     }
 
     function renderLeaderboardTabs() {
+      document.querySelectorAll("[data-leaderboard-mode]").forEach(button => {
+        button.classList.toggle("active", button.dataset.leaderboardMode === state.leaderboardMode);
+      });
       document.querySelectorAll("[data-leaderboard-difficulty]").forEach(button => {
         button.classList.toggle("active", button.dataset.leaderboardDifficulty === state.leaderboardDifficulty);
       });
@@ -8141,12 +9044,17 @@
         return;
       }
 
-      if (!records.length) {
+      const modeRecords = records.filter(item => {
+        const mode = item.mode || (String(item.modeLabel || "").includes("더블로드") ? "double" : "single");
+        return mode === state.leaderboardMode;
+      });
+
+      if (!modeRecords.length) {
         setLists(`<div class="empty">아직 등록된 무한 모드 기록이 없습니다.</div>`);
         return;
       }
 
-      setLists(records.slice(0, 10).map((item, index) => `
+      setLists(modeRecords.slice(0, 10).map((item, index) => `
         <div class="leaderboard-item">
           <span class="leaderboard-rank">${index + 1}</span>
           <span class="leaderboard-main">
@@ -8166,7 +9074,7 @@
 
       try {
         renderLeaderboardTabs();
-        const response = await fetch(`${LEADERBOARD_API}?difficulty=${encodeURIComponent(state.leaderboardDifficulty)}`);
+        const response = await fetch(`${LEADERBOARD_API}?difficulty=${encodeURIComponent(state.leaderboardDifficulty)}&mode=${encodeURIComponent(state.leaderboardMode)}`);
         if (!response.ok) throw new Error("leaderboard unavailable");
         const records = await response.json();
         renderLeaderboard(records);
@@ -8249,6 +9157,14 @@
 
     function choose(side) {
       if (state.ended) return;
+      if (state.sideLock && state.sideLock.until > state.turn && side !== state.sideLock.side) {
+        state.last = `<strong>방향 제한</strong> 부정 세트 효과로 ${state.sideLock.until - state.turn}턴 동안 ${state.sideLock.side === "left" ? "왼쪽" : "오른쪽"} 선택만 가능합니다.`;
+        render();
+        return;
+      }
+      if (state.sideLock && state.sideLock.until <= state.turn) {
+        state.sideLock = null;
+      }
       if (state.tutorialCoachOpen) {
         const step = activeTutorialSteps()[state.tutorialIndex];
         const allowed = ["drag", "keyboard", "choice"].includes(step?.practice);
@@ -8261,9 +9177,9 @@
       const card = currentCard();
       archiveCard(card);
       const choice = card[side];
-      const setEffect = currentSetEffect();
-      if (setEffect) archiveSetEffect(setEffect);
-      const setEffectResult = applySetEffectDelta(effectiveChoiceDelta(card, side), setEffect);
+      const setEffects = currentSetEffects() || [];
+      setEffects.forEach(archiveSetEffect);
+      const setEffectResult = applySetEffectsDelta(effectiveChoiceDelta(card, side), setEffects, side);
       const combined = setEffectResult.delta;
       const scoreGain = applyDeltaWithScore(combined);
       updatePlayerStats({
@@ -8285,7 +9201,7 @@
         : "";
       const turnPhrase = card.noPressure
         ? "이번 턴은 퀘스트 판단으로 처리되었습니다."
-        : setEffect
+        : setEffects.length
           ? "이번 턴은 더블로드 세트 효과와 시장 압박까지 반영되었습니다."
           : "이번 턴 시장 압박까지 반영되었습니다.";
 
@@ -8710,8 +9626,10 @@
       state.doubleDeckIndex = 0;
       state.doubleSelected = 0;
       state.activeSetEffect = null;
+      state.activeSetEffects = [];
       state.gameoverShield = 0;
       state.statShields = {};
+      state.sideLock = null;
       state.log = [];
       state.logSequence = 0;
       state.latestLogId = null;
@@ -8736,6 +9654,7 @@
       setupDoubleRoad();
       recordStatHistory("시작");
       els.endModal.classList.remove("open");
+      els.optionsModal.classList.remove("open");
       els.statGraph.innerHTML = "";
       els.endAchievements.innerHTML = "";
       els.submitSection.hidden = true;
@@ -8769,6 +9688,7 @@
         || els.leaderboardModal.classList.contains("open")
         || els.tutorialModal.classList.contains("open")
         || els.settingsModal.classList.contains("open")
+        || els.optionsModal.classList.contains("open")
         || els.archiveModal.classList.contains("open")
         || els.achievementsModal.classList.contains("open")
         || els.tarotRevealLayer.classList.contains("open");
@@ -8927,13 +9847,19 @@
       if (handleSecretKeys(event)) return;
       if (event.key === "Escape") {
         event.preventDefault();
-        if (els.settingsModal.classList.contains("open")) {
-          els.settingsModal.classList.remove("open");
-        } else if (!els.storyModal.classList.contains("open") && !els.endModal.classList.contains("open") && !els.archiveModal.classList.contains("open") && !els.achievementsModal.classList.contains("open") && !els.patchModal.classList.contains("open") && !els.leaderboardModal.classList.contains("open") && !els.tarotRevealLayer.classList.contains("open")) {
-          state.settingsOpened = true;
-          applySettings();
-          els.settingsModal.classList.add("open");
-          checkAchievements();
+        if (els.optionsModal.classList.contains("open")) {
+          els.optionsModal.classList.remove("open");
+          updateBodyState();
+          return;
+        }
+        if (els.settingsModal.classList.contains("open")) els.settingsModal.classList.remove("open");
+        if (els.archiveModal.classList.contains("open")) els.archiveModal.classList.remove("open");
+        if (els.achievementsModal.classList.contains("open")) els.achievementsModal.classList.remove("open");
+        if (els.patchModal.classList.contains("open")) els.patchModal.classList.remove("open");
+        if (els.leaderboardModal.classList.contains("open")) els.leaderboardModal.classList.remove("open");
+        if (!els.endModal.classList.contains("open") && !state.tutorialCoachOpen && !els.tarotRevealLayer.classList.contains("open")) {
+          els.optionsModal.classList.add("open");
+          updateBodyState();
         }
         return;
       }
@@ -9008,7 +9934,10 @@
       }
       event.preventDefault();
       resetKeyboardControl();
-      els.playCard.setPointerCapture?.(event.pointerId);
+      try {
+        els.playCard.setPointerCapture?.(event.pointerId);
+      } catch {
+      }
       els.playCard.classList.add("dragging");
       const startX = event.clientX;
       const previewThreshold = 70;
@@ -9121,6 +10050,14 @@
     });
     els.meters.addEventListener("click", () => completeTutorialCoachPractice("stat"));
     els.logList.addEventListener("click", () => completeTutorialCoachPractice("log"));
+    els.tutorialDoubleDemo.addEventListener("click", event => {
+      if (event.target.closest("[data-tutorial-double-card]")) {
+        completeTutorialCoachPractice("doublePick");
+      }
+      if (event.target.closest("[data-tutorial-double-effect]")) {
+        completeTutorialCoachPractice("doubleSet");
+      }
+    });
     els.tutorialPracticeLeft.addEventListener("click", completeTutorialPractice);
     els.tutorialPracticeRight.addEventListener("click", completeTutorialPractice);
     els.newGameTop.addEventListener("click", () => resetGame(true));
@@ -9148,6 +10085,37 @@
       els.settingsModal.classList.add("open");
       checkAchievements();
     });
+    els.openOptionsTop.addEventListener("click", () => {
+      els.optionsModal.classList.add("open");
+      updateBodyState();
+    });
+    function closeOptionsAndRun(action) {
+      els.optionsModal.classList.remove("open");
+      updateBodyState();
+      action();
+    }
+    els.closeOptions.addEventListener("click", () => {
+      els.optionsModal.classList.remove("open");
+      updateBodyState();
+    });
+    els.optionsTutorial.addEventListener("click", () => closeOptionsAndRun(() => openTutorial(0)));
+    els.optionsArchive.addEventListener("click", () => closeOptionsAndRun(() => openArchive()));
+    els.optionsAchievements.addEventListener("click", () => closeOptionsAndRun(() => openAchievements()));
+    els.optionsSettings.addEventListener("click", () => closeOptionsAndRun(() => {
+      state.settingsOpened = true;
+      applySettings();
+      els.settingsModal.classList.add("open");
+      checkAchievements();
+    }));
+    els.optionsPatch.addEventListener("click", () => closeOptionsAndRun(() => {
+      renderPatchNotes();
+      els.patchModal.classList.add("open");
+    }));
+    els.optionsLeaderboard.addEventListener("click", () => closeOptionsAndRun(() => {
+      renderLeaderboardTabs();
+      loadLeaderboard();
+      els.leaderboardModal.classList.add("open");
+    }));
     els.quickLeft.addEventListener("click", () => choose("left"));
     els.quickRight.addEventListener("click", () => choose("right"));
     els.doubleRoadPanel.addEventListener("click", event => {
@@ -9155,6 +10123,13 @@
       if (!button) return;
       state.doubleSelected = Number(button.dataset.doubleIndex);
       render();
+    });
+    els.doubleRoadPanel.addEventListener("pointerdown", event => {
+      const button = event.target.closest("[data-double-index]");
+      if (!button || state.ended || isModalOpen()) return;
+      state.doubleSelected = Number(button.dataset.doubleIndex);
+      render();
+      startDrag(event);
     });
     els.mobileLogToggle.addEventListener("click", () => {
       els.mobileLogDrawer.classList.toggle("open");
@@ -9231,6 +10206,10 @@
       renderTutorialCoach();
     });
     els.tutorialCoachNext.addEventListener("click", () => {
+      const step = activeTutorialSteps()[state.tutorialIndex];
+      if (["stat", "log", "confirm"].includes(step?.practice)) {
+        state.tutorialPracticeDone[state.tutorialIndex] = true;
+      }
       if (state.tutorialIndex >= activeTutorialSteps().length - 1) {
         closeTutorialModal();
         return;
@@ -9262,6 +10241,12 @@
       persistSettings();
       applySettings();
     });
+    els.masterModeToggle?.addEventListener("click", () => {
+      state.settings.masterMode = !state.settings.masterMode;
+      persistSettings();
+      applySettings();
+      updateBodyState();
+    });
     els.closeArchive.addEventListener("click", () => els.archiveModal.classList.remove("open"));
     els.closeAchievements.addEventListener("click", () => els.achievementsModal.classList.remove("open"));
     els.achievementTabs.addEventListener("click", event => {
@@ -9286,6 +10271,12 @@
       const button = event.target.closest("[data-archive-filter]");
       if (!button) return;
       state.archiveFilter = button.dataset.archiveFilter;
+      renderArchive();
+    });
+    els.setEffectKindFilters.addEventListener("click", event => {
+      const button = event.target.closest("[data-set-effect-kind]");
+      if (!button) return;
+      state.setEffectKindFilter = button.dataset.setEffectKind;
       renderArchive();
     });
     els.archiveList.addEventListener("click", event => {
@@ -9342,6 +10333,13 @@
       renderLeaderboardTabs();
       loadLeaderboard();
     });
+    els.modalLeaderboardModeTabs?.addEventListener("click", event => {
+      const button = event.target.closest("[data-leaderboard-mode]");
+      if (!button) return;
+      state.leaderboardMode = button.dataset.leaderboardMode;
+      renderLeaderboardTabs();
+      loadLeaderboard();
+    });
     window.addEventListener("keydown", handleArrowKeyDown);
     window.addEventListener("keyup", handleArrowKeyUp);
 
@@ -9355,7 +10353,9 @@
     }
     console.assert(buildDeck().length === TOTAL_EVENT_POOL, `card pool must contain ${TOTAL_EVENT_POOL} events`);
     console.assert(buildQuestLibrary().length === QUEST_LIBRARY_SIZE, `quest library must contain ${QUEST_LIBRARY_SIZE} quests`);
-    console.assert(SET_EFFECTS.length === SET_EFFECT_ARCHIVE_TOTAL, `set effect library must contain ${SET_EFFECT_ARCHIVE_TOTAL} effects`);
+    console.assert(SET_EFFECTS.length === 30, "positive set effect library must contain 30 effects");
+    console.assert(NEGATIVE_SET_EFFECTS.length === 20, "negative set effect library must contain 20 effects");
+    console.assert(ALL_SET_EFFECTS.length === SET_EFFECT_ARCHIVE_TOTAL, `set effect library must contain ${SET_EFFECT_ARCHIVE_TOTAL} effects`);
     console.assert(ACHIEVEMENTS.length === 150, "achievement library must contain 150 achievements");
     console.assert(isInfiniteMode() || state.deck.length === runTargetCount(), "run deck length must match selected mode");
   </script>
