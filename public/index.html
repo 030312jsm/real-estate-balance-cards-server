@@ -6791,6 +6791,7 @@
       releaseTimer: null,
       secretBuffer: ""
     };
+    const SECRET_ARCHIVE_CODE = "SWAYARCHIVE";
 
     const tutorialSteps = [
       {
@@ -7607,6 +7608,122 @@
       if (after > before) persistPlayerStats();
     }
 
+    function archiveStamp(item, index = 0) {
+      return {
+        ...item,
+        count: Math.max(1, item.count || 1),
+        seenAt: item.seenAt || new Date(Date.now() - index * 1000).toISOString()
+      };
+    }
+
+    function secretEndingArchiveItems() {
+      const endings = [
+        ["엔딩: 첫 장부의 균형", "튜토리얼 고정 런의 마지막 카드를 처리하면 등장합니다.", "정해진 튜토리얼 런을 끝까지 마치면 SWAY의 기본 흐름을 이해한 첫 장부가 기록됩니다.", "temperance", "절제", "처음 배운 균형"],
+        ["엔딩: 조용한 장부 폐쇄", "무한 모드에서 직접 종료하거나 보호 상태에서 장부를 닫으면 등장합니다.", "운영자는 더 버틸 수 있었지만 장부를 스스로 닫고 다음 판단을 준비합니다.", "hermit", "은둔자", "스스로 닫은 장부"],
+        ["엔딩: 비공개 운용 종료", "무한 모드에서 직접 종료하거나 보호 상태에서 장부를 닫으면 등장합니다.", "긴 운영보다 현재 기록을 남기는 쪽을 택하면 비공개 시즌이 봉인됩니다.", "hermit", "은둔자", "조용한 퇴장"],
+        ["엔딩: 너무 빠른 야근", "무한 모드 초반에 특정 지표가 0 이하로 내려가면 등장합니다.", "400개 사건은 아직 초반이었지만, 첫 순환의 속도전이 운영팀을 먼저 지치게 합니다.", "tower", "탑", "초반의 균열"],
+        ["엔딩: 첫 순환의 비용", "무한 모드 초반에 같은 유형의 손실을 반복하면 등장합니다.", "시장 전체를 보기도 전에 반복 선택의 비용이 장부에 선명하게 남습니다.", "wheel", "운명의 수레바퀴", "되돌아온 질문"],
+        ["엔딩: 끝나지 않는 운영위원회", "무한 모드에서 장기 생존한 뒤 낮은 지표가 남으면 등장합니다.", "오래 버틴 운영자는 끝없이 돌아오는 회의 속에서 가장 약한 지표를 확인합니다.", "world", "세계", "긴 운영의 지도"],
+        ["엔딩: 순위표에 남은 도시", "무한 모드에서 장기 생존 후 기록 등록이 가능한 상태로 종료하면 등장합니다.", "끝난 시즌은 사라지지 않고 순위표의 한 줄로 남아 도시의 운영 기록이 됩니다.", "world", "세계", "공개된 시즌"],
+        ["엔딩: 반복되는 시장의 얼굴", "무한 모드에서 다양한 사건을 오래 통과하면 등장합니다.", "다른 사건들이 결국 같은 질문으로 돌아오며, 운영자의 중심축을 드러냅니다.", "wheel", "운명의 수레바퀴", "시장 순환"],
+        ["엔딩: 별이 붙은 운용권", "무한 모드에서 지표를 100 이상까지 끌어올려 별을 여러 개 획득하면 등장합니다.", "지표가 한계를 넘을 때마다 별이 붙고, 장부는 장기 서사로 바뀝니다.", "star", "별", "한계를 넘긴 표식"],
+        ["엔딩: 위기를 통과한 기록", "무한 모드에서 여러 차례 위기를 극복하고 장기 생존하면 등장합니다.", "위기를 빠져나온 횟수는 단순 생존보다 강한 회복력으로 평가됩니다.", "wheel", "운명의 수레바퀴", "회복의 반복"],
+        ["엔딩: 동네 가치업 승인", "일반 또는 더블로드 도전에서 모든 사건을 통과하고 평균 균형과 최저 지표를 안정권에 남기면 등장합니다.", "운영위원회는 균형 잡힌 장부를 보고 다음 시즌 운용권을 연장합니다.", "world", "세계", "승인된 가치업"],
+        ["엔딩: 숫자와 골목의 합의", "일반 또는 더블로드 도전에서 수익성과 생활권 지표를 함께 지키면 등장합니다.", "은행과 상인회가 같은 장부를 보고 고개를 끄덕이는 드문 합의가 남습니다.", "justice", "정의", "숫자와 관계의 저울"],
+        ["엔딩: 다음 분기의 초대장", "일반 또는 더블로드 도전에서 마지막 사건까지 안정적으로 통과하면 등장합니다.", "작은 동네 프로젝트는 다음 분기의 더 긴 운영권 제안으로 이어집니다.", "chariot", "전차", "다음 장으로 가는 추진력"],
+        ["엔딩: 조용한 우승", "높은 점수보다 안정적인 공실·민원·금융 관리를 유지하며 클리어하면 등장합니다.", "크게 떠드는 발표 없이도 공실표와 민원 기록이 조용히 나아집니다.", "temperance", "절제", "조용한 균형"],
+        ["엔딩: 회복의 장부", "일반 또는 더블로드 도전에서 위기 구간을 여러 번 회복하며 마지막 사건까지 통과하면 등장합니다.", "완벽하지 않은 시즌이었지만 회복 속도가 운영권을 지켜냅니다.", "wheel", "운명의 수레바퀴", "다시 오른 지표"],
+        ["엔딩: 낮은 지표의 반격", "낮은 지표를 방치하지 않고 회복 선택을 누적하면 등장합니다.", "가장 약했던 지표가 끝내 장부를 무너뜨리지 못하고 반격의 근거가 됩니다.", "star", "별", "낮은 곳의 빛"],
+        ["엔딩: 손실을 줄인 사람들", "큰 성공보다 위험을 알아차리고 방향을 바꾼 선택이 많으면 등장합니다.", "성공기가 아니라 손실을 줄인 사람들의 보고서가 남습니다.", "justice", "정의", "방향 전환의 기록"],
+        ["엔딩: 버텼지만 얇은 장부", "모든 사건을 통과했지만 최저 지표가 낮게 남으면 등장합니다.", "생존은 인정받지만 낮게 남은 지표가 다음 분기의 숙제로 적힙니다.", "temperance", "절제", "얇은 균형"],
+        ["엔딩: 조건부 연장", "일반 또는 더블로드 도전에서 클리어했지만 특정 지표가 불안정하면 등장합니다.", "운영권은 연장되지만 다음 시즌에는 낮은 지표를 회복해야 합니다.", "justice", "정의", "조건이 붙은 승리"],
+        ["엔딩: 골목의 숙제", "생활가치와 관계 회복을 충분히 만들지 못한 채 클리어하면 등장합니다.", "동네는 버텼지만 아직 좋아졌다고 말하기엔 이른 장부가 남습니다.", "star", "별", "남겨진 숙제"],
+        ["엔딩: 유동성 회의", "현금흐름이 0 이하로 내려가거나 자금 압박 선택을 누적하면 등장합니다.", "은행은 추가 담보와 상환 계획을 요구하고, 운영팀은 매각 가능한 자산부터 다시 분류합니다.", "tower", "탑", "현금의 균열"],
+        ["엔딩: 닫힌 회의실", "신뢰가 0 이하로 내려가거나 설명과 약속을 반복해서 놓치면 등장합니다.", "임차인, 금융기관, 파트너가 같은 질문을 던지고 회의실의 문은 무겁게 닫힙니다.", "justice", "정의", "무너진 약속"],
+        ["엔딩: 텅 빈 골목", "생활가치가 0 이하로 내려가거나 주민 편의를 계속 후순위로 두면 등장합니다.", "건물은 남았지만 사람들이 머물 이유가 줄어드는 장면이 기록됩니다.", "tower", "탑", "비어 가는 생활권"],
+        ["엔딩: 빨간 도장", "위험관리가 0 이하로 내려가거나 실사·권리·인허가 리스크를 잠그지 못하면 등장합니다.", "계약서의 작은 빈칸들이 한꺼번에 문제로 변하고 빨간 도장이 장부를 멈춥니다.", "tower", "탑", "잠그지 못한 위험"]
+      ];
+      return endings.slice(0, ENDING_ARCHIVE_TOTAL).map(([title, condition, text, type, cardName, copy], index) => {
+        const tarot = {
+          type,
+          name: `${cardName} · ${title.replace(/^엔딩:\s*/, "")}`,
+          copy,
+          endingTitle: title,
+          condition,
+          colors: tarotColors(type)
+        };
+        return archiveStamp({
+          id: `secret-ending-${index + 1}`,
+          title,
+          meta: condition,
+          text,
+          condition,
+          tarot
+        }, index);
+      });
+    }
+
+    function unlockEntireArchive() {
+      const events = buildDeck().map((card, index) => archiveStamp({
+        id: card.id,
+        key: card.key,
+        title: card.title,
+        meta: `${card.chapter} · #${String(card.number).padStart(3, "0")}`,
+        text: card.text,
+        dilemma: card.dilemma,
+        tags: card.tags || [],
+        left: card.left,
+        right: card.right
+      }, index));
+      const quests = buildQuestLibrary().map((quest, index) => {
+        const card = questCardFromDefinition(quest, index);
+        return archiveStamp({
+          id: quest.id,
+          key: "quest",
+          title: card.title,
+          meta: `#Q${String(quest.number || 0).padStart(3, "0")} · ${statNames[quest.targetStat]} 목표 · ${questFailureLabel(quest.failureType)}`,
+          text: card.text,
+          dilemma: card.dilemma,
+          tags: card.tags || [],
+          left: card.left,
+          right: card.right,
+          targetStat: quest.targetStat,
+          targetValue: quest.targetValue,
+          rewardStat: quest.rewardStat,
+          rewardAmount: quest.rewardAmount,
+          number: quest.number,
+          failureType: quest.failureType
+        }, index);
+      });
+      const setEffects = ALL_SET_EFFECTS.map((effect, index) => archiveStamp({
+        id: effect.id,
+        title: effect.title,
+        meta: effect.pair.map(key => setEffectKeyLabel(key)).join(" + "),
+        text: effect.copy,
+        tags: ["더블로드", effect.category === "negative" ? "부정효과" : "긍정효과"],
+        category: effect.category || "positive",
+        pair: effect.pair || [],
+        type: effect.type
+      }, index));
+
+      state.archive = {
+        events,
+        quests,
+        endings: secretEndingArchiveItems(),
+        setEffects
+      };
+      persistArchive();
+      state.playerStats.totalEventsUnlocked = events.length;
+      state.playerStats.totalQuestsUnlocked = quests.length;
+      state.playerStats.totalEndingsUnlocked = state.archive.endings.length;
+      state.playerStats.endingsSeen = state.archive.endings.length;
+      state.playerStats.setEffectsDiscovered = setEffects.length;
+      persistPlayerStats();
+      checkAchievements();
+      if (els.archiveModal.classList.contains("open")) renderArchive();
+      showSecretNotice("기록보관소 전체 해금", `${events.length + quests.length + state.archive.endings.length + setEffects.length}개 기록이 열렸습니다.`);
+    }
+
     function setEffectKeyLabel(key) {
       return chapterPacks.find(pack => pack.key === key)?.name || key;
     }
@@ -7836,6 +7953,7 @@
     }
 
     function endingConditionText(itemOrStory, reason = "") {
+      if (itemOrStory?.condition) return itemOrStory.condition;
       const title = itemOrStory?.title || itemOrStory?.endingTitle || "";
       const reasonText = `${reason || itemOrStory?.meta || ""} ${title}`.toLowerCase();
       if (title.includes("첫 장부의 균형") || reasonText.includes("튜토리얼")) {
@@ -8951,6 +9069,17 @@
       toast.innerHTML = `
         <b>업적 달성: ${escapeText(achievement.title)}</b>
         <span>${escapeText(achievement.description)}</span>
+      `;
+      els.achievementToastZone.appendChild(toast);
+      setTimeout(() => toast.remove(), 3600);
+    }
+
+    function showSecretNotice(title, description) {
+      const toast = document.createElement("div");
+      toast.className = "achievement-toast";
+      toast.innerHTML = `
+        <b>${escapeText(title)}</b>
+        <span>${escapeText(description)}</span>
       `;
       els.achievementToastZone.appendChild(toast);
       setTimeout(() => toast.remove(), 3600);
@@ -10696,6 +10825,13 @@
       if (!/^[A-Z]$/.test(char)) return false;
 
       keyControl.secretBuffer = `${keyControl.secretBuffer}${char}`.slice(-12);
+      if (keyControl.secretBuffer.endsWith(SECRET_ARCHIVE_CODE)) {
+        event.preventDefault();
+        clearSecretSuffixFromInput(event.target, SECRET_ARCHIVE_CODE);
+        keyControl.secretBuffer = "";
+        unlockEntireArchive();
+        return true;
+      }
       if (keyControl.secretBuffer.endsWith("MUTEK")) {
         event.preventDefault();
         clearSecretSuffixFromInput(event.target, "MUTEK");
