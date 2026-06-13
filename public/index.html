@@ -880,7 +880,7 @@
       overflow: hidden;
     }
 
-    #playCard > :not(.card-illustration) {
+    #playCard > :not(.card-illustration):not(.synergy-mark) {
       position: relative;
       z-index: 1;
       pointer-events: none;
@@ -1252,7 +1252,7 @@
       transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
     }
 
-    .double-road-preview-card > :not(.card-illustration) {
+    .double-road-preview-card > :not(.card-illustration):not(.synergy-mark) {
       position: relative;
       z-index: 1;
       pointer-events: none;
@@ -1267,11 +1267,19 @@
 
     body.double-mode .play-card.double-selected,
     body.double-mode .double-road-preview-card.double-selected {
-      border-color: transparent;
+      border-color: rgba(31, 111, 90, 0.72);
       box-shadow:
         0 20px 44px rgba(26, 36, 47, 0.14),
-        0 0 0 3px rgba(31, 111, 90, 0.24),
-        0 0 0 6px rgba(211, 137, 47, 0.16);
+        inset 0 0 0 2px rgba(31, 111, 90, 0.26),
+        inset 0 0 0 5px rgba(211, 137, 47, 0.14);
+    }
+
+    body.double-mode .play-card:hover,
+    body.double-mode .double-road-preview-card:hover,
+    body.double-mode .double-road-preview-card.active {
+      box-shadow:
+        0 20px 44px rgba(26, 36, 47, 0.14),
+        inset 0 0 0 2px rgba(31, 111, 90, 0.2);
     }
 
     .double-road-preview-card.quest-card {
@@ -1284,14 +1292,14 @@
     }
 
     .double-road-preview-card .card-text {
-      max-height: none;
+      max-height: 224px;
       overflow: hidden;
     }
 
     body.double-mode .play-card .dilemma-line,
     body.double-mode .double-road-preview-card .dilemma-line {
-      max-height: 120px;
-      overflow: hidden;
+      max-height: 132px;
+      overflow: auto;
       scrollbar-width: none;
     }
 
@@ -1326,6 +1334,26 @@
       line-height: 1;
       opacity: 0.08;
       pointer-events: none;
+    }
+
+    .play-card > .card-top,
+    .double-road-preview-card > .card-top {
+      grid-row: 1;
+    }
+
+    .play-card > .card-title,
+    .double-road-preview-card > .card-title {
+      grid-row: 2;
+    }
+
+    .play-card > .card-text,
+    .double-road-preview-card > .card-text {
+      grid-row: 3;
+    }
+
+    .play-card > .card-tags,
+    .double-road-preview-card > .card-tags {
+      grid-row: 4;
     }
 
     .synergy-positive .synergy-mark {
@@ -1461,13 +1489,25 @@
       justify-self: auto;
     }
 
+    body.double-mode .game-panel {
+      min-height: 0;
+      grid-template-rows: auto auto auto auto;
+      gap: 10px;
+    }
+
     body.double-mode .card-stage {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      --double-card-width: min(380px, 100%);
+      --double-card-height: 438px;
+      --double-slot-height: 500px;
+      --double-stack-height: 430px;
+      --double-gap: 14px;
+      grid-template-columns: repeat(2, minmax(280px, 380px));
       gap: 14px;
-      min-height: 420px;
-      align-items: start;
+      min-height: 500px;
+      align-items: center;
       justify-items: center;
-      padding-top: 4px;
+      justify-content: center;
+      padding-top: 0;
     }
 
     body.double-mode .card-wrap {
@@ -1479,53 +1519,141 @@
     }
 
     body.double-mode .card-wrap {
-      width: 100%;
-      min-height: 404px;
-      place-items: start center;
-      padding-top: 8px;
+      width: var(--double-card-width);
+      min-height: var(--double-slot-height);
+      height: var(--double-slot-height);
+      place-items: center;
+      padding-top: 0;
     }
 
     body.double-mode .double-road-slot {
-      min-height: 404px;
-      place-items: start center;
-      padding-top: 8px;
+      width: var(--double-card-width);
+      min-height: var(--double-slot-height);
+      height: var(--double-slot-height);
+      place-items: center;
+      padding-top: 0;
     }
 
     body.double-mode .play-card,
     body.double-mode .under-choice-sheet,
     body.double-mode .double-road-preview-card {
-      width: min(342px, 96%);
-      min-height: 374px;
+      width: var(--double-card-width);
+      height: var(--double-card-height);
+      min-height: var(--double-card-height);
+      max-height: var(--double-card-height);
+      box-sizing: border-box;
+      align-self: center;
+      justify-self: center;
+    }
+
+    body.double-mode .play-card,
+    body.double-mode .double-road-preview-card {
+      display: grid;
+      grid-template-rows: auto 64px minmax(0, 1fr) auto;
+      gap: 14px;
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    body.double-mode .card-top {
+      align-items: flex-start;
+      min-height: 0;
+      min-width: 0;
+      overflow: visible;
+    }
+
+    body.double-mode .card-number,
+    body.double-mode .double-road-preview-card .card-number {
+      min-width: auto;
+      overflow: visible;
+      text-overflow: clip;
+      white-space: normal;
+    }
+
+    body.double-mode .card-title,
+    body.double-mode .double-road-preview-card .card-title {
+      font-size: 27px;
+      line-height: 1.16;
+      min-height: 64px;
+      height: 64px;
+      max-height: 64px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    body.double-mode .card-text,
+    body.double-mode .double-road-preview-card .card-text {
+      font-size: 15px;
+      line-height: 1.58;
+      gap: 10px;
+      min-height: 0;
+      max-height: 224px;
+      overflow: hidden;
+      align-content: normal;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+    }
+
+    body.double-mode .story-line,
+    body.double-mode .double-road-preview-card .story-line {
+      display: -webkit-box;
+      height: auto;
+      min-height: 0;
+      max-height: none;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    body.double-mode .play-card .dilemma-line,
+    body.double-mode .double-road-preview-card .dilemma-line {
+      min-height: 76px;
+      max-height: 96px;
+      overflow: auto;
+      font-size: 13px;
+      line-height: 1.48;
+      padding: 9px 10px;
+    }
+
+    body.double-mode .card-tags {
+      min-height: 0;
+      height: auto;
+      max-height: none;
+      align-content: normal;
+      overflow: visible;
     }
 
     body.double-mode .stack-shadow,
     body.double-mode .stack-shadow::before {
-      width: min(326px, 92%);
-      height: 366px;
+      width: min(360px, 90%);
+      height: var(--double-stack-height);
     }
 
     body.double-mode .stack-shadow {
       top: 8px;
       left: 50%;
-      transform: translateX(-50%) rotate(-3deg) translateY(8px);
+      transform: translateX(-50%) rotate(-3deg) translateY(5px);
     }
 
     body.double-mode .stack-shadow::before {
       top: 0;
       left: 0;
-      transform: rotate(6deg) translate(10px, 8px);
+      transform: rotate(6deg) translate(9px, 6px);
     }
 
     body.double-mode .under-choice-sheet {
-      top: 8px;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%) rotate(-2deg);
+      transform: translate(-50%, -50%) rotate(-2deg);
     }
 
     body.double-mode .double-road-panel {
       align-self: start;
-      justify-self: stretch;
+      justify-self: center;
       position: relative;
+      width: var(--double-card-width);
       background: transparent;
       border: 0;
       padding: 0;
@@ -1534,7 +1662,7 @@
 
     body.double-mode .double-road-head {
       position: absolute;
-      top: 0;
+      top: -8px;
       right: 10px;
       z-index: 10;
       min-height: 0;
@@ -1545,19 +1673,12 @@
       outline: 0;
     }
 
-    body.double-mode .play-card::after {
-      content: "1번 카드";
-      position: absolute;
-      right: 12px;
-      bottom: 12px;
-      z-index: 3;
-      padding: 5px 8px;
-      border-radius: 999px;
-      background: rgba(31, 111, 90, 0.92);
-      color: #ffffff;
-      font-size: 11px;
-      font-weight: 950;
-      pointer-events: none;
+    body.double-mode .card-wrap > .play-card::after {
+      content: none;
+    }
+
+    body.double-mode .double-road-preview-card::after {
+      content: none;
     }
 
     body.set-effect-active .play-card,
@@ -1570,6 +1691,16 @@
       animation: setPenaltyGlow 1.35s ease-in-out infinite alternate;
     }
 
+    body.set-effect-active .play-card.double-selected,
+    body.set-effect-active .double-road-preview-card.double-selected {
+      animation: setGlowSelected 1.45s ease-in-out infinite alternate;
+    }
+
+    body.set-penalty-active .play-card.double-selected,
+    body.set-penalty-active .double-road-preview-card.double-selected {
+      animation: setPenaltyGlowSelected 1.35s ease-in-out infinite alternate;
+    }
+
     @keyframes setGlow {
       from { box-shadow: 0 20px 44px rgba(26, 36, 47, 0.14), 0 0 0 rgba(89, 211, 148, 0); }
       to { box-shadow: 0 24px 62px rgba(31, 111, 90, 0.24), 0 0 34px rgba(89, 211, 148, 0.44); }
@@ -1578,6 +1709,16 @@
     @keyframes setPenaltyGlow {
       from { box-shadow: 0 20px 44px rgba(26, 36, 47, 0.14), 0 0 0 rgba(184, 72, 95, 0); }
       to { box-shadow: 0 24px 62px rgba(129, 45, 64, 0.24), 0 0 30px rgba(184, 72, 95, 0.38); }
+    }
+
+    @keyframes setGlowSelected {
+      from { box-shadow: 0 20px 44px rgba(26, 36, 47, 0.14), 0 0 0 rgba(89, 211, 148, 0), inset 0 0 0 2px rgba(31, 111, 90, 0.26), inset 0 0 0 5px rgba(211, 137, 47, 0.14); }
+      to { box-shadow: 0 24px 62px rgba(31, 111, 90, 0.24), 0 0 34px rgba(89, 211, 148, 0.44), inset 0 0 0 2px rgba(31, 111, 90, 0.3), inset 0 0 0 5px rgba(211, 137, 47, 0.16); }
+    }
+
+    @keyframes setPenaltyGlowSelected {
+      from { box-shadow: 0 20px 44px rgba(26, 36, 47, 0.14), 0 0 0 rgba(184, 72, 95, 0), inset 0 0 0 2px rgba(184, 72, 95, 0.22), inset 0 0 0 5px rgba(211, 137, 47, 0.12); }
+      to { box-shadow: 0 24px 62px rgba(129, 45, 64, 0.24), 0 0 30px rgba(184, 72, 95, 0.38), inset 0 0 0 2px rgba(184, 72, 95, 0.28), inset 0 0 0 5px rgba(211, 137, 47, 0.15); }
     }
 
     .last-result {
@@ -2093,6 +2234,284 @@
     .options-grid .text-button .icon {
       width: 25px;
       height: 25px;
+    }
+
+    .options-grid .text-button.locked {
+      color: var(--muted);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(223, 242, 239, 0.42));
+      border-style: dashed;
+    }
+
+    .options-grid .text-button.locked .icon {
+      color: #7a858d;
+    }
+
+    .credits-modal {
+      width: min(980px, 100%);
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(239, 247, 245, 0.96)),
+        linear-gradient(120deg, rgba(223, 242, 239, 0.72), rgba(250, 236, 212, 0.42));
+    }
+
+    .credits-body {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .credits-stage {
+      position: relative;
+      height: min(72vh, 720px);
+      min-height: 520px;
+      overflow: hidden;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, rgba(23, 32, 42, 0.06), transparent 16%, transparent 84%, rgba(23, 32, 42, 0.06)),
+        radial-gradient(circle at 50% 110%, rgba(31, 111, 90, 0.16), transparent 42%);
+    }
+
+    .credits-stage::before,
+    .credits-stage::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 110px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .credits-stage::before {
+      top: 0;
+      background: linear-gradient(180deg, var(--panel), transparent);
+    }
+
+    .credits-stage::after {
+      bottom: 0;
+      background: linear-gradient(0deg, var(--panel), transparent);
+    }
+
+    .credits-roll {
+      width: min(760px, calc(100% - 36px));
+      margin: 0 auto;
+      padding: 34px 0 80px;
+      display: grid;
+      gap: 28px;
+      text-align: center;
+      transform: translateY(66vh);
+      animation: creditsRoll 42s linear forwards;
+      will-change: transform;
+    }
+
+    .credits-kicker {
+      color: #1f6f5a;
+      font-size: 13px;
+      font-weight: 950;
+      letter-spacing: 0;
+    }
+
+    .credits-title {
+      margin: 0;
+      font-size: clamp(18px, 3vw, 34px);
+      line-height: 1.03;
+      font-weight: 950;
+    }
+
+    .credits-game-title {
+      margin: 0;
+      font-size: clamp(62px, 13vw, 148px);
+      line-height: 0.92;
+      font-weight: 950;
+      color: #17202a;
+      text-shadow: 0 18px 40px rgba(31, 111, 90, 0.16);
+    }
+
+    .credits-maker {
+      margin: 0;
+      color: var(--ink);
+      font-size: clamp(18px, 3.2vw, 32px);
+      font-weight: 900;
+    }
+
+    .credits-maker b {
+      color: #1f6f5a;
+      font-weight: 950;
+    }
+
+    .credits-hero {
+      gap: 14px;
+      padding: 44px 12px 30px;
+    }
+
+    .credits-section {
+      display: grid;
+      gap: 12px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: 0 16px 34px rgba(23, 32, 42, 0.08);
+    }
+
+    .credits-section.plain {
+      border-color: transparent;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .credits-section h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 950;
+    }
+
+    .credits-section p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .credits-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      text-align: left;
+    }
+
+    .credits-stat {
+      min-height: 58px;
+      display: grid;
+      gap: 3px;
+      align-content: center;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.78);
+    }
+
+    .credits-stat span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .credits-stat b {
+      font-size: 20px;
+      line-height: 1.1;
+    }
+
+    .credits-congrats {
+      position: relative;
+      min-height: 260px;
+      display: grid;
+      place-items: center;
+      gap: 14px;
+      padding: 48px 12px;
+    }
+
+    .credits-congrats strong {
+      position: relative;
+      z-index: 2;
+      font-size: clamp(34px, 7vw, 76px);
+      line-height: 1.05;
+      color: #1f6f5a;
+      text-shadow: 0 10px 28px rgba(31, 111, 90, 0.18);
+    }
+
+    .firework {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: currentColor;
+      color: #d3892f;
+      box-shadow:
+        0 -42px 0 currentColor,
+        30px -30px 0 #b8485f,
+        42px 0 0 #385ca8,
+        30px 30px 0 #277c78,
+        0 42px 0 #faecd4,
+        -30px 30px 0 #b8485f,
+        -42px 0 0 #385ca8,
+        -30px -30px 0 #277c78;
+      animation: fireworkPop 1.35s ease-out infinite;
+      opacity: 0;
+    }
+
+    .firework.one {
+      left: 18%;
+      top: 32%;
+      color: #d3892f;
+      animation-delay: 0s;
+    }
+
+    .firework.two {
+      right: 18%;
+      top: 28%;
+      color: #385ca8;
+      animation-delay: 0.36s;
+    }
+
+    .firework.three {
+      left: 50%;
+      bottom: 28%;
+      color: #b8485f;
+      animation-delay: 0.72s;
+    }
+
+    @keyframes creditsRoll {
+      from {
+        transform: translateY(66vh);
+      }
+      to {
+        transform: translateY(calc(-100% + min(44vh, 430px)));
+      }
+    }
+
+    @keyframes fireworkPop {
+      0% {
+        transform: scale(0.2);
+        opacity: 0;
+      }
+      18% {
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1.35);
+        opacity: 0;
+      }
+    }
+
+    body.dark-mode .options-grid .text-button.locked {
+      background:
+        linear-gradient(135deg, rgba(21, 31, 34, 0.96), rgba(36, 45, 48, 0.88));
+      color: #9cafaa;
+    }
+
+    body.dark-mode .credits-modal {
+      background:
+        linear-gradient(180deg, rgba(20, 29, 32, 0.98), rgba(16, 23, 25, 0.98)),
+        linear-gradient(120deg, rgba(31, 111, 90, 0.3), rgba(211, 137, 47, 0.16));
+    }
+
+    body.dark-mode .credits-stage {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 16%, transparent 84%, rgba(255, 255, 255, 0.05)),
+        radial-gradient(circle at 50% 110%, rgba(31, 111, 90, 0.24), transparent 44%);
+    }
+
+    body.dark-mode .credits-section,
+    body.dark-mode .credits-stat {
+      background: rgba(21, 31, 34, 0.88);
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    body.dark-mode .credits-game-title {
+      color: #eef6f2;
+      text-shadow: 0 18px 46px rgba(31, 111, 90, 0.36);
     }
 
     .tutorial-card {
@@ -4379,45 +4798,70 @@
       }
 
       body.double-mode .card-stage {
+        --double-card-width: min(100%, 44vw);
+        --double-card-height: 258px;
+        --double-slot-height: 270px;
+        --double-stack-height: 258px;
+        --double-gap: 9px;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 6px;
-        min-height: 298px;
+        min-height: calc(var(--double-slot-height) + 6px);
+        justify-content: center;
         overflow: visible;
       }
 
       body.double-mode .card-wrap {
         width: 100%;
-        min-height: 286px;
+        min-height: var(--double-slot-height);
+        height: var(--double-slot-height);
       }
 
       body.double-mode .double-road-slot {
         width: 100%;
-        min-height: 286px;
+        min-height: var(--double-slot-height);
+        height: var(--double-slot-height);
       }
 
       body.double-mode .play-card,
       body.double-mode .under-choice-sheet,
       body.double-mode .double-road-preview-card {
-        width: min(100%, 44vw);
-        min-height: 258px;
-        padding: 10px;
+        width: var(--double-card-width);
+        height: var(--double-card-height);
+        min-height: var(--double-card-height);
+        max-height: var(--double-card-height);
+        padding: 13px;
+        gap: var(--double-gap);
+      }
+
+      body.double-mode .play-card,
+      body.double-mode .double-road-preview-card {
+        grid-template-rows: auto 46px minmax(0, 1fr) auto;
       }
 
       body.double-mode .double-road-slot .stack-shadow,
       body.double-mode .double-road-slot .stack-shadow::before {
         width: min(100%, 42vw);
-        height: 252px;
+        height: var(--double-stack-height);
       }
 
       body.double-mode .card-title,
       body.double-mode .double-road-preview-card .card-title {
-        font-size: 16px;
+        font-size: 19px;
+        min-height: 46px;
+        height: 46px;
+        max-height: 46px;
       }
 
       body.double-mode .card-text,
       body.double-mode .double-road-preview-card .card-text {
-        font-size: 11px;
-        max-height: 96px;
+        font-size: 13px;
+        line-height: 1.46;
+        gap: 7px;
+        min-height: 0;
+        height: auto;
+        max-height: 116px;
+        overflow: hidden;
+        grid-template-rows: minmax(0, 1fr) auto;
       }
 
       body.double-mode .double-road-panel {
@@ -4425,13 +4869,33 @@
       }
 
       .double-road-preview-card {
-        min-height: 258px;
-        padding: 10px;
-        gap: 8px;
+        height: auto;
+        min-height: var(--double-card-height);
+        max-height: none;
+        padding: 13px;
+        gap: 9px;
       }
 
-      .double-road-preview-card .dilemma-line {
-        display: none;
+      body.double-mode .play-card .dilemma-line,
+      body.double-mode .double-road-preview-card .dilemma-line {
+        display: block;
+        height: auto;
+        min-height: 52px;
+        max-height: 58px;
+        padding: 8px;
+        font-size: 11px;
+        line-height: 1.38;
+      }
+
+      body.double-mode .story-line,
+      body.double-mode .double-road-preview-card .story-line {
+        display: -webkit-box;
+        height: auto;
+        min-height: 0;
+        max-height: none;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
       }
 
       .double-road-head {
@@ -5322,6 +5786,10 @@
             <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5"/><path d="M8 19V9"/><path d="M12 19V3"/><path d="M16 19v-7"/><path d="M20 19V7"/></svg>
             무한 순위
           </button>
+          <button class="text-button locked" id="optionsCredits" type="button" aria-disabled="true">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+            크레딧
+          </button>
         </div>
       </div>
     </div>
@@ -5380,6 +5848,22 @@
     </div>
   </div>
 
+  <div class="modal-layer" id="creditsModal" role="dialog" aria-modal="true" aria-labelledby="creditsTitle">
+    <div class="modal credits-modal">
+      <div class="panel-head">
+        <h2 class="panel-title" id="creditsTitle">Ending Credits</h2>
+        <button class="icon-button" id="closeCredits" title="닫기" aria-label="닫기">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body credits-body">
+        <div class="credits-stage">
+          <div class="credits-roll" id="creditsRoll"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="tarot-reveal-layer" id="tarotRevealLayer" aria-label="새 엔딩 카드 공개">
     <div id="tarotRevealCard"></div>
   </div>
@@ -5414,363 +5898,287 @@
   <footer class="version-footer" id="versionFooter" aria-label="버전 정보"></footer>
 
   <script>
-    const GAME_VERSION = "v0.26.3";
+    const GAME_VERSION = "v1.0.0";
     const PATCH_HISTORY = [
-      {
-        version: "v0.26.3",
-        schedule: "2026-06-12 01:55 KST",
-        summary: "종료 오버레이 범위와 하단 효과창 보정",
-        details: [
-          "게임 종료 모달 자체의 반투명 배경막을 제거하고, 상단 메뉴를 제외한 게임 본문에만 종료 오버레이가 남도록 수정했습니다.",
-          "새 게임을 시작하면 종료 오버레이 클래스가 즉시 제거되도록 시작 루틴을 보강했습니다.",
-          "더블로드 하단 효과창의 높이를 늘리고 지속 효과 칩을 여러 칸으로 배치해 스크롤 없이 한눈에 보이도록 조정했습니다."
-        ]
-      },
-      {
-        version: "v0.26.2",
-        schedule: "2026-06-12 01:40 KST",
-        summary: "더블로드 세트 대기 색상과 카드 정렬 보정",
-        details: [
-          "더블로드 우측 상단 세트 배지를 대기 노란색, 긍정 초록색, 부정 빨간색으로 구분되게 했습니다.",
-          "더블로드의 두 카드가 같은 상단 기준선에 놓이도록 세트 배지를 떠 있는 형태로 바꾸고, 카드 영역의 빈 윗공간을 줄였습니다.",
-          "게임 종료 시 본문 영역만 반투명하게 가려지고 엔딩 모달은 가려지지 않도록 레이어 순서를 유지했습니다."
-        ]
-      },
-      {
-        version: "v0.26.1",
-        schedule: "2026-06-12 01:25 KST",
-        summary: "종료 화면 레이어 보정",
-        details: [
-          "게임 종료 시 본문 영역만 반투명하게 가려지고, 엔딩 모달은 가려지지 않도록 레이어 순서를 조정했습니다."
-        ]
-      },
-      {
-        version: "v0.26.0",
-        schedule: "2026-06-12 01:10 KST",
-        summary: "튜토리얼 더블로드 위치, 종료 오버레이, 지속 효과 표시와 2번 카드 선택지 복구",
-        details: [
-          "튜토리얼 더블로드 미니 게임창을 카드 스테이지 하단이 아니라 원래 카드 중앙 위치에 배치했습니다.",
-          "게임 종료 상태에서는 상단 메뉴를 제외한 본문 영역을 반투명하게 가리도록 했습니다.",
-          "더블로드 종료 후 두 번째 카드가 화면 밖으로 빠져 보이는 현상을 줄이기 위해 종료 상태에서 보조 슬롯을 숨겼습니다.",
-          "마스터 모드의 4대 지표 패널 폭과 텍스트 크기를 압축했습니다.",
-          "더블로드 2번 카드에도 카드 더미와 좌우 선택지 뒷면이 보이도록 복구했습니다.",
-          "세트 발동 시 긍정 효과는 초록빛, 부정 효과는 붉은빛으로 더 명확하게 보이게 했습니다.",
-          "지속 중인 긍정/부정 효과는 효과가 끝날 때까지 하단 결과창에 계속 표시합니다."
-        ]
-      },
-      {
-        version: "v0.25.0",
-        schedule: "2026-06-12 00:30 KST",
-        summary: "더블로드 종료 고정, 방향 제한 실조작 차단, 튜토리얼 더블로드 분리",
-        details: [
-          "더블로드 게임 종료 직후 카드 레이아웃이 튀지 않도록 엔딩 모달 뒤의 더블로드 배치를 고정했습니다.",
-          "부정 세트효과의 방향 제한은 이제 반대 방향 선택뿐 아니라 카드 기울기, 드래그, 방향키, 고속모드 움직임까지 막습니다.",
-          "방향 제한 실패 효과를 일반 퀘스트 실패 유형에도 추가했습니다.",
-          "튜토리얼 5, 6단계의 더블로드 안내를 일반 게임 화면 위에 겹치는 방식이 아니라 별도 더블로드 미니 게임창처럼 보이게 정리했습니다.",
-          "튜토리얼 세트 효과 단계에서 카드 클릭과 드래그, 세트 효과 칸 클릭으로 모두 진행할 수 있게 수정했습니다.",
-          "더블로드 상단의 긍정/부정 효과 박스를 제거하고 세트 상태는 우측 상단 작은 배지에 고정했습니다.",
-          "더블로드 대기 카드의 장황한 대기 문구를 줄이고, 선택 시 슬롯 순서가 바뀌지 않도록 고정했습니다.",
-          "하단 결과 박스 높이를 늘리고 스크롤을 부드럽게 조정했습니다.",
-          "기록보관소 필터는 사건/퀘스트/엔딩, 세트효과, 통계 탭별로 보이는 버튼을 분리했습니다."
-        ]
-      },
-      {
-        version: "v0.24.0",
-        schedule: "2026-06-06 05:45 KST",
-        summary: "시작 배경, 옵션 메뉴, 더블로드 세트효과와 순위표 분리 개선",
-        details: [
-          "시작 배경이 다크모드에서 하얗게 보이던 색상 구조를 인게임 배경 톤으로 다시 맞췄습니다.",
-          "옵션 메뉴 버튼을 아이콘이 있는 정사각형 버튼으로 바꾸고, 무한 모드 순위 버튼은 텍스트 크기에 맞게 줄어들도록 조정했습니다.",
-          "난이도, 게임 모드, 무한 모드 설명을 카드 내부 문장 대신 물음표 도움말로 옮겼습니다.",
-          "더블로드 세트효과를 긍정 25개와 부정 20개의 고유 조합으로 재편해 같은 조합에서 긍정과 부정이 동시에 뜨지 않게 했습니다.",
-          "더블로드 대기 카드도 선택 카드와 같은 카드 템플릿을 쓰고, 퀘스트 카드일 때 퀘스트 디자인이 유지되도록 수정했습니다.",
-          "세트효과 결과를 긍정/부정 영역으로 나눠 표시하고 기록보관소 세트효과 카드에 움직이는 배경 일러스트를 추가했습니다.",
-          "더블로드 무한 기록이 일반 무한 순위표에 섞이지 않도록 등록 모드를 명확히 분리했습니다.",
-          "엔딩 타로 카드 뒷면은 물음표 대신 기록보관소와 같은 엔딩 조건 양식으로 표시합니다."
-        ]
-      },
-      {
-        version: "v0.23.0",
-        schedule: "2026-06-06 05:05 KST",
-        summary: "튜토리얼 더블로드 예시와 시작 화면 인게임 UI 통일",
-        details: [
-          "튜토리얼의 더블로드 단계를 실제 두 장 카드 예시로 바꾸고, 예시 카드와 세트 효과를 직접 눌러야 다음 단계로 넘어가도록 했습니다.",
-          "튜토리얼 안내 박스가 강조 영역이나 카드 텍스트에 가려지지 않도록 레이어 순서와 위치 계산을 조정했습니다.",
-          "시작 배경이 열려 있을 때도 뒤쪽 앱 레이아웃은 인게임 압축 UI와 같은 상태로 유지되도록 바꿨습니다.",
-          "시작 배경 모달의 배경과 선택 패널을 인게임 카드 패널 톤에 맞춰 재정리했습니다.",
-          "모바일 튜토리얼의 더블로드 예시는 세로형 작은 카드로 표시해 텍스트 충돌을 줄였습니다."
-        ]
-      },
-      {
-        version: "v0.22.0",
-        schedule: "2026-06-06 04:10 KST",
-        summary: "메뉴 버튼, 더블로드 위치 고정, 부정 세트 효과, 보관소 설명 복구",
-        details: [
-          "우측 상단에 ESC 옵션과 같은 메뉴 버튼을 추가했습니다.",
-          "패치 기록에 작성 일정을 추가했습니다.",
-          "더블로드에서 1번/2번 카드의 위치가 선택에 따라 바뀌지 않도록 슬롯 순서를 고정하고, 사용한 슬롯만 새 카드로 교체되게 했습니다.",
-          "더블로드 부정 세트 효과 20종을 추가하고 기록보관소에서 긍정/부정 효과를 분류해 볼 수 있게 했습니다.",
-          "기록보관소에 저장된 오래된 사건/퀘스트 기록에 설명이 비어 있으면 원본 데이터에서 설명과 선택지를 복구합니다.",
-          "기록보관소 카드 드래그 중 생기던 가로 스크롤을 차단했습니다.",
-          "4대 지표 설명을 일반 모드에서도 제거하고 좌측 패널 폭을 줄여 카드 공간을 넓혔습니다.",
-          "마스터 모드에서도 진행 중 퀘스트는 계속 보이도록 유지했습니다."
-        ]
-      },
-      {
-        version: "v0.21.0",
-        schedule: "2026-06-06 03:20 KST",
-        summary: "모바일 새게임 스크롤, ESC 옵션 메뉴, 더블로드 카드 배치, 마스터 모드 개선",
-        details: [
-          "모바일 새게임 창에서 아래로 내리지 못해 게임을 시작할 수 없던 배치 문제를 수정했습니다.",
-          "상단은 새 게임과 현재 빌드만 남기고, ESC를 누르면 튜토리얼, 기록보관소, 업적, 설정, 패치 기록, 순위 메뉴가 열리도록 바꿨습니다.",
-          "더블로드는 카드 영역 안에서 선택 카드와 보조 카드가 나란히 보이도록 재배치하고 선택 강조와 세트 효과 발광을 추가했습니다.",
-          "다크모드 진행 중 퀘스트 텍스트 대비를 보강했습니다.",
-          "진행기록의 턴 표시는 본문 문장과 분리해 별도 배지로 보여줍니다.",
-          "설정에 마스터 모드를 추가해 진행기록과 세부 보조 정보를 접고 플레이할 수 있게 했습니다.",
-          "기록보관소 통계 탭의 높이를 다른 탭과 맞추고 총 플레이 통계 표시를 유지했습니다.",
-          "엔딩 타로 아이콘 뒤에 남던 추가 미세 문양을 제거했습니다."
-        ]
-      },
-      {
-        version: "v0.20.0",
-        schedule: "2026-06-06 02:35 KST",
-        summary: "더블로드 모드, 세트 효과, 퀘스트 간격 재조정, 기록보관소 통계/스크롤 정리",
-        details: [
-          "게임 모드를 50장 도전과 더블로드로 나누고, 무한 모드는 별도 ON/OFF 토글로 바꿨습니다.",
-          "더블로드에서는 두 장을 동시에 보고 1, 2키로 카드를 선택한 뒤 방향키나 드래그로 한 장씩 사용할 수 있습니다.",
-          "더블로드 세트 효과 30종을 추가했습니다. 조합이 맞으면 부정 효과를 제거하고 긍정 효과와 보호 효과만 적용합니다.",
-          "더블로드에서 퀘스트 카드를 세트 효과와 함께 선택하면 퀘스트가 즉시 성공 처리됩니다.",
-          "기록보관소에 세트 효과 탭을 추가하고, 해금/미해금 필터와 총 개수 표시를 적용했습니다.",
-          "퀘스트는 최소 10턴 이후에 처음 등장하고, 한 번 등장한 뒤 다시 10턴 이상 지나야 다음 퀘스트가 나오도록 배치했습니다.",
-          "일반 50장 도전과 더블로드 100장 도전에서는 별 획득/손실형 퀘스트가 나오지 않도록 제한했습니다.",
-          "기록보관소의 사건/퀘스트 카드를 좌우로 확인할 때 생기던 가로 스크롤 흔들림을 없앴습니다.",
-          "통계 탭은 별도 해금/미해금 필터 없이 같은 작업영역 안에서 누적 점수, 플레이 시간, 세트 해금 수를 보여줍니다.",
-          "튜토리얼 중에는 고속모드를 끄고, 강조 영역 외에는 어둡게 처리하며, 스킵 시 새 게임 창으로 돌아오게 했습니다.",
-          "ESC로 설정 창을 열고 닫을 수 있게 했습니다."
-        ]
-      },
-      {
-        version: "v0.19.0",
-        schedule: "2026-06-05 18:20 KST",
-        summary: "기록보관소 엔딩 조건 정리, 최신 진행기록 고정, 모바일 레이아웃과 진동 피드백 개선",
-        details: [
-          "기록보관소의 미해금 엔딩은 타로 문양만 확인할 수 있게 하고, 뒷면에는 플레이 당시 점수나 턴 기록이 아니라 엔딩 조건만 표시하도록 정리했습니다.",
-          "진행 기록은 최신 기록이 항상 위에 보이도록 자동 정렬하고, 새로 추가된 항목에만 선과 텍스트 애니메이션이 적용되도록 바꿨습니다.",
-          "무한 모드 순위표는 메인 화면에서 제거하고 상단 순위 버튼을 눌렀을 때만 볼 수 있게 정리했습니다.",
-          "퀘스트는 최소 10턴 이후부터 등장하도록 배치하고 등장 수를 줄여 사건 흐름이 끊기지 않게 조정했습니다.",
-          "모바일에서 카드, 퀘스트, 점수 칸, 튜토리얼 팝업이 서로 겹치지 않도록 배치를 다시 잡았습니다.",
-          "모바일 설정에 카드 넘김 직전 진동 옵션을 추가했습니다.",
-          "사건과 퀘스트 카드에는 내용과 연결되는 은은한 배경 일러스트를 추가했습니다.",
-          "기록보관소 통계에는 누적 최종 점수, 최장 생존, 해금 수, 누적 별 같은 장기 플레이 지표를 추가했습니다."
-        ]
-      },
-      {
-        version: "v0.18.0",
-        summary: "고정형 플레이 튜토리얼, 병합 진행기록, 기록보관소 필터/통계, 업적 게이지 개선",
-        details: [
-          "튜토리얼을 별도 예시 화면이 아니라 실제 게임 화면에서 진행되는 고정 튜토리얼 런으로 바꿨습니다.",
-          "튜토리얼 단계는 다음 버튼 없이 지표 클릭, 카드 밀기, 방향키 입력, 진행 기록 확인, 마지막 선택을 직접 수행해야 자동으로 넘어갑니다.",
-          "키보드 좌우 입력의 카드 기울기 강도를 마우스 드래그 미리보기와 같은 수준으로 키웠습니다.",
-          "진행 기록은 최신 기록이 위에 오고, 같은 턴의 선택과 퀘스트 결과를 하나의 박스 안에 합쳐 보여줍니다.",
-          "고속모드는 별도 선택 버튼 대신 카드 영역에 마우스를 올려 좌우로 미리 기울이고 클릭해 선택하는 방식으로 정리했습니다.",
-          "일반 플레이 중에도 상단 패치 기록과 무한 모드 순위 버튼으로 각각의 모달을 열 수 있게 했습니다.",
-          "기록보관소에 전체/해금됨/미해금 필터와 통계 탭을 추가하고, 잠긴 사건/퀘스트/엔딩은 ???로 표시합니다.",
-          "업적 목록에 다음 목표까지의 게이지를 넣고, 숨겨진 업적은 해금 전까지 ???로 표시합니다.",
-          "엔딩 그래프의 점이 선 애니메이션 타이밍에 맞춰 순차적으로 나타나도록 조정했습니다."
-        ]
-      },
-      {
-        version: "v0.17.0",
-        summary: "고정 튜토리얼 판, 기록/보관소/업적/고속모드 재정리",
-        details: [
-          "튜토리얼을 다음 버튼 방식이 아니라 고정된 튜토리얼 판에서 실제 조작을 완료하면 자동 진행되는 방식으로 변경했습니다.",
-          "키보드 좌우 입력의 카드 기울기 폭을 마우스 드래그 미리보기와 같은 강도로 조정했습니다.",
-          "진행 기록은 최신 기록을 위에 두고, 한 턴의 선택과 퀘스트 결과를 하나의 박스에 합쳐 표시하도록 수정했습니다.",
-          "일반 플레이 중에도 상단 패치 버튼과 순위 버튼으로 각각의 모달을 열 수 있게 했습니다.",
-          "고속모드는 별도 선택 버튼 대신 카드 영역에 마우스를 올리면 좌우로 미리 기울고 클릭으로 선택되도록 바꿨습니다.",
-          "기록보관소에 전체/해금됨/미해금 필터와 통계 탭을 추가했습니다.",
-          "업적에는 다음 목표까지의 게이지를 추가하고, 숨겨진 미해금 업적은 ???로 표시합니다.",
-          "지표 그래프의 점은 선 애니메이션 타이밍에 맞춰 순차적으로 나타나도록 조정했습니다."
-        ]
-      },
-      {
-        version: "v0.16.0",
-        summary: "SWAY 브랜딩, 모바일 겹침 수정, 상호작용 튜토리얼, 기록/업적/그래프 개선",
-        details: [
-          "게임 이름을 SWAY로 변경하고 상단 설명 문구와 불필요한 사건풀/점수/중복 턴 표시를 제거했습니다.",
-          "인게임의 현재 장, 사건 번호, 연속 생존, 정책 온도 요약 행을 제거하고 카드 영역을 더 넓게 재배치했습니다.",
-          "모바일에서 카드와 퀘스트, 점수 박스가 서로 겹치지 않도록 카드 높이와 하단 정보 배치를 다시 조정했습니다.",
-          "튜토리얼을 단순 다음 버튼 방식이 아니라 실제 클릭, 드래그, 선택을 해야 다음 단계로 넘어가도록 바꿨습니다.",
-          "진행 기록은 세로 선이 아래로 그려지고 텍스트가 좌에서 우로 나타나는 애니메이션으로 변경했습니다.",
-          "진행 기록에는 게임 턴과 별도로 기록 순번을 부여해 같은 숫자가 반복 표시되는 문제를 해결했습니다.",
-          "동일 계열 업적은 하나의 묶음으로 보여주고 다음 목표 수치를 표시하도록 정리했습니다.",
-          "업적 팝업은 같은 계열에서 가장 높은 달성값만 표시하고, 엔딩 화면에 이번 판 업적 요약을 추가했습니다.",
-          "기록보관소 카드도 방향키 좌우로 A/B 뒷면 선택지를 확인할 수 있게 했습니다.",
-          "기록보관소 문구를 기록보관소로 통일했습니다.",
-          "엔딩 카드 뒷면 조건에서 최종 점수를 제거하고 엔딩 조건을 더 상세하게 표시하도록 바꿨습니다.",
-          "엔딩 타로 아이콘을 종류별로 더 구분되도록 새 아이콘 세트로 교체했습니다.",
-          "엔딩 지표 그래프 크기를 키우고 마우스를 올리면 턴과 지표 수치를 직접 볼 수 있게 했습니다."
-        ]
-      },
-      {
-        version: "v0.15.0",
-        summary: "다크모드 가독성, 보관소 인게임 카드, 업적 150개, 인게임 튜토리얼",
-        details: [
-          "다크모드에서 패치 기록, 난이도 선택, 게임 모드, 무한 모드 순위표 텍스트와 배경 대비를 다시 조정했습니다.",
-          "카드 뒤 선택지의 청록색과 회색 텍스트가 다크모드에서도 또렷하게 보이도록 선택지와 변화량 색상을 보강했습니다.",
-          "처음 보는 엔딩 타로 카드의 공개 연출을 더 크게 만들고 뒷면에서 앞면으로 부드럽게 뒤집히도록 조정했습니다.",
-          "기본 플레이 화면에서 페이지 전체 스크롤이 생기지 않도록 플레이 중 레이아웃을 화면 높이에 맞게 재정렬했습니다.",
-          "기록보관소의 사건, 퀘스트, 엔딩 숫자 카드 자체가 탭 버튼이 되도록 바꾸고 기존 작은 탭 버튼은 숨겼습니다.",
-          "기록보관소의 사건과 퀘스트 상세를 인게임 카드처럼 좌우로 밀어 A/B 선택지를 볼 수 있는 카드 스택으로 바꿨습니다.",
-          "이전 기록에서 설명이 빠진 퀘스트도 목표, 보상, 실패 조건을 자동 설명으로 복구하도록 보강했습니다.",
-          "기록보관소 엔딩 타로 카드의 뒷면에는 해당 엔딩을 본 조건을 표시하도록 했습니다.",
-          "일반 업적과 숨겨진 업적으로 나뉘는 150개 업적 시스템과 상단 달성 팝업을 추가했습니다.",
-          "튜토리얼을 별도 모달 대신 게임 화면 위 작은 코치 팝업으로 바꿨습니다.",
-          "진행 기록 항목이 추가될 때 부드럽게 올라오는 애니메이션을 추가했습니다."
-        ]
-      },
-      {
-        version: "v0.14.0",
-        summary: "실습형 튜토리얼, 엔딩 타로 카드, 보관소 상세 카드, 지표 애니메이션",
-        details: [
-          "튜토리얼을 직접 드래그하고 선택해 보는 실습형 안내로 바꿨습니다.",
-          "게임 종료 화면을 스크롤 없이 한 화면에 들어오도록 압축하고 엔딩 타로 카드를 추가했습니다.",
-          "처음 보는 엔딩은 화면이 어두워지며 타로 카드가 뒤집히는 연출을 표시합니다.",
-          "기록보관소에서 사건, 퀘스트, 엔딩 카드를 직접 열어 보고 지표 변화량과 내용을 확인할 수 있게 했습니다.",
-          "엔딩 타로 카드는 기록보관소에서도 계속 뒤집을 수 있고 마우스 위치에 따라 기울어집니다.",
-          "다크모드 색상 체계를 다시 잡고 퀘스트 카드를 보라색 특수 카드로 변경했습니다.",
-          "지표 원형 게이지에 부드러운 수치 변화와 별 획득 이동 연출을 추가했습니다."
-        ]
-      },
-      {
-        version: "v0.13.0",
-        summary: "연결 서사, 튜토리얼, 설정, 기록보관소, 모바일 기록 서랍",
-        details: [
-          "퀘스트 카드를 검은색 특수 카드로 바꿔 일반 사건과 즉시 구분되도록 했습니다.",
-          "선택 결과가 다음 사건 문장과 카드 흐름에 영향을 주는 서사 맥락 시스템을 추가했습니다.",
-          "처음 진입 시 순차 튜토리얼을 제공하고, 상단 튜토리얼 버튼으로 언제든 다시 볼 수 있게 했습니다.",
-          "시작 배경 창을 압축하고 순위표와 패치 기록은 접힌 보조 영역으로 정리했습니다.",
-          "다크모드와 좌우 클릭 고속모드를 설정에 추가하고, 모바일 하단 진행 기록 서랍을 추가했습니다.",
-          "경험한 사건, 퀘스트, 엔딩을 모아 보는 기록보관소를 추가했습니다.",
-          "퀘스트 목표 수치와 제한 턴을 현재 난이도와 지표 상태에 맞게 조정했습니다."
-        ]
-      },
-      {
-        version: "v0.12.7",
-        summary: "엔딩 그래프 별 눈금 표시, 랜덤 퀘스트 카드 50종",
-        details: [
-          "엔딩 지표 그래프 왼쪽 축에 별 단계가 ★1, ★2처럼 누적 기준선으로 표시되도록 추가했습니다.",
-          "플레이 도중 무작위로 등장하는 퀘스트 카드 50종을 구성했습니다.",
-          "퀘스트는 기존 카드처럼 좌우 선택으로 수락하거나 거절하며, 수락 후 제한 턴 안에 목표 지표를 달성하면 큰 보상을 받습니다.",
-          "퀘스트 실패 시 아무 일 없이 지나가거나 지표 하락, 별 손실, 프로젝트 중단 같은 위험 결과가 섞여 나오도록 했습니다."
-        ]
-      },
-      {
-        version: "v0.12.6",
-        summary: "엔딩 그래프 별 환산 및 지표별 보기 필터",
-        details: [
-          "엔딩 지표 그래프에서 별 1개를 지표 100점으로 환산해 누적 성장 흐름을 표시하도록 수정했습니다.",
-          "그래프 상단에 전체/현금흐름/신뢰/생활가치/위험관리 필터를 추가했습니다.",
-          "필터를 누르면 선택한 지표만 단독 그래프로 다시 확인할 수 있습니다."
-        ]
-      },
-      {
-        version: "v0.12.5",
-        summary: "모바일 플레이 화면 재배치, 진행 기록 타임라인, 엔딩 지표 그래프",
-        details: [
-          "모바일 플레이 중 4대 지표를 상단 간단 요약으로 줄이고, 점수와 생존 턴은 카드 아래에 배치했습니다.",
-          "시작 화면에서 무한 모드 순위와 패치 기록을 확인할 수 있도록 보조 영역을 추가했습니다.",
-          "결정 기록을 시간순 타임라인처럼 나열하도록 바꾸고, 엔딩 화면에 4대 지표 진행 그래프를 추가했습니다."
-        ]
-      },
-      {
-        version: "v0.12.4",
-        summary: "보호 상태 지표 감소 방지, 패치 기록 상세 모달",
-        details: [
-          "특수 보호 상태가 켜져 있을 때 음수 지표 변화량이 실제 수치에 반영되지 않도록 계산 로직을 수정했습니다.",
-          "하단 패치 기록을 긴 목록 대신 현재 빌드 표시와 상세 기록 버튼으로 분리했습니다.",
-          "패치 기록 모달에서 각 버전별 세부 수정 내용을 볼 수 있게 했습니다."
-        ]
-      },
-      {
-        version: "v0.12.3",
-        summary: "무한 모드 입력 안정화, 4대 지표 원형 표시 전용 UI",
-        details: [
-          "무한 모드 이름 입력 단계에서도 특수 입력이 정상 감지되도록 입력 처리를 보강했습니다.",
-          "4대 지표에서 막대형 표시를 제거하고 원형 게이지 중심 UI로 정리했습니다.",
-          "모바일 화면에서 원형 지표와 카드 영역이 겹치지 않도록 재검증했습니다."
-        ]
-      },
-      {
-        version: "v0.12.2",
-        summary: "입력 안정화 및 패치 기록 문구 정리",
-        details: [
-          "브라우저에서 일부 조합키가 입력되지 않는 문제를 피하기 위해 문자 시퀀스 방식의 입력 처리를 추가했습니다.",
-          "패치 기록의 노출 문구를 플레이어에게 자연스럽게 보이도록 정리했습니다."
-        ]
-      },
-      {
-        version: "v0.12.1",
-        summary: "엔딩 본문 표시 오류 수정",
-        details: [
-          "엔딩 본문에 템플릿 함수와 치환 문자열이 그대로 보이던 문제를 수정했습니다.",
-          "엔딩 선택 시 실제 문장으로 변환한 뒤 화면에 표시하도록 처리했습니다."
-        ]
-      },
-      {
-        version: "v0.12.0",
-        summary: "엔딩 서사 확장, 400개 사건, 방향키 홀드 입력, 위기 극복 보너스",
-        details: [
-          "사건 라이브러리를 400개로 확장하고 본안/후속 대응 변형을 추가했습니다.",
-          "일반 모드와 무한 모드 엔딩을 결과, 지표, 턴 수, 위기 회복에 따라 여러 갈래로 확장했습니다.",
-          "방향키를 누르는 동안 카드가 기울고 마지막 해제 방향으로 결정되는 입력 방식을 추가했습니다.",
-          "위기 구간에서 회복할 때 50점 보너스를 지급하도록 했습니다."
-        ]
-      },
-      {
-        version: "v0.11.0",
-        summary: "무한 모드 별 리셋, 모바일 카드 배치 개선",
-        details: [
-          "무한 모드에서 지표가 100을 넘으면 별을 얻고 해당 지표가 20으로 돌아가도록 수정했습니다.",
-          "별이 반복 복사되는 문제를 방지했습니다.",
-          "모바일 첫 진입 화면에서 카드가 화면 밖으로 밀리지 않도록 카드 폭과 스택 배치를 조정했습니다."
-        ]
-      },
-      {
-        version: "v0.10.0",
-        summary: "서버 순위표, 무한 모드 점수와 별 보너스",
-        details: [
-          "서버 버전에서 공개 순위표를 볼 수 있도록 API 연동 구조를 추가했습니다.",
-          "무한 모드 기록 등록과 난이도별 순위 탭을 구성했습니다.",
-          "별 획득 시 현재 점수 기준 보너스를 지급하는 점수 체계를 추가했습니다."
-        ]
-      },
-      {
-        version: "v0.9.0",
-        summary: "난이도 선택, 50장 랜덤 런, 엔딩 스토리",
-        details: [
-          "쉬움, 중간, 어려움 난이도 구조를 추가했습니다.",
-          "전체 사건풀에서 50장을 섞어 진행하는 런 구조를 만들었습니다.",
-          "게임 종료 시 결과에 따른 엔딩 스토리를 표시하도록 했습니다."
-        ]
-      },
-      {
-        version: "v0.8.0",
-        summary: "카드 뒷면 선택지 피크와 드래그 실행감",
-        details: [
-          "카드를 좌우로 당길 때 뒤쪽 종이 가장자리에서 선택지가 보이도록 구성했습니다.",
-          "중간까지 당기면 선택지가 보이고, 더 당긴 뒤 놓으면 결정이 실행되는 감각을 추가했습니다."
-        ]
-      },
-      {
-        version: "v0.7.0",
-        summary: "SWAY 기본 룰",
-        details: [
-          "4대 지표를 유지하며 부동산 사건 카드를 선택하는 기본 게임 구조를 만들었습니다.",
-          "선택 결과에 따라 현금흐름, 신뢰, 생활가치, 위험관리가 변하도록 구성했습니다."
-        ]
-      }
-    ];
+          {
+                "version": "v1.0.0",
+                "schedule": "2026-06-14 01:12 KST",
+                "summary": "정식 빌드",
+                "details": [
+                      "게임 버전을 정식 빌드 v1.0.0으로 올렸습니다.",
+                      "더블로드 카드 레이아웃의 기준선을 정리해 플레이 중 카드 표시 안정성을 높였습니다."
+                ]
+          },
+          {
+                "version": "v0.25.0",
+                "schedule": "2026-06-12 00:30 KST",
+                "summary": "더블로드 종료 고정, 방향 제한 실조작 차단, 튜토리얼 더블로드 분리",
+                "details": [
+                      "더블로드 게임 종료 직후 카드 레이아웃이 튀지 않도록 엔딩 모달 뒤의 더블로드 배치를 고정했습니다.",
+                      "부정 세트효과의 방향 제한은 이제 반대 방향 선택뿐 아니라 카드 기울기, 드래그, 방향키, 고속모드 움직임까지 막습니다.",
+                      "방향 제한 실패 효과를 일반 퀘스트 실패 유형에도 추가했습니다.",
+                      "튜토리얼 5, 6단계의 더블로드 안내를 일반 게임 화면 위에 겹치는 방식이 아니라 별도 더블로드 미니 게임창처럼 보이게 정리했습니다.",
+                      "튜토리얼 세트 효과 단계에서 카드 클릭과 드래그, 세트 효과 칸 클릭으로 모두 진행할 수 있게 수정했습니다.",
+                      "더블로드 상단의 긍정/부정 효과 박스를 제거하고 세트 상태는 우측 상단 작은 배지에 고정했습니다.",
+                      "더블로드 대기 카드의 장황한 대기 문구를 줄이고, 선택 시 슬롯 순서가 바뀌지 않도록 고정했습니다.",
+                      "하단 결과 박스 높이를 늘리고 스크롤을 부드럽게 조정했습니다.",
+                      "기록보관소 필터는 사건/퀘스트/엔딩, 세트효과, 통계 탭별로 보이는 버튼을 분리했습니다."
+                ]
+          },
+          {
+                "version": "v0.24.0",
+                "schedule": "2026-06-06 05:45 KST",
+                "summary": "시작 배경, 옵션 메뉴, 더블로드 세트효과와 순위표 분리 개선",
+                "details": [
+                      "시작 배경이 다크모드에서 하얗게 보이던 색상 구조를 인게임 배경 톤으로 다시 맞췄습니다.",
+                      "옵션 메뉴 버튼을 아이콘이 있는 정사각형 버튼으로 바꾸고, 무한 모드 순위 버튼은 텍스트 크기에 맞게 줄어들도록 조정했습니다.",
+                      "난이도, 게임 모드, 무한 모드 설명을 카드 내부 문장 대신 물음표 도움말로 옮겼습니다.",
+                      "더블로드 세트효과를 긍정 25개와 부정 20개의 고유 조합으로 재편해 같은 조합에서 긍정과 부정이 동시에 뜨지 않게 했습니다.",
+                      "더블로드 대기 카드도 선택 카드와 같은 카드 템플릿을 쓰고, 퀘스트 카드일 때 퀘스트 디자인이 유지되도록 수정했습니다.",
+                      "세트효과 결과를 긍정/부정 영역으로 나눠 표시하고 기록보관소 세트효과 카드에 움직이는 배경 일러스트를 추가했습니다.",
+                      "더블로드 무한 기록이 일반 무한 순위표에 섞이지 않도록 등록 모드를 명확히 분리했습니다.",
+                      "엔딩 타로 카드 뒷면은 물음표 대신 기록보관소와 같은 엔딩 조건 양식으로 표시합니다."
+                ]
+          },
+          {
+                "version": "v0.23.0",
+                "schedule": "2026-06-06 05:05 KST",
+                "summary": "튜토리얼 더블로드 예시와 시작 화면 인게임 UI 통일",
+                "details": [
+                      "튜토리얼의 더블로드 단계를 실제 두 장 카드 예시로 바꾸고, 예시 카드와 세트 효과를 직접 눌러야 다음 단계로 넘어가도록 했습니다.",
+                      "튜토리얼 안내 박스가 강조 영역이나 카드 텍스트에 가려지지 않도록 레이어 순서와 위치 계산을 조정했습니다.",
+                      "시작 배경이 열려 있을 때도 뒤쪽 앱 레이아웃은 인게임 압축 UI와 같은 상태로 유지되도록 바꿨습니다.",
+                      "시작 배경 모달의 배경과 선택 패널을 인게임 카드 패널 톤에 맞춰 재정리했습니다.",
+                      "모바일 튜토리얼의 더블로드 예시는 세로형 작은 카드로 표시해 텍스트 충돌을 줄였습니다."
+                ]
+          },
+          {
+                "version": "v0.22.0",
+                "schedule": "2026-06-06 04:10 KST",
+                "summary": "메뉴 버튼, 더블로드 위치 고정, 부정 세트 효과, 보관소 설명 복구",
+                "details": [
+                      "우측 상단에 ESC 옵션과 같은 메뉴 버튼을 추가했습니다.",
+                      "패치 기록에 작성 일정을 추가했습니다.",
+                      "더블로드에서 1번/2번 카드의 위치가 선택에 따라 바뀌지 않도록 슬롯 순서를 고정하고, 사용한 슬롯만 새 카드로 교체되게 했습니다.",
+                      "더블로드 부정 세트 효과 20종을 추가하고 기록보관소에서 긍정/부정 효과를 분류해 볼 수 있게 했습니다.",
+                      "기록보관소에 저장된 오래된 사건/퀘스트 기록에 설명이 비어 있으면 원본 데이터에서 설명과 선택지를 복구합니다.",
+                      "기록보관소 카드 드래그 중 생기던 가로 스크롤을 차단했습니다.",
+                      "4대 지표 설명을 일반 모드에서도 제거하고 좌측 패널 폭을 줄여 카드 공간을 넓혔습니다.",
+                      "마스터 모드에서도 진행 중 퀘스트는 계속 보이도록 유지했습니다."
+                ]
+          },
+          {
+                "version": "v0.21.0",
+                "schedule": "2026-06-06 03:20 KST",
+                "summary": "모바일 새게임 스크롤, ESC 옵션 메뉴, 더블로드 카드 배치, 마스터 모드 개선",
+                "details": [
+                      "모바일 새게임 창에서 아래로 내리지 못해 게임을 시작할 수 없던 배치 문제를 수정했습니다.",
+                      "상단은 새 게임과 현재 빌드만 남기고, ESC를 누르면 튜토리얼, 기록보관소, 업적, 설정, 패치 기록, 순위 메뉴가 열리도록 바꿨습니다.",
+                      "더블로드는 카드 영역 안에서 선택 카드와 보조 카드가 나란히 보이도록 재배치하고 선택 강조와 세트 효과 발광을 추가했습니다.",
+                      "다크모드 진행 중 퀘스트 텍스트 대비를 보강했습니다.",
+                      "진행기록의 턴 표시는 본문 문장과 분리해 별도 배지로 보여줍니다.",
+                      "설정에 마스터 모드를 추가해 진행기록과 세부 보조 정보를 접고 플레이할 수 있게 했습니다.",
+                      "기록보관소 통계 탭의 높이를 다른 탭과 맞추고 총 플레이 통계 표시를 유지했습니다.",
+                      "엔딩 타로 아이콘 뒤에 남던 추가 미세 문양을 제거했습니다."
+                ]
+          },
+          {
+                "version": "v0.20.0",
+                "schedule": "2026-06-06 02:35 KST",
+                "summary": "더블로드 모드, 세트 효과, 퀘스트 간격 재조정, 기록보관소 통계/스크롤 정리",
+                "details": [
+                      "게임 모드를 50장 도전과 더블로드로 나누고, 무한 모드는 별도 ON/OFF 토글로 바꿨습니다.",
+                      "더블로드에서는 두 장을 동시에 보고 1, 2키로 카드를 선택한 뒤 방향키나 드래그로 한 장씩 사용할 수 있습니다.",
+                      "더블로드 세트 효과 30종을 추가했습니다. 조합이 맞으면 부정 효과를 제거하고 긍정 효과와 보호 효과만 적용합니다.",
+                      "더블로드에서 퀘스트 카드를 세트 효과와 함께 선택하면 퀘스트가 즉시 성공 처리됩니다.",
+                      "기록보관소에 세트 효과 탭을 추가하고, 해금/미해금 필터와 총 개수 표시를 적용했습니다.",
+                      "퀘스트는 최소 10턴 이후에 처음 등장하고, 한 번 등장한 뒤 다시 10턴 이상 지나야 다음 퀘스트가 나오도록 배치했습니다.",
+                      "일반 50장 도전과 더블로드 100장 도전에서는 별 획득/손실형 퀘스트가 나오지 않도록 제한했습니다.",
+                      "기록보관소의 사건/퀘스트 카드를 좌우로 확인할 때 생기던 가로 스크롤 흔들림을 없앴습니다.",
+                      "통계 탭은 별도 해금/미해금 필터 없이 같은 작업영역 안에서 누적 점수, 플레이 시간, 세트 해금 수를 보여줍니다.",
+                      "튜토리얼 중에는 고속모드를 끄고, 강조 영역 외에는 어둡게 처리하며, 스킵 시 새 게임 창으로 돌아오게 했습니다.",
+                      "ESC로 설정 창을 열고 닫을 수 있게 했습니다."
+                ]
+          },
+          {
+                "version": "v0.19.0",
+                "schedule": "2026-06-05 18:20 KST",
+                "summary": "기록보관소 엔딩 조건 정리, 최신 진행기록 고정, 모바일 레이아웃과 진동 피드백 개선",
+                "details": [
+                      "기록보관소의 미해금 엔딩은 타로 문양만 확인할 수 있게 하고, 뒷면에는 플레이 당시 점수나 턴 기록이 아니라 엔딩 조건만 표시하도록 정리했습니다.",
+                      "진행 기록은 최신 기록이 항상 위에 보이도록 자동 정렬하고, 새로 추가된 항목에만 선과 텍스트 애니메이션이 적용되도록 바꿨습니다.",
+                      "무한 모드 순위표는 메인 화면에서 제거하고 상단 순위 버튼을 눌렀을 때만 볼 수 있게 정리했습니다.",
+                      "퀘스트는 최소 10턴 이후부터 등장하도록 배치하고 등장 수를 줄여 사건 흐름이 끊기지 않게 조정했습니다.",
+                      "모바일에서 카드, 퀘스트, 점수 칸, 튜토리얼 팝업이 서로 겹치지 않도록 배치를 다시 잡았습니다.",
+                      "모바일 설정에 카드 넘김 직전 진동 옵션을 추가했습니다.",
+                      "사건과 퀘스트 카드에는 내용과 연결되는 은은한 배경 일러스트를 추가했습니다.",
+                      "기록보관소 통계에는 누적 최종 점수, 최장 생존, 해금 수, 누적 별 같은 장기 플레이 지표를 추가했습니다."
+                ]
+          },
+          {
+                "version": "v0.18.0",
+                "summary": "고정형 플레이 튜토리얼, 병합 진행기록, 기록보관소 필터/통계, 업적 게이지 개선",
+                "details": [
+                      "튜토리얼을 별도 예시 화면이 아니라 실제 게임 화면에서 진행되는 고정 튜토리얼 런으로 바꿨습니다.",
+                      "튜토리얼 단계는 다음 버튼 없이 지표 클릭, 카드 밀기, 방향키 입력, 진행 기록 확인, 마지막 선택을 직접 수행해야 자동으로 넘어갑니다.",
+                      "키보드 좌우 입력의 카드 기울기 강도를 마우스 드래그 미리보기와 같은 수준으로 키웠습니다.",
+                      "진행 기록은 최신 기록이 위에 오고, 같은 턴의 선택과 퀘스트 결과를 하나의 박스 안에 합쳐 보여줍니다.",
+                      "고속모드는 별도 선택 버튼 대신 카드 영역에 마우스를 올려 좌우로 미리 기울이고 클릭해 선택하는 방식으로 정리했습니다.",
+                      "일반 플레이 중에도 상단 패치 기록과 무한 모드 순위 버튼으로 각각의 모달을 열 수 있게 했습니다.",
+                      "기록보관소에 전체/해금됨/미해금 필터와 통계 탭을 추가하고, 잠긴 사건/퀘스트/엔딩은 ???로 표시합니다.",
+                      "업적 목록에 다음 목표까지의 게이지를 넣고, 숨겨진 업적은 해금 전까지 ???로 표시합니다.",
+                      "엔딩 그래프의 점이 선 애니메이션 타이밍에 맞춰 순차적으로 나타나도록 조정했습니다."
+                ]
+          },
+          {
+                "version": "v0.17.0",
+                "summary": "고정 튜토리얼 판, 기록/보관소/업적/고속모드 재정리",
+                "details": [
+                      "튜토리얼을 다음 버튼 방식이 아니라 고정된 튜토리얼 판에서 실제 조작을 완료하면 자동 진행되는 방식으로 변경했습니다.",
+                      "키보드 좌우 입력의 카드 기울기 폭을 마우스 드래그 미리보기와 같은 강도로 조정했습니다.",
+                      "진행 기록은 최신 기록을 위에 두고, 한 턴의 선택과 퀘스트 결과를 하나의 박스에 합쳐 표시하도록 수정했습니다.",
+                      "일반 플레이 중에도 상단 패치 버튼과 순위 버튼으로 각각의 모달을 열 수 있게 했습니다.",
+                      "고속모드는 별도 선택 버튼 대신 카드 영역에 마우스를 올리면 좌우로 미리 기울고 클릭으로 선택되도록 바꿨습니다.",
+                      "기록보관소에 전체/해금됨/미해금 필터와 통계 탭을 추가했습니다.",
+                      "업적에는 다음 목표까지의 게이지를 추가하고, 숨겨진 미해금 업적은 ???로 표시합니다.",
+                      "지표 그래프의 점은 선 애니메이션 타이밍에 맞춰 순차적으로 나타나도록 조정했습니다."
+                ]
+          },
+          {
+                "version": "v0.16.0",
+                "summary": "SWAY 브랜딩, 모바일 겹침 수정, 상호작용 튜토리얼, 기록/업적/그래프 개선",
+                "details": [
+                      "게임 이름을 SWAY로 변경하고 상단 설명 문구와 불필요한 사건풀/점수/중복 턴 표시를 제거했습니다.",
+                      "인게임의 현재 장, 사건 번호, 연속 생존, 정책 온도 요약 행을 제거하고 카드 영역을 더 넓게 재배치했습니다.",
+                      "모바일에서 카드와 퀘스트, 점수 박스가 서로 겹치지 않도록 카드 높이와 하단 정보 배치를 다시 조정했습니다.",
+                      "튜토리얼을 단순 다음 버튼 방식이 아니라 실제 클릭, 드래그, 선택을 해야 다음 단계로 넘어가도록 바꿨습니다.",
+                      "진행 기록은 세로 선이 아래로 그려지고 텍스트가 좌에서 우로 나타나는 애니메이션으로 변경했습니다.",
+                      "진행 기록에는 게임 턴과 별도로 기록 순번을 부여해 같은 숫자가 반복 표시되는 문제를 해결했습니다.",
+                      "동일 계열 업적은 하나의 묶음으로 보여주고 다음 목표 수치를 표시하도록 정리했습니다.",
+                      "업적 팝업은 같은 계열에서 가장 높은 달성값만 표시하고, 엔딩 화면에 이번 판 업적 요약을 추가했습니다.",
+                      "기록보관소 카드도 방향키 좌우로 A/B 뒷면 선택지를 확인할 수 있게 했습니다.",
+                      "기록보관소 문구를 기록보관소로 통일했습니다.",
+                      "엔딩 카드 뒷면 조건에서 최종 점수를 제거하고 엔딩 조건을 더 상세하게 표시하도록 바꿨습니다.",
+                      "엔딩 타로 아이콘을 종류별로 더 구분되도록 새 아이콘 세트로 교체했습니다.",
+                      "엔딩 지표 그래프 크기를 키우고 마우스를 올리면 턴과 지표 수치를 직접 볼 수 있게 했습니다."
+                ]
+          },
+          {
+                "version": "v0.15.0",
+                "summary": "다크모드 가독성, 보관소 인게임 카드, 업적 150개, 인게임 튜토리얼",
+                "details": [
+                      "다크모드에서 패치 기록, 난이도 선택, 게임 모드, 무한 모드 순위표 텍스트와 배경 대비를 다시 조정했습니다.",
+                      "카드 뒤 선택지의 청록색과 회색 텍스트가 다크모드에서도 또렷하게 보이도록 선택지와 변화량 색상을 보강했습니다.",
+                      "처음 보는 엔딩 타로 카드의 공개 연출을 더 크게 만들고 뒷면에서 앞면으로 부드럽게 뒤집히도록 조정했습니다.",
+                      "기본 플레이 화면에서 페이지 전체 스크롤이 생기지 않도록 플레이 중 레이아웃을 화면 높이에 맞게 재정렬했습니다.",
+                      "기록보관소의 사건, 퀘스트, 엔딩 숫자 카드 자체가 탭 버튼이 되도록 바꾸고 기존 작은 탭 버튼은 숨겼습니다.",
+                      "기록보관소의 사건과 퀘스트 상세를 인게임 카드처럼 좌우로 밀어 A/B 선택지를 볼 수 있는 카드 스택으로 바꿨습니다.",
+                      "이전 기록에서 설명이 빠진 퀘스트도 목표, 보상, 실패 조건을 자동 설명으로 복구하도록 보강했습니다.",
+                      "기록보관소 엔딩 타로 카드의 뒷면에는 해당 엔딩을 본 조건을 표시하도록 했습니다.",
+                      "일반 업적과 숨겨진 업적으로 나뉘는 150개 업적 시스템과 상단 달성 팝업을 추가했습니다.",
+                      "튜토리얼을 별도 모달 대신 게임 화면 위 작은 코치 팝업으로 바꿨습니다.",
+                      "진행 기록 항목이 추가될 때 부드럽게 올라오는 애니메이션을 추가했습니다."
+                ]
+          },
+          {
+                "version": "v0.14.0",
+                "summary": "실습형 튜토리얼, 엔딩 타로 카드, 보관소 상세 카드, 지표 애니메이션",
+                "details": [
+                      "튜토리얼을 직접 드래그하고 선택해 보는 실습형 안내로 바꿨습니다.",
+                      "게임 종료 화면을 스크롤 없이 한 화면에 들어오도록 압축하고 엔딩 타로 카드를 추가했습니다.",
+                      "처음 보는 엔딩은 화면이 어두워지며 타로 카드가 뒤집히는 연출을 표시합니다.",
+                      "기록보관소에서 사건, 퀘스트, 엔딩 카드를 직접 열어 보고 지표 변화량과 내용을 확인할 수 있게 했습니다.",
+                      "엔딩 타로 카드는 기록보관소에서도 계속 뒤집을 수 있고 마우스 위치에 따라 기울어집니다.",
+                      "다크모드 색상 체계를 다시 잡고 퀘스트 카드를 보라색 특수 카드로 변경했습니다.",
+                      "지표 원형 게이지에 부드러운 수치 변화와 별 획득 이동 연출을 추가했습니다."
+                ]
+          },
+          {
+                "version": "v0.13.0",
+                "summary": "연결 서사, 튜토리얼, 설정, 기록보관소, 모바일 기록 서랍",
+                "details": [
+                      "퀘스트 카드를 검은색 특수 카드로 바꿔 일반 사건과 즉시 구분되도록 했습니다.",
+                      "선택 결과가 다음 사건 문장과 카드 흐름에 영향을 주는 서사 맥락 시스템을 추가했습니다.",
+                      "처음 진입 시 순차 튜토리얼을 제공하고, 상단 튜토리얼 버튼으로 언제든 다시 볼 수 있게 했습니다.",
+                      "시작 배경 창을 압축하고 순위표와 패치 기록은 접힌 보조 영역으로 정리했습니다.",
+                      "다크모드와 좌우 클릭 고속모드를 설정에 추가하고, 모바일 하단 진행 기록 서랍을 추가했습니다.",
+                      "경험한 사건, 퀘스트, 엔딩을 모아 보는 기록보관소를 추가했습니다.",
+                      "퀘스트 목표 수치와 제한 턴을 현재 난이도와 지표 상태에 맞게 조정했습니다."
+                ]
+          },
+          {
+                "version": "v0.12.7",
+                "summary": "엔딩 그래프 별 눈금 표시, 랜덤 퀘스트 카드 50종",
+                "details": [
+                      "엔딩 지표 그래프 왼쪽 축에 별 단계가 ★1, ★2처럼 누적 기준선으로 표시되도록 추가했습니다.",
+                      "플레이 도중 무작위로 등장하는 퀘스트 카드 50종을 구성했습니다.",
+                      "퀘스트는 기존 카드처럼 좌우 선택으로 수락하거나 거절하며, 수락 후 제한 턴 안에 목표 지표를 달성하면 큰 보상을 받습니다.",
+                      "퀘스트 실패 시 아무 일 없이 지나가거나 지표 하락, 별 손실, 프로젝트 중단 같은 위험 결과가 섞여 나오도록 했습니다."
+                ]
+          },
+          {
+                "version": "v0.12.6",
+                "summary": "엔딩 그래프 별 환산 및 지표별 보기 필터",
+                "details": [
+                      "엔딩 지표 그래프에서 별 1개를 지표 100점으로 환산해 누적 성장 흐름을 표시하도록 수정했습니다.",
+                      "그래프 상단에 전체/현금흐름/신뢰/생활가치/위험관리 필터를 추가했습니다.",
+                      "필터를 누르면 선택한 지표만 단독 그래프로 다시 확인할 수 있습니다."
+                ]
+          },
+          {
+                "version": "v0.12.5",
+                "summary": "모바일 플레이 화면 재배치, 진행 기록 타임라인, 엔딩 지표 그래프",
+                "details": [
+                      "모바일 플레이 중 4대 지표를 상단 간단 요약으로 줄이고, 점수와 생존 턴은 카드 아래에 배치했습니다.",
+                      "시작 화면에서 무한 모드 순위와 패치 기록을 확인할 수 있도록 보조 영역을 추가했습니다.",
+                      "결정 기록을 시간순 타임라인처럼 나열하도록 바꾸고, 엔딩 화면에 4대 지표 진행 그래프를 추가했습니다."
+                ]
+          },
+          {
+                "version": "v0.12.0",
+                "summary": "엔딩 서사 확장, 400개 사건, 방향키 홀드 입력, 위기 극복 보너스",
+                "details": [
+                      "사건 라이브러리를 400개로 확장하고 본안/후속 대응 변형을 추가했습니다.",
+                      "일반 모드와 무한 모드 엔딩을 결과, 지표, 턴 수, 위기 회복에 따라 여러 갈래로 확장했습니다.",
+                      "방향키를 누르는 동안 카드가 기울고 마지막 해제 방향으로 결정되는 입력 방식을 추가했습니다.",
+                      "위기 구간에서 회복할 때 50점 보너스를 지급하도록 했습니다."
+                ]
+          },
+          {
+                "version": "v0.10.0",
+                "summary": "서버 순위표, 무한 모드 점수와 별 보너스",
+                "details": [
+                      "서버 버전에서 공개 순위표를 볼 수 있도록 API 연동 구조를 추가했습니다.",
+                      "무한 모드 기록 등록과 난이도별 순위 탭을 구성했습니다.",
+                      "별 획득 시 현재 점수 기준 보너스를 지급하는 점수 체계를 추가했습니다."
+                ]
+          },
+          {
+                "version": "v0.9.0",
+                "summary": "난이도 선택, 50장 랜덤 런, 엔딩 스토리",
+                "details": [
+                      "쉬움, 중간, 어려움 난이도 구조를 추가했습니다.",
+                      "전체 사건풀에서 50장을 섞어 진행하는 런 구조를 만들었습니다.",
+                      "게임 종료 시 결과에 따른 엔딩 스토리를 표시하도록 했습니다."
+                ]
+          },
+          {
+                "version": "v0.8.0",
+                "summary": "카드 뒷면 선택지 피크와 드래그 실행감",
+                "details": [
+                      "카드를 좌우로 당길 때 뒤쪽 종이 가장자리에서 선택지가 보이도록 구성했습니다.",
+                      "중간까지 당기면 선택지가 보이고, 더 당긴 뒤 놓으면 결정이 실행되는 감각을 추가했습니다."
+                ]
+          },
+          {
+                "version": "v0.7.0",
+                "summary": "SWAY 기본 룰",
+                "details": [
+                      "4대 지표를 유지하며 부동산 사건 카드를 선택하는 기본 게임 구조를 만들었습니다.",
+                      "선택 결과에 따라 현금흐름, 신뢰, 생활가치, 위험관리가 변하도록 구성했습니다."
+                ]
+          }
+        ];
     const TOTAL_EVENT_POOL = 400;
     const RUN_EVENT_COUNT = 50;
     const DOUBLE_RUN_COUNT = 100;
@@ -5788,6 +6196,7 @@
     const TUTORIAL_KEY = "realEstateBalanceTutorialSeen";
     const ACHIEVEMENT_KEY = "realEstateBalanceAchievements";
     const PLAYER_STATS_KEY = "realEstateBalancePlayerStats";
+    const CREDITS_SEEN_KEY = "realEstateBalanceCreditsSeen";
     const ENDING_ARCHIVE_TOTAL = 24;
 
     const STAT_META = {
@@ -6472,6 +6881,21 @@
       }
     }
 
+    function readCreditsSeen() {
+      try {
+        return localStorage.getItem(CREDITS_SEEN_KEY) === "true";
+      } catch {
+        return false;
+      }
+    }
+
+    function persistCreditsSeen() {
+      try {
+        localStorage.setItem(CREDITS_SEEN_KEY, "true");
+      } catch {
+      }
+    }
+
     function defaultPlayerStats() {
       return {
         gamesPlayed: 0,
@@ -6613,6 +7037,7 @@
       setEffectKindFilter: "all",
       archiveListView: [],
       archiveOpened: false,
+      creditsSeen: readCreditsSeen(),
       settingsOpened: false,
       tarotFlipped: false,
       achievements: readAchievements(),
@@ -6779,6 +7204,10 @@
       optionsSettings: document.getElementById("optionsSettings"),
       optionsPatch: document.getElementById("optionsPatch"),
       optionsLeaderboard: document.getElementById("optionsLeaderboard"),
+      optionsCredits: document.getElementById("optionsCredits"),
+      creditsModal: document.getElementById("creditsModal"),
+      closeCredits: document.getElementById("closeCredits"),
+      creditsRoll: document.getElementById("creditsRoll"),
       modalLeaderboardModeTabs: document.getElementById("modalLeaderboardModeTabs"),
       versionFooter: document.getElementById("versionFooter")
     };
@@ -6970,7 +7399,7 @@
         });
       });
 
-      Array.from({ length: 10 }, (_, index) => index + 1).forEach(count => {
+      [1, 2, 3, 5, 7, 10, 14, 18, 21, ENDING_ARCHIVE_TOTAL].forEach(count => {
         add({
           id: `ending-seen-${count}`,
           title: `엔딩 수집 ${count}장`,
@@ -7005,7 +7434,7 @@
         ["hidden-tarot-flip", "카드를 뒤집는 사람", "기록보관소에서 엔딩 타로 카드를 뒤집습니다.", () => state.tarotFlipped],
         ["hidden-perfect-clear", "흔들림 없는 완주", "50장 클리어 시 최저 지표 40 이상을 유지합니다.", () => state.finalResult && state.turn >= state.deck.length && state.finalResult.low >= 40],
         ["hidden-star-10", "별 열 개의 보고서", "한 판에서 별을 10개 이상 획득합니다.", () => state.bonusCount >= 10],
-        ["hidden-all-archive", "보관소 관리자", "사건, 퀘스트, 엔딩 기록을 모두 1개 이상 남깁니다.", () => state.archive.events.length && state.archive.quests.length && state.archive.endings.length]
+        ["hidden-all-archive", "완전한 기록보관소", "사건, 퀘스트, 엔딩, 세트 효과를 전부 해금합니다.", () => ["events", "quests", "endings", "setEffects"].every(tab => archiveUnlockedCount(tab) >= archiveTotalFor(tab))]
       ].forEach(([id, title, description, check]) => {
         add({ id, title, description, check, type: "hidden", hidden: true, progress: () => "숨겨진 조건" });
       });
@@ -8790,9 +9219,7 @@
       if (hasPositiveSet || hasNegativeSet) {
         els.playCard.insertAdjacentHTML("afterbegin", `<div class="synergy-mark" aria-hidden="true">${hasNegativeSet ? "!" : "+"}</div>`);
       }
-      els.cardNumber.textContent = isDoubleMode() && !state.tutorialRun
-        ? `1번 카드 · #${String(card.number).padStart(3, "0")}`
-        : `#${String(card.number).padStart(3, "0")}`;
+      els.cardNumber.textContent = `#${String(card.number).padStart(3, "0")}`;
       els.cardTitle.textContent = card.title;
       els.cardText.innerHTML = `
         <p class="story-line">${card.text}</p>
@@ -8825,11 +9252,23 @@
       renderDoubleRoadPanel();
     }
 
+    function clearDoubleRoadSizing() {
+      if (!els.cardStage) return;
+      els.cardStage.style.removeProperty("--double-card-height-live");
+      els.cardStage.style.removeProperty("--double-slot-height-live");
+      els.cardStage.style.removeProperty("--double-stack-height-live");
+    }
+
+    function syncDoubleRoadCardHeights() {
+      clearDoubleRoadSizing();
+    }
+
     function renderDoubleRoadPanel() {
       if (!els.doubleRoadPanel) return;
       if (!isDoubleMode() || state.tutorialRun) {
         els.doubleRoadPanel.hidden = true;
         els.doubleRoadPanel.innerHTML = "";
+        clearDoubleRoadSizing();
         return;
       }
       refillDoubleRoadChoices();
@@ -8875,6 +9314,8 @@
           </button>
         </div>
       `;
+      syncDoubleRoadCardHeights();
+      requestAnimationFrame(syncDoubleRoadCardHeights);
     }
 
     function renderLogs() {
@@ -9007,6 +9448,7 @@
       renderMeta();
       renderQuestBoard();
       applySettings();
+      renderCreditsMenuState();
       els.playCard.setAttribute("aria-disabled", state.ended ? "true" : "false");
       updateBodyState();
       if (state.starPulseKeys.length) {
@@ -9186,10 +9628,14 @@
         };
         newlyUnlocked.push(achievement);
       });
-      if (!newlyUnlocked.length) return [];
+      if (!newlyUnlocked.length) {
+        maybeOpenCreditsOnArchiveComplete();
+        return [];
+      }
       persistAchievements();
       achievementToastItems(newlyUnlocked).slice(0, 3).forEach(showAchievementToast);
       if (els.achievementsModal.classList.contains("open")) renderAchievements();
+      maybeOpenCreditsOnArchiveComplete();
       return newlyUnlocked;
     }
 
@@ -9593,6 +10039,133 @@
         return (state.archive.setEffects || []).filter(item => validIds.has(item.id)).length;
       }
       return Math.min((state.archive[tab] || []).length, archiveTotalFor(tab));
+    }
+
+    function archiveIsComplete() {
+      return ["events", "quests", "endings", "setEffects"].every(tab => archiveUnlockedCount(tab) >= archiveTotalFor(tab));
+    }
+
+    function renderCreditsMenuState() {
+      if (!els.optionsCredits) return;
+      const unlocked = archiveIsComplete();
+      els.optionsCredits.classList.toggle("locked", !unlocked);
+      els.optionsCredits.setAttribute("aria-disabled", unlocked ? "false" : "true");
+      els.optionsCredits.title = unlocked
+        ? "Ending Credits 보기"
+        : "기록보관소를 모두 해금하면 열립니다.";
+      els.optionsCredits.innerHTML = unlocked
+        ? `
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5"/><path d="M8 19V9"/><path d="M12 19V3"/><path d="M16 19v-7"/><path d="M20 19V7"/></svg>
+          크레딧
+        `
+        : `
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+          크레딧
+        `;
+    }
+
+    function creditsStatRows() {
+      const stats = state.playerStats || defaultPlayerStats();
+      const counts = achievementCounts();
+      const archiveRows = [
+        ["사건 해금", `${archiveUnlockedCount("events")}/${archiveTotalFor("events")}`],
+        ["퀘스트 해금", `${archiveUnlockedCount("quests")}/${archiveTotalFor("quests")}`],
+        ["엔딩 해금", `${archiveUnlockedCount("endings")}/${archiveTotalFor("endings")}`],
+        ["세트 효과 해금", `${archiveUnlockedCount("setEffects")}/${archiveTotalFor("setEffects")}`],
+        ["일반 업적", `${counts.normal}/${counts.normalTotal}`],
+        ["숨겨진 업적", `${counts.hidden}/${counts.hiddenTotal}`]
+      ];
+      const playRows = [
+        ["총 게임 수", stats.gamesPlayed],
+        ["더블로드 플레이", stats.doubleRoadRuns],
+        ["총 선택 수", stats.totalClicks],
+        ["왼쪽 선택", stats.leftChoices],
+        ["오른쪽 선택", stats.rightChoices],
+        ["더블로드 선택", stats.doubleRoadChoices],
+        ["누적 획득 점수", stats.totalScoreGained],
+        ["누적 최종 점수", stats.totalFinalScore],
+        ["최고 점수", stats.bestScore],
+        ["총 생존 턴", stats.totalSurvivedTurns],
+        ["최장 생존 턴", stats.bestTurn],
+        ["누적 획득 별", stats.totalStarsEarned],
+        ["위기 극복", stats.crisisRecoveries],
+        ["퀘스트 수락", stats.questsAccepted],
+        ["퀘스트 성공", stats.questsCompleted],
+        ["퀘스트 실패", stats.questsFailed],
+        ["세트 효과 발동", stats.setEffectsTriggered],
+        ["기록보관소 열람", stats.archiveOpens],
+        ["총 플레이 시간", formatPlayTime(stats.totalPlayMs)]
+      ];
+      return { archiveRows, playRows };
+    }
+
+    function creditsStatGrid(rows) {
+      return `
+        <div class="credits-grid">
+          ${rows.map(([label, value]) => `
+            <div class="credits-stat">
+              <span>${escapeText(label)}</span>
+              <b>${typeof value === "number" ? Number(value || 0).toLocaleString("ko-KR") : escapeText(value)}</b>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function renderCredits() {
+      if (!els.creditsRoll) return;
+      const { archiveRows, playRows } = creditsStatRows();
+      els.creditsRoll.classList.remove("rolling");
+      els.creditsRoll.innerHTML = `
+        <section class="credits-section plain credits-hero">
+          <span class="credits-kicker">Ending Credits</span>
+          <h2 class="credits-game-title">SWAY</h2>
+          <p class="credits-maker">제작자 <b>LUD</b></p>
+          <p>모든 기록보관소가 열렸습니다. 지금까지의 선택과 장부가 하나의 시즌으로 남았습니다.</p>
+        </section>
+        <section class="credits-section">
+          <h3>기록보관소 수집률</h3>
+          ${creditsStatGrid(archiveRows)}
+        </section>
+        <section class="credits-section">
+          <h3>플레이 누적 기록</h3>
+          ${creditsStatGrid(playRows)}
+        </section>
+        <section class="credits-section plain">
+          <p>현금흐름, 신뢰, 생활가치, 위험관리 사이에서 흔들린 모든 판단이 이 장부에 기록되었습니다.</p>
+          <p>완벽한 균형이 아니라, 끝까지 책임진 선택이 SWAY의 마지막 장면입니다.</p>
+        </section>
+        <section class="credits-congrats">
+          <i class="firework one"></i>
+          <i class="firework two"></i>
+          <i class="firework three"></i>
+          <strong>축하합니다!</strong>
+          <p>기록보관소 완전 해금을 달성했습니다.</p>
+        </section>
+      `;
+      void els.creditsRoll.offsetWidth;
+      els.creditsRoll.style.animation = "none";
+      requestAnimationFrame(() => {
+        els.creditsRoll.style.animation = "";
+      });
+    }
+
+    function openCredits() {
+      if (!archiveIsComplete()) {
+        showSecretNotice("크레딧 잠김", "기록보관소의 사건, 퀘스트, 엔딩, 세트 효과를 모두 해금하면 열립니다.");
+        return false;
+      }
+      renderCredits();
+      els.creditsModal?.classList.add("open");
+      return true;
+    }
+
+    function maybeOpenCreditsOnArchiveComplete() {
+      renderCreditsMenuState();
+      if (!archiveIsComplete() || state.creditsSeen) return;
+      state.creditsSeen = true;
+      persistCreditsSeen();
+      openCredits();
     }
 
     function archiveCatalog(tab) {
@@ -10717,6 +11290,7 @@
         || els.optionsModal.classList.contains("open")
         || els.archiveModal.classList.contains("open")
         || els.achievementsModal.classList.contains("open")
+        || els.creditsModal.classList.contains("open")
         || els.tarotRevealLayer.classList.contains("open");
     }
 
@@ -10902,12 +11476,18 @@
           updateBodyState();
           return;
         }
+        if (els.creditsModal.classList.contains("open")) {
+          els.creditsModal.classList.remove("open");
+          return;
+        }
         if (els.settingsModal.classList.contains("open")) els.settingsModal.classList.remove("open");
         if (els.archiveModal.classList.contains("open")) els.archiveModal.classList.remove("open");
         if (els.achievementsModal.classList.contains("open")) els.achievementsModal.classList.remove("open");
+        if (els.creditsModal.classList.contains("open")) els.creditsModal.classList.remove("open");
         if (els.patchModal.classList.contains("open")) els.patchModal.classList.remove("open");
         if (els.leaderboardModal.classList.contains("open")) els.leaderboardModal.classList.remove("open");
         if (!els.endModal.classList.contains("open") && !state.tutorialCoachOpen && !els.tarotRevealLayer.classList.contains("open")) {
+          renderCreditsMenuState();
           els.optionsModal.classList.add("open");
           updateBodyState();
         }
@@ -11167,6 +11747,8 @@
     els.cardStage.addEventListener("mousemove", previewFastMode);
     els.cardStage.addEventListener("mouseleave", resetFastModePreview);
     els.cardStage.addEventListener("click", commitFastMode);
+    window.addEventListener("resize", () => requestAnimationFrame(syncDoubleRoadCardHeights));
+    document.fonts?.ready?.then(() => requestAnimationFrame(syncDoubleRoadCardHeights));
     els.tutorialPracticeCard.addEventListener("pointerdown", startTutorialPracticeDrag);
     els.tutorialPracticeCard.addEventListener("click", () => {
       const step = activeTutorialSteps()[state.tutorialIndex];
@@ -11216,6 +11798,7 @@
       checkAchievements();
     });
     els.openOptionsTop.addEventListener("click", () => {
+      renderCreditsMenuState();
       els.optionsModal.classList.add("open");
       updateBodyState();
     });
@@ -11246,6 +11829,13 @@
       loadLeaderboard();
       els.leaderboardModal.classList.add("open");
     }));
+    els.optionsCredits.addEventListener("click", () => {
+      if (!archiveIsComplete()) {
+        showSecretNotice("크레딧 잠김", "기록보관소를 모두 해금하면 엔딩 크레딧이 열립니다.");
+        return;
+      }
+      closeOptionsAndRun(() => openCredits());
+    });
     els.quickLeft.addEventListener("click", () => choose("left"));
     els.quickRight.addEventListener("click", () => choose("right"));
     els.doubleRoadPanel.addEventListener("click", event => {
@@ -11392,6 +11982,7 @@
       applySettings();
       updateBodyState();
     });
+    els.closeCredits.addEventListener("click", () => els.creditsModal.classList.remove("open"));
     els.closeArchive.addEventListener("click", () => els.archiveModal.classList.remove("open"));
     els.closeAchievements.addEventListener("click", () => els.achievementsModal.classList.remove("open"));
     els.achievementTabs.addEventListener("click", event => {
@@ -11496,6 +12087,7 @@
     if (!readTutorialSeen()) {
       openTutorial(0);
     }
+    maybeOpenCreditsOnArchiveComplete();
     console.assert(buildDeck().length === TOTAL_EVENT_POOL, `card pool must contain ${TOTAL_EVENT_POOL} events`);
     console.assert(buildQuestLibrary().length === QUEST_LIBRARY_SIZE, `quest library must contain ${QUEST_LIBRARY_SIZE} quests`);
     console.assert(SET_EFFECTS.length === 25, "positive set effect library must contain 25 effects");
